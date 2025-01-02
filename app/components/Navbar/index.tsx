@@ -7,6 +7,7 @@ import { Back, Circle, Square } from 'app/assets/svg'
 export function NavBar() {
   const navigate = useNavigate()
   const location = useLocation()
+
   const isHome = location.pathname !== '/'
 
   return (
