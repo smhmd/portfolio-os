@@ -51,7 +51,7 @@ const config = [
       '@typescript-eslint/no-unused-vars': 'warn',
       'react/react-in-jsx-scope': 'off',
       'prettier/prettier': 'warn',
-      'arrow-body-style': 'warn',
+      'arrow-body-style': 'off',
       'prefer-arrow-callback': 'warn',
     },
   },
