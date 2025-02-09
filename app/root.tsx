@@ -8,6 +8,7 @@ import {
 } from 'react-router'
 
 import { AppIconShape, NavBar, StatusBar } from 'app/components'
+import { Providers } from 'app/contexts'
 import tailwindcss from 'app/styles/tailwind.css?url'
 
 import type { Route } from './+types/root'
@@ -26,7 +27,9 @@ export const links: Route.LinksFunction = () => [
   { rel: 'stylesheet', href: tailwindcss },
 ]
 
-export function Layout({ children }: { children: React.ReactNode }) {
+type Props = React.PropsWithChildren
+
+export function Layout({ children }: Props) {
   return (
     <html lang='en'>
       <head>
@@ -47,11 +50,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <>
+    <Providers>
       <StatusBar />
-      <Outlet /> {/* apps go here */}
+      <Outlet /> {/* Apps go here */}
       <NavBar />
-    </>
+    </Providers>
   )
 }
 
