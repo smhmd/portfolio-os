@@ -1,8 +1,9 @@
 import { AppIcon, AppWraper } from 'app/components'
+import type { AppMetadata } from 'app/types'
 import { iconToFavicon } from 'app/utils'
 
 export function meta() {
-  return [{ title: 'Radio' }, { name: 'description', content: 'Radio' }]
+  return [{ title: metadata.name }, { name: 'description', content: 'Radio' }]
 }
 
 export function links() {
@@ -10,9 +11,10 @@ export function links() {
   return [favicon]
 }
 
-export const metadata = {
+export const metadata: AppMetadata = {
   id: 'radio',
-  Icon: (props: React.ComponentProps<'svg'>) => (
+  name: 'Radio',
+  Icon: (props) => (
     <AppIcon fill='#9A80FF' {...props}>
       <path
         d='M43.455 32.182H27.273V30a4.546 4.546 0 0 1 4.545-4.546h7.273A4.545 4.545 0 0 1 43.636 30l-.181 2.182Z'
@@ -29,6 +31,7 @@ export const metadata = {
       />
     </AppIcon>
   ),
+  isDarkThemed: true,
 }
 
 export default function Radio() {

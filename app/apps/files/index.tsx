@@ -1,8 +1,9 @@
 import { AppIcon, AppWraper } from 'app/components'
+import type { AppMetadata } from 'app/types'
 import { iconToFavicon } from 'app/utils'
 
 export function meta() {
-  return [{ title: 'Files' }, { name: 'description', content: 'Files' }]
+  return [{ title: metadata.name }, { name: 'description', content: 'Files' }]
 }
 
 export function links() {
@@ -10,11 +11,10 @@ export function links() {
   return [favicon]
 }
 
-export const metadata = {
+export const metadata: AppMetadata = {
   id: 'files',
-  camera: 'Files',
-
-  Icon: (props: React.ComponentProps<'svg'>) => (
+  name: 'Files',
+  Icon: (props) => (
     <AppIcon fill='#FF9D17' {...props}>
       <path
         fillRule='evenodd'
@@ -30,6 +30,7 @@ export const metadata = {
       />
     </AppIcon>
   ),
+  isDarkThemed: false,
 }
 
 export default function Files() {
