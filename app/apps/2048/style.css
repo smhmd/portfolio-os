@@ -1,0 +1,129 @@
+.board {
+  background: #9c897a;
+  box-shadow:
+    0px 10px 30px rgba(140, 100, 60, 0.18),
+    0px 4px 6px rgba(140, 100, 60, 0.13),
+    inset 0px -1px 0px rgba(0, 0, 0, 0.1);
+}
+
+.tile-generic {
+  --digits: 2;
+  font-size: min(calc(180cqw / var(--digits)), 40cqw);
+  color: white;
+  background: linear-gradient(to bottom, #3f382f, #322b24);
+  box-shadow:
+    0px 2px 5px rgba(255, 244, 205, 0.08),
+    0px -1px 4px rgba(0, 0, 0, 0.2),
+    inset 0px -1px 0px rgba(0, 0, 0, 0.5),
+    inset 0px 0px 0px rgba(0, 0, 0, 0.5),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.38);
+}
+
+.tile-empty {
+  background: #bdac98;
+  box-shadow:
+    inset 0px -1px 0px rgba(255, 255, 255, 0.15),
+    inset 0px -4px 10px rgba(255, 255, 255, 0.075),
+    inset 0px 3px 3px rgba(110, 66, 20, 0.18),
+    inset 0px 1.5px 0px rgba(0, 0, 0, 0.2);
+}
+
+.tile-2 {
+  color: #756452;
+  background: #ece4db;
+  box-shadow:
+    0px 4px 4px rgba(0, 0, 0, 0.1),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.4);
+}
+
+.tile-4 {
+  color: #756452;
+  background: #e8d8ba;
+  box-shadow:
+    0px 4px 4px rgba(0, 0, 0, 0.1),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.4);
+}
+
+.tile-8 {
+  color: white;
+  background: linear-gradient(to bottom, #f3b279, #f0ac70);
+  box-shadow:
+    4px 4px 4px rgba(0, 0, 0, 0.1),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.1);
+}
+
+.tile-16 {
+  color: white;
+  background: linear-gradient(to bottom, #f79463, #f58e58);
+  box-shadow:
+    0px 4px 4px rgba(0, 0, 0, 0.1),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.tile-32 {
+  color: white;
+  background: linear-gradient(to bottom, #f78267, #f47454);
+  box-shadow:
+    4px 4px 4px rgba(0, 0, 0, 0.1),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.tile-64 {
+  color: white;
+  background: linear-gradient(to bottom, #f76745, #f45732);
+  box-shadow:
+    4px 4px 4px rgba(0, 0, 0, 0.1),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.tile-128 {
+  color: white;
+  background: linear-gradient(to bottom, #f0d472, #f3ce4d);
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tile-256 {
+  color: white;
+  background: linear-gradient(to bottom, #f2d46d, #f6cb46, #f3cc47);
+  box-shadow:
+    0px 4px 4.5px rgba(0, 0, 0, 0.12),
+    0px 0px 10px rgba(230, 196, 79, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  filter: brightness(1.05);
+}
+
+.tile-512 {
+  color: white;
+  background: linear-gradient(to bottom, #f7d566, #fbc727 70%, #f4c943);
+  box-shadow:
+    2px 4px 5px rgba(0, 0, 0, 0.15),
+    0px 0px 10px rgba(230, 196, 79, 0.6),
+    inset 0px 0.5px 0px rgba(255, 255, 255, 0.3),
+    inset 0px -0.5px 0px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  filter: brightness(1.05);
+}
+
+.tile-1024 {
+  color: white;
+  background: linear-gradient(to bottom, #fad761, #ffc500 70%, #f4c73d);
+  box-shadow:
+    0px 4px 2.75px rgba(0, 0, 0, 0.17),
+    0px 0px 10px rgba(249, 199, 34, 0.8),
+    inset 0px 0px 5px rgba(230, 196, 79, 0.8),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  filter: brightness(1.07);
+}
+
+.tile-2048 {
+  color: white;
+  background: linear-gradient(to bottom, #ffd950, #ffba00 70%, #f7c22c);
+  box-shadow:
+    0px 4px 3px rgba(0, 0, 0, 0.2),
+    0px -2px 5px rgba(230, 196, 79, 0.6),
+    0px 2px 7px rgba(255, 189, 15, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  filter: brightness(1.1);
+}

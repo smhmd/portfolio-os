@@ -4,13 +4,15 @@ import { AppIcon, AppWraper } from 'app/components'
 import type { AppMetadata } from 'app/types'
 import { iconToFavicon } from 'app/utils'
 
+import styles from './style.css?url'
+
 export function meta() {
   return [{ title: metadata.name }, { name: 'description', content: '2048' }]
 }
 
 export function links() {
   const favicon = iconToFavicon(<metadata.Icon />)
-  return [favicon]
+  return [favicon, { rel: 'stylesheet', href: styles }]
 }
 
 export const metadata: AppMetadata = {
@@ -28,65 +30,75 @@ export const metadata: AppMetadata = {
   isDarkThemed: false,
 }
 
-const colors = {
-  empty:
-    'bg-[#BDAC98] shadow-[inset_0_1px_0_rgb(140,124,105),inset_0_6px_6px_rgb(182,163,139),inset_0_-1px_0_rgb(199,183,166)]',
-  container: '',
-  2: [
-    'bg-[#EFE5DA] text-[#756452] text-6xl',
-    'shadow-[0_1px_8px_rgba(72,61,59,0.3),inset_0_1px_0_rgb(245,239,233)]',
-  ],
-  4: [
-    'bg-[#EBD8B6] text-[#756452] text-6xl',
-    'shadow-[0_1px_8px_rgba(72,61,59,0.3),inset_0_1px_0_rgb(243,233,211)]',
-  ],
-  8: [
-    'bg-[#F3B178] text-white text-6xl',
-    'shadow-[0_1px_8px_rgba(72,61,59,0.3),inset_0_1px_0_rgb(245,194,149)]',
-  ],
-}
+const TILE_SIZE = 4
 
 export default function _2048() {
   return (
-    <AppWraper className='flex justify-center overflow-hidden bg-[#F9F7EF]'>
-      <div
-        className={
-          'realtive mt-[178px] grid size-[590px] rounded-3xl bg-[#9c8b7c] opacity-100 shadow-[0_-1px_1px_rgba(255,255,255,0.2)]'
-        }>
-        <div className='left-0 grid size-[590px] grid-cols-4 grid-rows-4 gap-2.5 p-3'>
-          {Array.from({ length: 16 }).map((_, i) => (
-            <div
-              key={i}
-              className={clsx(
-                colors.empty,
-                'size-[129px] place-self-center rounded-xl',
-              )}
-            />
+    <AppWraper
+      className={clsx('flex items-center justify-center bg-[#F9F7EF]')}>
+      <div className='relative size-[525px]'>
+        <div
+          className={clsx(
+            'board',
+            // Q: What does 'inset' do here??
+            // A: We are using percentages to place and shift tiles around.
+            // That means we need a square that's perfectly splittable by 4 (25%) to be able to say, shift this tile 50% or 75%, etc.
+            // The outer div (the relative one) needs some padding, but that messes up the percentages. So, we use inset instead.
+            'absolute -inset-2',
+            'grid gap-3.5 rounded-3xl p-3.5',
+          )}
+          style={{
+            gridTemplateRows: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,
+            gridTemplateColumns: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,
+          }}>
+          {Array.from({ length: Math.pow(TILE_SIZE, 2) }).map((slot, i) => (
+            <div key={i} className='tile-empty size-full rounded-[10px]' />
           ))}
         </div>
-        <div className='absolute grid size-[590px] grid-cols-4 grid-rows-4 gap-2.5 p-3'>
-          {[
-            { 2: 'col-start-2' },
-            { 4: 'col-start-3 row-start-2' },
-            { 8: 'col-start-2 row-start-2' },
-            { 2: 'col-start-2 row-start-4' },
-          ].map((data, i) => {
-            const [[number, position]] = Object.entries(data)
-            return (
-              <div
-                key={i}
-                style={{ zIndex: i }}
-                className={clsx(
-                  // @ts-expect-error wlah ta s7i7
-                  colors[number],
-                  position,
-                  'grid size-[134px] place-items-center place-self-center rounded-2xl font-black shadow-2xl',
-                )}>
-                {number}
-              </div>
-            )
-          })}
-        </div>
+        {[
+          { x: 1, y: 1, value: 4 },
+          { x: 4, y: 1, value: 4 },
+
+          { x: 2, y: 2, value: 4 },
+          { x: 1, y: 2, value: 8 },
+
+          { x: 4, y: 3, value: 128 },
+          { x: 3, y: 3, value: 64 },
+          { x: 2, y: 3, value: 32 },
+          { x: 1, y: 3, value: 16 },
+
+          { x: 4, y: 4, value: 256 },
+          { x: 3, y: 4, value: 512 },
+          { x: 2, y: 4, value: 1024 },
+          { x: 1, y: 4, value: 2048 },
+        ].map(({ x, y, value }) => (
+          <div
+            key={`${x}-${y}`}
+            className='@container absolute p-1'
+            style={
+              {
+                translate: `calc(${x - 1} * 100%) calc(${y - 1} * 100%)`,
+                width: `calc(1/${TILE_SIZE} * 100%)`,
+                height: `calc(1/${TILE_SIZE} * 100%)`,
+              } as React.CSSProperties
+            }>
+            <div
+              style={
+                {
+                  // Using container queries, we use how long the number, and make the font smaller
+                  // See .tile-generic
+                  '--digits': (value * 100).toString().length,
+                } as React.CSSProperties
+              }
+              className={clsx(
+                `tile-generic tile-${value}`,
+                'flex items-center justify-center',
+                'rounded-1.5xl size-full select-none font-black',
+              )}>
+              {value}
+            </div>
+          </div>
+        ))}
       </div>
     </AppWraper>
   )
