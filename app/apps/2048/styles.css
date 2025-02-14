@@ -7,9 +7,11 @@
 }
 
 .tile-generic {
+  /* We make the the font size smaller, the more numbers in the tile. This uses container queries */
   --digits: 2;
   font-size: min(calc(180cqw / var(--digits)), 40cqw);
-  color: white;
+
+  color: #c4bdb7;
   background: linear-gradient(to bottom, #3f382f, #322b24);
   box-shadow:
     0px 2px 5px rgba(255, 244, 205, 0.08),
@@ -90,7 +92,7 @@
     0px 4px 4.5px rgba(0, 0, 0, 0.12),
     0px 0px 10px rgba(230, 196, 79, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  filter: brightness(1.05);
+  filter: brightness(1.01);
 }
 
 .tile-512 {
@@ -102,7 +104,7 @@
     inset 0px 0.5px 0px rgba(255, 255, 255, 0.3),
     inset 0px -0.5px 0px rgba(255, 255, 255, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  filter: brightness(1.05);
+  filter: brightness(1.04);
 }
 
 .tile-1024 {
