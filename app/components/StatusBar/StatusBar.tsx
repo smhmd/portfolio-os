@@ -3,26 +3,22 @@ import clsx from 'clsx'
 
 import { type AppID, apps } from 'app/apps'
 import { Battery, PlaceholderIcon, Wifi } from 'app/assets/svg'
-import { useCurrentApp } from 'app/contexts'
 
 import { StatusBarPanel } from './StatusBarPanel'
 
 type Props = React.ComponentProps<'header'>
 
 export function StatusBar({ className, ...props }: Props) {
-  const currentApp = useCurrentApp()
-
-  const isAppDarkThemed = currentApp?.isDarkThemed ?? true
-
   return (
-    <header className={clsx('fixed w-full', className)} {...props}>
+    <header
+      className={clsx('invert-if-dark fixed w-full', className)}
+      {...props}>
       <Popover.Root>
-        <Popover.Trigger
-          className={clsx('w-full', isAppDarkThemed ? undefined : 'invert')}>
+        <Popover.Trigger className='w-full'>
           <div className='leading-0 sm:pl-5.5 flex justify-between px-2 sm:pr-4'>
             <div className='flex items-center justify-start gap-3 py-0.5'>
               <time
-                className='font-roboto flex gap-3 p-0 text-sm tracking-wider'
+                className='font-roboto flex gap-3 p-0 text-sm tracking-wider text-white'
                 dateTime='2024-11-27T09:10:00'>
                 <span>17:39 </span>
                 <span className='hidden sm:inline'>Thu, Jan 9</span>

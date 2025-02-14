@@ -11,6 +11,10 @@ export function links() {
   return [favicon]
 }
 
+export default function App() {
+  return <AppWraper>Gallery</AppWraper>
+}
+
 export const metadata: AppMetadata = {
   id: 'gallery',
   name: 'Gallery',
@@ -22,9 +26,4 @@ export const metadata: AppMetadata = {
       />
     </AppIcon>
   ),
-  isDarkThemed: false,
-}
-
-export default function gallery() {
-  return <AppWraper>Gallery</AppWraper>
 }

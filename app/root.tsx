@@ -9,7 +9,7 @@ import {
 
 import { AppIconShape, NavBar, StatusBar } from 'app/components'
 import { Providers } from 'app/contexts'
-import tailwindcss from 'app/styles/tailwind.css?url'
+import mainCSS from 'app/styles/main.css?url'
 
 import type { Route } from './+types/root'
 
@@ -24,7 +24,7 @@ export const links: Route.LinksFunction = () => [
     rel: 'stylesheet',
     href: 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap',
   },
-  { rel: 'stylesheet', href: tailwindcss },
+  { rel: 'stylesheet', href: mainCSS },
 ]
 
 type Props = React.PropsWithChildren
@@ -38,7 +38,7 @@ export function Layout({ children }: Props) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className='antialiased'>
         {children}
         <AppIconShape />
         <ScrollRestoration />

@@ -11,6 +11,10 @@ export function links() {
   return [favicon]
 }
 
+export default function App() {
+  return <AppWraper className=''>files</AppWraper>
+}
+
 export const metadata: AppMetadata = {
   id: 'files',
   name: 'Files',
@@ -30,9 +34,4 @@ export const metadata: AppMetadata = {
       />
     </AppIcon>
   ),
-  isDarkThemed: false,
-}
-
-export default function Files() {
-  return <AppWraper className=''>files</AppWraper>
 }
