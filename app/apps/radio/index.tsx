@@ -1,4 +1,4 @@
-import { AppIcon, AppWraper } from 'app/components'
+import { AppIcon, AppWrapper } from 'app/components'
 import type { AppMetadata } from 'app/types'
 import { iconToFavicon } from 'app/utils'
 
@@ -33,5 +33,5 @@ export const metadata: AppMetadata = {
 }
 
 export default function Radio() {
-  return <AppWraper className=''>Radio</AppWraper>
+  return <AppWrapper className=''>Radio</AppWrapper>
 }
