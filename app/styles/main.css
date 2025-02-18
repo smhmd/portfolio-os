@@ -6,6 +6,7 @@
   --text-xxs: 0.625rem;
   --text-xxs--line-height: 1.5rem;
 
+  --radius-lx: 0.625rem;
   --radius-1.5xl: 0.875rem;
 
   --spacing-18: calc(var(--spacing) * 18);

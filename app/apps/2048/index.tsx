@@ -1,13 +1,13 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
-import clsx from 'clsx'
+import { useMachine, useSelector } from '@xstate/react'
 
-import { AppIcon, AppWraper } from 'app/components'
+import { AppIcon, AppWrapper } from 'app/components'
 import type { AppMetadata } from 'app/types'
 import { iconToFavicon } from 'app/utils'
 
-import { TileBlock } from './components'
-import { keyToDirectionMap, TILE_SIZE, useGameMachine } from './lib'
+import { GameBoard, GameHeader } from './components'
+import { type Direction, machine } from './lib'
 import styles from './styles.css?url'
 
 export function meta() {
@@ -20,63 +20,56 @@ export function links() {
 }
 
 export default function App() {
-  const [state, send] = useGameMachine()
-  const isLost = state.matches('LOST')
+  const [state, send, actorRef] = useMachine(machine)
+  const { board, score, best, isWon, isLost } = useSelector(
+    actorRef,
+    (state) => ({
+      ...state.context,
+      isWon: state.matches('WON'),
+      isLost: state.matches('LOST'),
+    }),
+    // if `updated` is not true, don't return new values for `board`, `score`, and `best`
+    // saves us from unnecessary re-renders
+    () => !state.context.updated,
+  )
+
+  const handleMove = useCallback((direction: Direction) => {
+    send({ type: 'move', payload: direction })
+  }, [])
+  const handleContinue = useCallback(() => {
+    send({ type: 'continue' })
+  }, [])
+  const handleReset = useCallback(() => {
+    send({ type: 'reset' })
+  }, [])
 
   useEffect(() => {
-    if (isLost) return
-
-    const controller = new AbortController()
-    window.addEventListener(
-      'keydown',
-      (e: KeyboardEvent) => {
-        const direction = keyToDirectionMap[e.code]
-        if (direction) {
-          e.preventDefault()
-          send({ type: 'move', payload: direction })
-        }
-      },
-      { signal: controller.signal },
-    )
-
-    return () => {
-      controller.abort()
-    }
-  }, [isLost])
+    // Avoid SSR `window` is undefined behavior (cause we're using localStorage)
+    send({ type: 'start' })
+  }, [])
 
   return (
-    <AppWraper
+    <AppWrapper
       isDark
-      className='flex select-none flex-col items-center justify-center bg-[#F9F7EF] text-black'>
-      <section className='relative m-2 size-[525px]'>
-        <div
-          className={clsx(
-            'board',
-            // Q: What does 'inset' do here??
-            // A: We are using percentages to place and shift tiles around.
-            // That means we need a square that's perfectly splittable by 4 (25%) to be able to say, shift this tile 50% or 75%, etc.
-            // The outer div (the relative one) needs some padding, but that messes up the percentages. So, we use inset instead.
-            'absolute -inset-2',
-            'grid gap-3.5 rounded-3xl p-3.5',
-          )}
-          style={{
-            gridTemplateRows: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,
-            gridTemplateColumns: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,
-          }}>
-          {Array.from({ length: Math.pow(TILE_SIZE, 2) }).map((_, i) => (
-            <div key={i} className='tile-empty size-full rounded-[10px]' />
-          ))}
-        </div>
-        {state.context.board
-          ?.sort((a, b) => a.id.localeCompare(b.id))
-          ?.map((tile) => <TileBlock key={tile.id} {...tile} />)}
-        {isLost ? (
-          <div className='absolute -inset-2 flex items-center justify-center rounded-3xl bg-white/50'>
-            <p className='text-6xl font-bold text-[#756452]'>Game Over!</p>
-          </div>
-        ) : null}
-      </section>
-    </AppWraper>
+      className='flex select-none flex-col items-center justify-center bg-[#F9F7EF] text-[#756452]'>
+      <GameHeader
+        handleReset={handleReset}
+        className='absolute inset-x-0 top-10'
+        score={score}
+        best={best}
+      />
+      <GameBoard
+        board={board}
+        handleMove={handleMove}
+        handleContinue={handleContinue}
+        handleReset={handleReset}
+        isWon={isWon}
+        isLost={isLost}
+      />
+      <footer className='absolute bottom-[5vh] text-xs opacity-70'>
+        Originally created by Gabriele Cirulli.
+      </footer>
+    </AppWrapper>
   )
 }
 

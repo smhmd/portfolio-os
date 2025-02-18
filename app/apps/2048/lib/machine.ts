@@ -1,51 +1,62 @@
-import { useMachine } from '@xstate/react'
-import { assign, setup } from 'xstate'
+import { assign, createMachine } from 'xstate'
 
-import type { Direction, State } from './common'
-import { addTile, checkLost, mergeTiles, moveTiles } from './utils'
+import { APP_ID, type Direction, type State } from './common'
+import {
+  addTile,
+  checkLost,
+  checkWon,
+  initializeState,
+  mergeTiles,
+  moveTiles,
+  persistState,
+  reset,
+} from './utils'
 
 type Events =
+  | { type: 'start' }
   | { type: 'move'; payload: Direction }
   | { type: 'reset' }
   | { type: 'continue' }
 
-const machine = setup({
+const initialState = {
+  board: [],
+  score: 0,
+  best: 0,
+  updated: true,
+  won: false,
+} satisfies State
+
+export const machine = createMachine({
   types: {
-    context: {} as State & { previousState: State | null },
+    context: {} as State,
     events: {} as Events,
   },
-}).createMachine({
-  context: {
-    board: [
-      { id: '69bb714a-8d8d-4b6a-8fef-76ccfef78fb8', x: 0, y: 1, value: 2 },
-      { id: 'f605e97c-7302-40e8-94fa-d51c4d6860dc', x: 0, y: 2, value: 2 },
-    ],
-    score: 0,
-    moved: false,
-    previousState: null,
-  },
-  id: '2048',
+  context: initialState,
+  id: APP_ID,
   description: 'The state machine for the game 2048.',
-  initial: 'INIT',
+  initial: 'IDLE',
   states: {
-    INIT: {
-      always: {
-        target: 'START',
+    IDLE: {
+      on: {
+        start: {
+          target: 'START',
+          actions: assign(initializeState),
+        },
       },
     },
     START: {
       always: [
         {
+          target: 'WON',
+          guard: ({ context }) => checkWon(context),
+          actions: assign({ won: true }),
+        },
+        {
           target: 'LOST',
-          guard: ({ context }) => {
-            return checkLost(context.board)
-          },
+          guard: ({ context }) => checkLost(context.board),
         },
         {
           target: 'PLAYING',
-          // actions: assign({
-          //   board: addTile(addTile([])),
-          // }),
         },
       ],
     },
@@ -54,25 +65,29 @@ const machine = setup({
         move: {
           target: 'MOVING',
           actions: assign(({ context, event }) =>
-            moveTiles(context.board, event.payload),
+            moveTiles({
+              board: context.board,
+              direction: event.payload,
+            }),
           ),
         },
       },
     },
     MOVING: {
+      always: {
+        // If no tiles were updated, go to PLAYING state
+        target: 'PLAYING',
+        guard: ({ context }) => !context.updated,
+      },
       after: {
-        '0': {
-          // If no tiles were moved, go to PLAYING state
-          target: 'PLAYING',
-          guard: ({ context }) => !context.moved,
-        },
-        '200': {
-          //  If any tiles were moved, go to SPAWNING state (after 200ms)
+        '60': {
+          // After a delay, if there are updated tiles, go to SPAWNING state
+          // The delay is there to allow spawning animation and moving animation from colliding.
+          // I wanna improve this, tbh. :(
+          // It's not bad design. It's just makes the game not as snappy as it possible could be.
           target: 'SPAWNING',
-          actions: assign(({ context }) =>
-            mergeTiles(context.board, context.score),
-          ),
-          guard: ({ context }) => context.moved,
+          actions: assign(({ context }) => mergeTiles(context)),
+          guard: ({ context }) => context.updated,
         },
       },
     },
@@ -85,7 +100,13 @@ const machine = setup({
       },
     },
     CHECKING: {
+      entry: ({ context }) => persistState(context),
       always: [
+        {
+          target: 'WON',
+          guard: ({ context }) => checkWon(context),
+          actions: assign({ won: true }),
+        },
         {
           target: 'LOST',
           guard: ({ context }) => checkLost(context.board),
@@ -97,22 +118,17 @@ const machine = setup({
     },
     WON: {
       on: {
-        reset: {
-          target: 'START',
-        },
         continue: {
           target: 'PLAYING',
         },
       },
     },
-    LOST: {
-      on: {
-        reset: {
-          target: 'START',
-        },
-      },
+    LOST: {},
+  },
+  on: {
+    reset: {
+      target: '.START',
+      actions: assign(({ context }) => reset(context)),
     },
   },
 })
-
-export const useGameMachine = () => useMachine(machine)

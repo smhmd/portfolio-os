@@ -7,38 +7,34 @@ export type Tile = {
 
 export type Board = Tile[]
 
+/** The direction in which a board can move its tiles. */
 export type Direction = 'up' | 'down' | 'left' | 'right'
 
 export type State = {
+  /** The current state of the board, represented as a flat array of tiles. */
   board: Board
+  /** The current score of the game. */
   score: number
-  moved: boolean
+  /** The best score recorded so far. */
+  best: number
+  /** Determines if we should spawn a new tile and if we need to re-render the React component */
+  updated: boolean
+  /** If the player has reached 2048. The player may continue playing after doing that */
+  won: boolean
 }
 
+export const APP_ID = '2048'
 export const TILE_SIZE = 4
+export const LOCALSTORAGE_ID = `${APP_ID}_${TILE_SIZE}`
+export const WIN_THRESHOLD = 2048
 
-export const initialBoard = [
-  { id: 'a', x: 0, y: 0, value: 2 },
-  { id: 'b', x: 1, y: 0, value: 8 },
-  { id: 'c', x: 2, y: 0, value: 4 },
-  { id: 'd', x: 3, y: 0, value: 2 },
-  { id: 'e', x: 0, y: 1, value: 32 },
-  { id: 'f', x: 1, y: 1, value: 16 },
-  { id: 'g', x: 2, y: 1, value: 8 },
-  { id: 'h', x: 3, y: 1, value: 4 },
-  { id: 'i', x: 0, y: 2, value: 64 },
-  { id: 'j', x: 1, y: 2, value: 128 },
-  { id: 'k', x: 2, y: 2, value: 256 },
-  { id: 'l', x: 3, y: 2, value: 512 },
-  { id: 'm', x: 0, y: 3, value: 8192 },
-  { id: 'n', x: 1, y: 3, value: 4096 },
-  { id: 'o', x: 2, y: 3, value: 2048 },
-  { id: 'p', x: 3, y: 3, value: 1024 },
-] satisfies Board
-
-export const keyToDirectionMap: Record<string, Direction> = {
+export const directionKeyCodes: Record<string, Direction> = {
   ArrowUp: 'up',
   ArrowDown: 'down',
   ArrowLeft: 'left',
   ArrowRight: 'right',
+  KeyW: 'up',
+  KeyS: 'down',
+  KeyA: 'left',
+  KeyD: 'right',
 }

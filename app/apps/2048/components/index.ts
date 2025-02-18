@@ -1,1 +1,2 @@
-export * from './TileBlock'
+export * from './GameBoard'
+export * from './GameHeader'

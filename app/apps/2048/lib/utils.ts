@@ -1,38 +1,41 @@
-/**
- * @fileoverview Utility functions for managing a 2048 game board.
- *
- * @description This file provides helper functions manipulate a game board.
- * `moveTiles`: Moves all the tiles in the board left, right, up, or down.
- * `mergeTiles`: Merge overlapping tiles that became overlapped by after getting moved
- * `addTile`: Spawns a new tile in a random available position. Has 10% chance of spawning a 4 instead of a 2
- * `checkPlayable`: Checks and returns whether the game can continue or not.
- */
-
 import {
   type Board,
   type Direction,
+  LOCALSTORAGE_ID,
   type State,
   type Tile,
   TILE_SIZE,
+  WIN_THRESHOLD,
 } from './common'
 
-export function moveTiles(
-  board: Board,
-  direction: Direction,
-): Pick<State, 'board' | 'moved'> {
-  /**
-   * Returns whether the moveTiles function actually moved any tiles. If so, we can spawn a new tile, if not, we go back to the PLAYING state.
-   */
-  let moved = false
+type MoveProps = { board: Board; direction: Direction }
+
+/**
+ * Moves the tiles on the board in the specified direction and returns the updated board and a flag indicating if any tiles were moved.
+ *
+ * @example
+ * const { board, updated } = moveTiles({
+ *   board: [{ value: 2, x: 0, y: 0 }, { value: 2, x: 0, y: 1 }]
+ *   direction: 'down',
+ * });
+ * console.log(board); // [{value: 2, x: 0, y: 3}, {value: 2, x: 0, y: 3}] // (overlapping)
+ * console.log(updated); // true
+ */
+export function moveTiles({
+  board,
+  direction,
+}: MoveProps): Pick<State, 'board' | 'updated'> {
+  /** Flag for when moveTiles function actually updated any tiles. */
+  let updated = false
   const newBoard: Board = []
 
   const isForward = ['right', 'down'].includes(direction) // not efficient, but readable >_<
   const isVertical = ['up', 'down'].includes(direction)
 
-  const groupBy = isVertical ? 'x' : 'y' // when the movement is vertical, "x" is contant so we can group by it
+  const groupBy = isVertical ? 'x' : 'y' // when the movement is vertical, "x" is constant so we can group by it
   const changeBy = isVertical ? 'y' : 'x' // when the movement is vertical, we change the "y" position
 
-  // for 'down' and 'right', we go backwards; for 'up' and 'left', we go forward
+  /** for 'down' and 'right', we go backwards; for 'up' and 'left', we go forward  */
   const step = isForward ? -1 : 1
 
   /**
@@ -78,18 +81,19 @@ export function moveTiles(
         newPosition += step
       }
 
+      // Oh, something got updated
       if (tile[changeBy] !== newPosition) {
-        moved = true
+        updated = true
       }
 
-      // we update "x" or "y" using the `newPosition`
+      // We update "x" or "y" using the `newPosition`
       tile[changeBy] = newPosition
 
       if (tile.value === lastValue) {
-        // we reset the lastValue when there is a match to not be greedy
+        // We reset the lastValue when there is a match to not be greedy
         lastValue = null
       } else {
-        // we update the lastValue to compare in the next iteration
+        // We update the lastValue to compare in the next iteration
         lastValue = tile.value
       }
 
@@ -99,102 +103,176 @@ export function moveTiles(
 
   return {
     board: newBoard,
-    moved,
+    updated,
   }
 }
 
-export function mergeTiles(
-  board: Board,
-  score: number,
-): Pick<State, 'board' | 'score'> {
+type MergeProps = Pick<State, 'board' | 'score' | 'best'>
+
+/**
+ * Merges the tiles on the board and updates the score based on tile combinations.
+ *
+ * Splitting moving and merging tiles allows us to animate them with ease.
+ *
+ * @example
+ * const { board, score, best } = mergeTiles({
+ *   board: [
+ *     { value: 2, x: 0, y: 3 },
+ *     { value: 2, x: 0, y: 3 }, // (overlapping)
+ *   ],
+ *   score: 0,
+ *   best: 20,
+ * })
+ *
+ * console.log(board); // [{ value: 4, x: 0, y: 3 }] // merged in the same position
+ * console.log(score); // 4
+ * console.log(best); // 20
+ */
+export function mergeTiles({ board, score, best }: MergeProps): MergeProps {
   let addedScore = 0
 
-  const seen = new Set()
+  /** Map{'0,0': Tile, '0,1': Tile} */
+  const seenPositions = new Map<string, Tile>()
+
   const newBoard = board.reduce<Board>((acc, tile) => {
     const key = `${tile.x},${tile.y}`
-    if (seen.has(key)) {
+
+    if (seenPositions.has(key)) {
       // If it's a duplicate, multiply the value of the first occurrence by 2
-      const existingTile = acc.find((t) => t.x === tile.x && t.y === tile.y)
+      const existingTile = seenPositions.get(key)
+
       if (existingTile) {
         existingTile.value *= 2 // Multiply only the first occurrence
         addedScore += existingTile.value
       }
-      return acc // Skip adding the duplicate
+      return acc // Skip adding the duplicate to the newBoard
     }
-    seen.add(key) // Mark the combination as seen
+    seenPositions.set(key, tile) // Mark the combination as seen
     acc.push(tile) // Add the tile to the newBoard
     return acc
   }, [])
 
+  const newScore = score + addedScore
+  const newBest = best > newScore ? best : newScore
+
   return {
     board: newBoard,
-    score: score + addedScore,
+    score: newScore,
+    best: newBest,
   }
 }
 
+/**
+ * Adds a new tile to the game board at a random available position.
+ * A new tile can either have a value of 2 or 4, with a 10% chance of being 4.
+ */
 export function addTile(board: Board): Board {
-  const occupied = new Set(board.map((tile) => `${tile.x},${tile.y}`))
-  const available: { x: number; y: number }[] = []
+  // No available positions
+  if (board.length === TILE_SIZE * TILE_SIZE) return board
+
+  // Track occupied positions using a boolean grid
+  const occupied = Array.from({ length: TILE_SIZE }, () =>
+    Array(TILE_SIZE).fill(false),
+  )
+
+  // Populate the occupied grid
+  for (const tile of board) {
+    occupied[tile.x][tile.y] = true
+  }
+
+  // Find a random available position using reservoir sampling
+  // Hold x and y for the first available spot found, and keep updating until no more available spots are found.
+  let availableCount = 0
+  let selectedX = 0,
+    selectedY = 0
 
   for (let x = 0; x < TILE_SIZE; x++) {
     for (let y = 0; y < TILE_SIZE; y++) {
-      const key = `${x},${y}`
-      if (!occupied.has(key)) {
-        available.push({ x, y })
+      if (!occupied[x][y]) {
+        availableCount++
+        if (Math.random() < 1 / availableCount) {
+          selectedX = x
+          selectedY = y
+        }
       }
     }
   }
 
-  if (available.length === 0) return board
-
-  const { x, y } = available[Math.floor(Math.random() * available.length)]
-  const value = Math.random() < 0.1 ? 4 : 2 // %10 chance of getting a "4" tile
+  // Create the new tile
+  const value = Math.random() < 0.1 ? 4 : 2 // 10% chance of 4, otherwise 2
   const id = self.crypto.randomUUID()
-  const newTile: Tile = {
-    id,
-    x,
-    y,
-    value,
-  }
+  const newTile: Tile = { id, x: selectedX, y: selectedY, value }
 
   return [...board, newTile]
 }
 
+/**
+ * Checks if the game board is in a lost state, meaning there are no empty spaces
+ * and no adjacent tiles with the same value that can be merged.
+ */
 export function checkLost(board: Board): boolean {
   if (board.length < TILE_SIZE * TILE_SIZE) return false
 
-  const matrix = board.reduce<number[][]>(
-    (acc, { x, y, value }) => {
-      acc[x][y] = value
-      return acc
-    },
-    Array.from({ length: TILE_SIZE }, () => Array(TILE_SIZE)),
-  )
+  const tileMap = new Map<string, number>()
 
-  const last = TILE_SIZE - 1
-
-  for (let i = 0; i < last; i++) {
-    for (let j = 0; j < last; j++) {
-      const current = matrix[i][j]
-
-      // Compare with right and below in one go
-      if (matrix[i][j + 1] === current || matrix[i + 1][j] === current) {
-        return false
-      }
-    }
-
-    // Separate check for last column (only need to check below)
-    if (matrix[i][last] === matrix[i + 1][last]) {
-      return false
-    }
+  // Store tile values in a Map and check for empty spaces
+  for (const { x, y, value } of board) {
+    tileMap.set(`${x},${y}`, value)
   }
 
-  // Separate check for the last row (only need to check right)
-  for (let j = 0; j < last; j++) {
-    if (matrix[last][j] === matrix[last][j + 1]) {
+  // Check for possible moves
+  for (const { x, y, value } of board) {
+    // Possible moves (right and down)
+    if (
+      tileMap.get(`${x + 1},${y}`) === value || // Check right
+      tileMap.get(`${x},${y + 1}`) === value // Check below
+    ) {
       return false
     }
   }
 
   return true
+}
+
+type CheckWonProps = Pick<State, 'board' | 'won'>
+
+/**
+ * Checks if the game board is in a lost state, meaning there are no empty spaces
+ * and no adjacent tiles with the same value that can be merged.
+ */
+export function checkWon({ board, won }: CheckWonProps): boolean {
+  if (won) return false
+  return board.some((tile) => tile.value === WIN_THRESHOLD)
+}
+
+/**
+ * Persist state in local storage
+ */
+export function persistState(state: Partial<State>): void {
+  localStorage.setItem(LOCALSTORAGE_ID, JSON.stringify(state))
+}
+
+/**
+ * Initialize state (using state from local storage if available)
+ */
+export function initializeState(): Partial<State> {
+  const persisted = JSON.parse(localStorage.getItem(LOCALSTORAGE_ID) || 'null')
+  if (persisted) return persisted
+  return { board: addTile(addTile([])) }
+}
+
+/**
+ * Resets the game state, keeping "best" intact
+ */
+export function reset(state: State): Omit<State, 'best'> {
+  const newState = {
+    board: addTile(addTile([])),
+    score: 0,
+    updated: true,
+    won: false,
+    best: state.best,
+  }
+
+  persistState(newState)
+  return newState
 }
