@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 
-import { AppIcon, AppWraper } from 'app/components'
+import { AppIcon, AppWrapper } from 'app/components'
 import { WavyText } from 'app/components/WavyText'
 import type { AppMetadata } from 'app/types'
 import { iconToFavicon } from 'app/utils'
@@ -62,7 +62,7 @@ export default function App() {
       : { accuracy: 0, wpm: 0, errors: 0 }
 
   return (
-    <AppWraper
+    <AppWrapper
       isDark
       className='flex flex-col items-center justify-center gap-6 bg-[whitesmoke] p-4 font-mono text-black'>
       <h1 className='text-3xl font-black'>Typing Test</h1>
@@ -130,7 +130,7 @@ export default function App() {
           )}
         </>
       )}
-    </AppWraper>
+    </AppWrapper>
   )
 }
 

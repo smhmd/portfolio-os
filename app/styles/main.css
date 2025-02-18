@@ -44,11 +44,11 @@ html::before {
  */
 .\? {
   animation:
-    debug-woble 0.7s ease-in-out alternate infinite,
+    debug-wobble 0.7s ease-in-out alternate infinite,
     debug-glow 1s ease-in-out alternate infinite;
 }
 
-@keyframes debug-woble {
+@keyframes debug-wobble {
   0% {
     box-shadow:
       3px 3px cyan,

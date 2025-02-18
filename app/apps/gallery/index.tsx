@@ -1,4 +1,4 @@
-import { AppIcon, AppWraper } from 'app/components'
+import { AppIcon, AppWrapper } from 'app/components'
 import type { AppMetadata } from 'app/types'
 import { iconToFavicon } from 'app/utils'
 
@@ -12,7 +12,7 @@ export function links() {
 }
 
 export default function App() {
-  return <AppWraper>Gallery</AppWraper>
+  return <AppWrapper>Gallery</AppWrapper>
 }
 
 export const metadata: AppMetadata = {

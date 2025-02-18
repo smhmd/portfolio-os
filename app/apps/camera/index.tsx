@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import { AppIcon, AppWraper } from 'app/components'
+import { AppIcon, AppWrapper } from 'app/components'
 import type { AppMetadata } from 'app/types'
 import { iconToFavicon } from 'app/utils'
 
@@ -45,14 +45,16 @@ export default function Camera() {
   }, [])
 
   return (
-    <AppWraper className='flex items-center justify-center bg-black' fullscreen>
+    <AppWrapper
+      className='flex items-center justify-center bg-black'
+      fullscreen>
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
         className='h-full w-full object-cover'></video>
-    </AppWraper>
+    </AppWrapper>
   )
 }
 

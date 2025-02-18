@@ -4,7 +4,7 @@ import * as Tabs from '@radix-ui/react-tabs'
 
 import { type AppID, apps } from 'app/apps'
 import { PlaceholderIcon } from 'app/assets/svg'
-import { AppWraper } from 'app/components'
+import { AppWrapper } from 'app/components'
 
 export function meta() {
   return [{ title: 'Home' }, { name: 'description', content: 'Home' }]
@@ -22,7 +22,7 @@ const homeRow: [AppID, AppID, AppID, AppID, AppID] = [
 
 export default function Launcher() {
   return (
-    <AppWraper className='flex h-full flex-col'>
+    <AppWrapper className='flex h-full flex-col'>
       <Tabs.Root defaultValue='1' className='flex h-full flex-col items-center'>
         <div className='flex w-full grow justify-center py-6'>
           {tabs.map((tab) => (
@@ -55,6 +55,6 @@ export default function Launcher() {
           )
         })}
       </ul>
-    </AppWraper>
+    </AppWrapper>
   )
 }
