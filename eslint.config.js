@@ -1,6 +1,7 @@
 import pluginJs from '@eslint/js'
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended'
 import pluginReact from 'eslint-plugin-react'
+import reactRefresh from 'eslint-plugin-react-refresh'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
@@ -12,6 +13,7 @@ const config = [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
+  reactRefresh.configs.recommended,
   eslintPluginPrettier,
   {
     plugins: {
@@ -64,6 +66,20 @@ const config = [
       'prettier/prettier': 'warn',
       'arrow-body-style': 'off',
       'prefer-arrow-callback': 'warn',
+      'react-refresh/only-export-components': [
+        'error',
+        {
+          allowExportNames: [
+            'meta',
+            'links',
+            'headers',
+            'loader',
+            'action',
+            'metadata',
+          ],
+          allowConstantExport: true,
+        },
+      ],
     },
   },
 ]
