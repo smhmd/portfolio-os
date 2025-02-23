@@ -1,5 +1,6 @@
 import { metadata as _2048 } from './2048'
 import { metadata as camera } from './camera'
+import { metadata as drumMachine } from './drum-machine'
 import { metadata as files } from './files'
 import { metadata as gallery } from './gallery'
 import { metadata as radio } from './radio'
@@ -12,6 +13,7 @@ export const apps = {
   radio,
   '2048': _2048,
   'typing-test': typingTest,
+  'drum-machine': drumMachine,
 }
 
 export type AppID = keyof typeof apps

@@ -38,7 +38,7 @@ export function Layout({ children }: Props) {
         <Meta />
         <Links />
       </head>
-      <body className='antialiased'>
+      <body className='overscroll-none antialiased'>
         {children}
         <AppIconShape />
         <ScrollRestoration />

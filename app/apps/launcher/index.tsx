@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 
 import * as Tabs from '@radix-ui/react-tabs'
+import clsx from 'clsx'
 
 import { type AppID, apps } from 'app/apps'
 import { PlaceholderIcon } from 'app/assets/svg'
@@ -13,16 +14,20 @@ export function meta() {
 const tabs = [1, 2]
 
 const homeRow: [AppID, AppID, AppID, AppID, AppID] = [
-  'radio',
   'typing-test',
   '2048',
+  'drum-machine',
   'gallery',
   'camera',
 ]
 
 export default function Launcher() {
   return (
-    <AppWrapper className='flex h-full flex-col'>
+    <AppWrapper
+      className={clsx(
+        'flex h-full flex-col',
+        'bg-[url("/plants.jpg")] bg-cover bg-center bg-no-repeat',
+      )}>
       <Tabs.Root defaultValue='1' className='flex h-full flex-col items-center'>
         <div className='flex w-full grow justify-center py-6'>
           {tabs.map((tab) => (
