@@ -16,6 +16,9 @@ An OS-like website that showcases hosts a bunch of useful (and less than useful)
 
 - Pixel Art Editor: A tool for creating pixel art.
 - Drum Machine: A virtual drum machine for creating beats (similar to Musicca's Drum Machine).
+  The drum should give the user the ability to import/export their drum pattern as well as generate the samples using code.
+  Look into ringtones as well (they used to be MIDI)
+- MIDI Off: battle against another person using your MIDI devices
 - Generative Art Museum: A dedicated space to showcase your personal generative art projects.
 - Roll-and-Write Playground: A digital space for roll-and-write game mechanics.
 
