@@ -53,7 +53,7 @@ export default function Launcher() {
           const Icon = apps[app].Icon
           return (
             <li key={i} className='grid place-items-center'>
-              <Link to={app} className='h-full w-full' prefetch='intent'>
+              <Link to={app} className='size-full' prefetch='intent'>
                 <Icon className='sm:size-19 size-17 p-2 sm:p-0' />
               </Link>
             </li>

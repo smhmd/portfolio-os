@@ -1,0 +1,49 @@
+import clsx from 'clsx'
+
+import { Base } from './Base'
+
+type ParameterProps = {
+  variant: 'blue' | 'brown' | 'gray' | 'orange'
+}
+
+const variants = {
+  border: {
+    blue: 'bg-parameter-top-blue-border',
+    brown: 'bg-parameter-top-brown-border',
+    gray: 'bg-parameter-top-gray-border',
+    orange: 'bg-parameter-top-orange-border',
+  },
+  bg: {
+    blue: 'bg-parameter-top-blue',
+    brown: 'bg-parameter-top-brown',
+    gray: 'bg-parameter-top-gray',
+    orange: 'bg-parameter-top-orange',
+  },
+} as const
+
+export function Parameter({ variant }: ParameterProps) {
+  return (
+    <Base className='col-span-4 row-span-4'>
+      <div className='bg-parameter-bed absolute inset-8 rounded-full'>
+        <div className='bg-parameter-base absolute inset-0.5 rounded-full'>
+          <div className='bg-parameter-body-border inset-4.5 absolute rounded-full p-px'>
+            <div className='bg-parameter-body size-full rounded-full'>
+              <div
+                className={clsx(
+                  variants.border[variant],
+                  'absolute inset-1 rounded-full p-px',
+                )}>
+                <div
+                  className={clsx(
+                    variants.bg[variant],
+                    'size-full rounded-full',
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Base>
+  )
+}

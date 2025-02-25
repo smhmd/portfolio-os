@@ -53,7 +53,7 @@ export default function Camera() {
         autoPlay
         playsInline
         muted
-        className='h-full w-full object-cover'></video>
+        className='size-full object-cover'></video>
     </AppWrapper>
   )
 }
