@@ -23,7 +23,7 @@ const variants = {
 
 export function Parameter({ variant }: ParameterProps) {
   return (
-    <Base className='col-span-4 row-span-4'>
+    <Base className='**:aspect-square col-span-4 row-span-4 aspect-square'>
       <div className='bg-parameter-bed absolute inset-8 rounded-full'>
         <div className='bg-parameter-base absolute inset-0.5 rounded-full'>
           <div className='bg-parameter-body-border inset-4.5 absolute rounded-full p-px'>

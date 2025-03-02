@@ -299,3 +299,111 @@
     38px 38px 21px -2px rgba(45, 33, 29, 0.37),
     18px 18px 15px 8px rgba(45, 33, 29, 0.3);
 }
+
+/*
+We're scaling and rotating the frame depending on the viewport
+The reason we're doing this is to not have to worry about every little padding and position and shadow for all viewports.
+You don't want to see percentage paddings and widths everywhere to make this scalable by its width alone.
+Unfortunately, scale in CSS does not support viewport units, so we have to pick a few viewports and apply a nice scale.
+This was tested with an extensive amount of device viewports. If it doesn't look good on your device, open an issue or a PR.
+*/
+#frame {
+  scale: 0.32;
+  rotate: 90deg;
+}
+
+@media (min-width: 640px) and (min-height: 360px) {
+  #frame {
+    scale: 0.42;
+    rotate: none;
+  }
+}
+
+@media (min-width: 320px) and (min-height: 600px) {
+  #frame {
+    scale: 0.4;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 360px) and (min-height: 660px) {
+  #frame {
+    scale: 0.42;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 353px) and (min-height: 732px) {
+  #frame {
+    scale: 0.46;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 393px) and (min-height: 786px) {
+  #frame {
+    scale: 0.5;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 344px) and (min-height: 844px) {
+  #frame {
+    scale: 0.54;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 412px) and (min-height: 915px) {
+  #frame {
+    scale: 0.58;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 600px) and (min-height: 1024px) {
+  #frame {
+    scale: 0.66;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 712px) and (min-height: 1138px) {
+  #frame {
+    scale: 0.74;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 800px) and (min-height: 1280px) {
+  #frame {
+    scale: 0.84;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 600px) {
+  #frame {
+    scale: 0.68;
+    rotate: none;
+  }
+}
+
+@media (min-width: 1280px) and (min-height: 600px) {
+  #frame {
+    scale: 0.86;
+    rotate: none;
+  }
+}
+
+@media (min-width: 1536px) and (min-height: 600px) {
+  #frame {
+    scale: 1.05;
+  }
+}
+
+@media (min-width: 1920px) and (min-height: 600px) {
+  #frame {
+    scale: 1.25;
+  }
+}

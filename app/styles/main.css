@@ -2,6 +2,7 @@
 
 @theme {
   --font-roboto: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  --font-silkscreen: 'Silkscreen', 'Courier New', 'Lucida Console', monospace;
 
   --text-xxs: 0.625rem;
   --text-xxs--line-height: 1.5rem;
@@ -11,16 +12,18 @@
   --radius-ms: 0.1875rem;
   --radius-ml: 0.4375rem;
   --radius-lx: 0.625rem;
-  --radius-1.5xl: 0.875rem;
-  --radius-2.5xl: 1.25rem;
-  --radius-3.5xl: 1.75rem;
+  --radius-1\.5xl: 0.875rem;
+  --radius-2\.5xl: 1.25rem;
+  --radius-3\.5xl: 1.75rem;
 
-  --spacing-0.75: calc(var(--spacing) * 0.75);
-  --spacing-1.25: calc(var(--spacing) * 1.25);
+  --spacing-0\.75: calc(var(--spacing) * 0.75);
+  --spacing-1\.25: calc(var(--spacing) * 1.25);
   --spacing-18: calc(var(--spacing) * 18);
   --spacing-26: calc(var(--spacing) * 26);
-  --spacing-5.5: calc(var(--spacing) * 5.5);
+  --spacing-5\.5: calc(var(--spacing) * 5.5);
   --shadow-inner-xl: inset 5px 5px 26px #b0a08d, inset -5px -5px 26px #cab8a3;
+
+  --breakpoint-3xl: 120rem;
 }
 
 @utility vertical-rl {

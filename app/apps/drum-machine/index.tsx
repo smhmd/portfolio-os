@@ -1,7 +1,5 @@
-import clsx from 'clsx'
-
 import { AppIcon, AppWrapper } from 'app/components'
-import type { AppMetadata } from 'app/types'
+import type { AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 import { Button, Frame, Parameter, Screen, Speaker, Volume } from './components'
@@ -21,15 +19,17 @@ export function links() {
       href: 'https://fonts.gstatic.com',
       crossOrigin: 'anonymous',
     },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Silkscreen&display=swap',
+    },
     { rel: 'stylesheet', href: styles },
   ]
 }
 
 export default function App() {
   return (
-    <AppWrapper
-      className={clsx('flex items-center justify-center bg-white')}
-      isDark>
+    <AppWrapper isDark isFullscreen>
       <Frame>
         <Speaker />
         <Volume />
@@ -62,33 +62,33 @@ export default function App() {
         <Button />
         <Button />
         <Button />
-        <Button variant={{ color: 'black', pos: 'right' }} />
-        <Button variant={{ color: 'black' }} />
-        <Button variant={{ color: 'black', pos: 'left' }} />
-        <Button variant={{ color: 'black', pos: 'right' }} />
-        <Button variant={{ color: 'black', pos: 'left' }} />
-        <Button variant={{ color: 'black', pos: 'right' }} />
-        <Button variant={{ color: 'black' }} />
-        <Button variant={{ color: 'black', pos: 'left' }} />
-        <Button variant={{ color: 'black', pos: 'right' }} />
-        <Button variant={{ color: 'black', pos: 'left' }} />
+        <Button black variant='right' />
+        <Button black />
+        <Button black variant='left' />
+        <Button black variant='right' />
+        <Button black variant='left' />
+        <Button black variant='right' />
+        <Button black />
+        <Button black variant='left' />
+        <Button black variant='right' />
+        <Button black variant='left' />
         <Button />
         <Button />
         <Button />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
-        <Button variant={{ size: 'lg' }} />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
+        <Button variant='large' />
         <Button />
         <Button />
         <Button />

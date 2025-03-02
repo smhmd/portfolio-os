@@ -4,7 +4,13 @@ type FrameProps = React.PropsWithChildren
 
 export function Frame({ children }: FrameProps) {
   return (
-    <div className='bg-frame rounded-3.5xl relative flex w-[81.11vw] justify-center py-5 pl-5'>
+    <div
+      id='frame'
+      className={clsx(
+        'bg-frame rounded-3.5xl relative flex justify-center py-5 pl-5',
+        'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform',
+        'w-[1446px] origin-center',
+      )}>
       <div
         className={clsx(
           'aspect-17/6 bg-keyboard rounded-ml grow',
