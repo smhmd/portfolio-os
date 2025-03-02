@@ -7,7 +7,12 @@ import {
   ScrollRestoration,
 } from 'react-router'
 
-import { AppIconShape, NavBar, StatusBar } from 'app/components'
+import {
+  AppIconShape,
+  BreakpointDisplay,
+  NavBar,
+  StatusBar,
+} from 'app/components'
 import { Providers } from 'app/contexts'
 import mainCSS from 'app/styles/main.css?url'
 
@@ -42,6 +47,7 @@ export function Layout({ children }: Props) {
         {children}
         <AppIconShape />
         <ScrollRestoration />
+        <BreakpointDisplay />
         <Scripts />
       </body>
     </html>

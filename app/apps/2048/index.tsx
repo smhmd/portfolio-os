@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react'
 import { useMachine, useSelector } from '@xstate/react'
 
 import { AppIcon, AppWrapper } from 'app/components'
-import type { AppMetadata } from 'app/types'
+import type { AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 import { GameBoard, GameHeader } from './components'

@@ -1,4 +1,5 @@
 export * from './AppIcon'
 export * from './AppWrapper'
+export * from './BreakpointDisplay'
 export * from './Navbar'
 export * from './StatusBar'

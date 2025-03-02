@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import { AppIcon, AppWrapper } from 'app/components'
 import { WavyText } from 'app/components/WavyText'
-import type { AppMetadata } from 'app/types'
+import type { AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 import { Timer } from './components'

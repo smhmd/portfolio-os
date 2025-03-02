@@ -11,7 +11,7 @@ type Props = React.ComponentProps<'header'>
 export function StatusBar({ className, ...props }: Props) {
   return (
     <header
-      className={clsx('html-dark:invert fixed w-full', className)}
+      className={clsx('html-dark:invert fixed z-50 w-full', className)}
       {...props}>
       <Popover.Root>
         <Popover.Trigger className='w-full'>

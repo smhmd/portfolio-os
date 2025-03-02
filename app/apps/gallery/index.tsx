@@ -1,5 +1,5 @@
 import { AppIcon, AppWrapper } from 'app/components'
-import type { AppMetadata } from 'app/types'
+import type { AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 export function meta() {

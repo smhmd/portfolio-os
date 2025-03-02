@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo } from 'react'
 import { useLocation } from 'react-router'
 
 import { type AppID, apps } from 'app/apps'
-import type { AppMetadata } from 'app/types'
+import type { AppMetadata } from 'app/lib'
 
 export const CurrentAppContext = createContext<AppMetadata | null>(null)
 
