@@ -20,9 +20,9 @@ export function links() {
 }
 
 export default function App() {
-  const [state, send, actorRef] = useMachine(machine)
+  const [state, send, actor] = useMachine(machine)
   const { board, score, best, isWon, isLost } = useSelector(
-    actorRef,
+    actor,
     (state) => ({
       ...state.context,
       isWon: state.matches('WON'),

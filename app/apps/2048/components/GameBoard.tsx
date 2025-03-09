@@ -27,8 +27,7 @@ export const GameBoard = memo(
     handleReset,
     isWon,
     isLost,
-    className,
-    ...rest
+    ...props
   }: GameBoardProps) => {
     useEffect(() => {
       if (isLost) return
@@ -46,13 +45,11 @@ export const GameBoard = memo(
         { signal: controller.signal },
       )
 
-      return () => {
-        controller.abort()
-      }
+      return () => controller.abort()
     }, [isLost])
 
     return (
-      <section className={clsx('mx-auto pt-10', className)} {...rest}>
+      <section className='mx-auto pt-10' {...props}>
         <div className='relative m-2 aspect-square size-[525px] max-h-[90vw] max-w-[90vw]'>
           <div
             className={clsx(
