@@ -76,6 +76,17 @@
   box-shadow: 0px 6px 8px -1px rgba(0, 0, 0, 0.5);
 }
 
+/* .shadow-base:has(button[aria-pressed='true']) {
+  scale: 0.99;
+  box-shadow:
+    inset 0px 4px 4px -1px rgba(0, 0, 0, 0.5),
+    0px 6px 8px -1px rgba(0, 0, 0, 0.5);
+}
+
+.shadow-base:has(button[aria-pressed='true']) > .bg-base {
+  box-shadow: inset 0px 2px 3px -1px rgba(0, 0, 0, 0.2);
+} */
+
 .bg-radial-border {
   background: linear-gradient(
     132deg,

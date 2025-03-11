@@ -1,8 +1,21 @@
+import { useCallback } from 'react'
+
+import { useMachine, useSelector } from '@xstate/react'
+
 import { AppIcon, AppWrapper } from 'app/components'
-import type { AppMetadata } from 'app/lib'
+import { type AppMetadata, destination, initToneOnClick } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
-import { Button, Frame, Parameter, Screen, Speaker, Volume } from './components'
+import {
+  Button,
+  Frame,
+  Keyboard,
+  Parameter,
+  Screen,
+  Speaker,
+  Volume,
+} from './components'
+import { machine } from './lib'
 import styles from './styles.css?url'
 
 export function meta() {
@@ -28,16 +41,51 @@ export function links() {
 }
 
 export default function App() {
+  const [_, send, actor] = useMachine(machine)
+  const { volume } = useSelector(actor, ({ context }) => context)
+
+  const handleAttackNote = useCallback((note: string) => {
+    send({ type: 'ATTACK_NOTE', payload: note })
+  }, [])
+
+  const handleReleaseNote = useCallback(() => {
+    console.log(destination?.volume.value)
+    send({ type: 'RELEASE_NOTE' })
+  }, [])
+
   return (
     <AppWrapper isDark isFullscreen>
       <Frame>
         <Speaker />
         <Volume />
-        <Screen />
+        <Screen>
+          <span>Volume: {volume}</span>
+        </Screen>
         <Parameter variant='blue' />
         <Parameter variant='brown' />
         <Parameter variant='gray' />
         <Parameter variant='orange' />
+        <Button
+          onClick={async () => {
+            await initToneOnClick()
+          }}>
+          START
+        </Button>
+        <Button />
+        <Button />
+        <Button />
+        <Button
+          onClick={async () => {
+            send({ type: 'CHANGE_VOLUME', payload: 1 })
+          }}>
+          +
+        </Button>
+        <Button
+          onClick={async () => {
+            send({ type: 'CHANGE_VOLUME', payload: -1 })
+          }}>
+          -
+        </Button>
         <Button />
         <Button />
         <Button />
@@ -56,39 +104,13 @@ export default function App() {
         <Button />
         <Button />
         <Button />
-        <Button />
-        <Button />
-        <Button />
-        <Button />
-        <Button />
-        <Button />
-        <Button black variant='right' />
-        <Button black />
-        <Button black variant='left' />
-        <Button black variant='right' />
-        <Button black variant='left' />
-        <Button black variant='right' />
-        <Button black />
-        <Button black variant='left' />
-        <Button black variant='right' />
-        <Button black variant='left' />
-        <Button />
-        <Button />
-        <Button />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
-        <Button variant='large' />
+        <Keyboard
+          onAttackNote={handleAttackNote}
+          onReleaseNote={handleReleaseNote}
+        />
+        <Button className='row-start-9' />
+        <Button className='row-start-9' />
+        <Button className='row-start-9' />
         <Button />
         <Button />
         <Button />

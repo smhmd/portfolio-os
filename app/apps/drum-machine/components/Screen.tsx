@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-export function Screen() {
+export function Screen(props: React.ComponentProps<'div'>) {
   return (
     <div
       className={clsx(
@@ -8,10 +8,10 @@ export function Screen() {
         'bg-screen-border font-silkscreen text-white',
         'rounded p-px',
       )}>
-      <div className='bg-screen rounded-ms grid size-full place-items-center'>
-        <span>volume: 0</span>
-        <span>bpm: 0</span>
-      </div>
+      <div
+        className='bg-screen rounded-ms grid size-full place-items-center'
+        {...props}
+      />
     </div>
   )
 }

@@ -1,9 +1,14 @@
 import clsx from 'clsx'
 
+import { useDial } from '../lib'
 import { Base } from './Base'
 
 type ParameterProps = {
   variant: 'blue' | 'brown' | 'gray' | 'orange'
+  initialValue?: number
+  min?: number
+  max?: number
+  onChange?: (value: number) => void
 }
 
 const variants = {
@@ -21,9 +26,21 @@ const variants = {
   },
 } as const
 
-export function Parameter({ variant }: ParameterProps) {
+export function Parameter({
+  variant,
+  initialValue = 0,
+  min = 0,
+  max = 100,
+  onChange,
+}: ParameterProps) {
+  const { ref, drag, rotation } = useDial({ initialValue, min, max, onChange })
   return (
-    <Base className='**:aspect-square col-span-4 row-span-4 aspect-square'>
+    <Base
+      className='**:aspect-square col-span-4 row-span-4 aspect-square cursor-grab active:cursor-grabbing'
+      ref={ref}
+      onMouseDown={drag}
+      onTouchStart={drag}
+      style={{ touchAction: 'none' }}>
       <div className='bg-parameter-bed absolute inset-8 rounded-full'>
         <div className='bg-parameter-base absolute inset-0.5 rounded-full'>
           <div className='bg-parameter-body-border inset-4.5 absolute rounded-full p-px'>
@@ -37,8 +54,16 @@ export function Parameter({ variant }: ParameterProps) {
                   className={clsx(
                     variants.bg[variant],
                     'size-full rounded-full',
-                  )}
-                />
+                  )}>
+                  <div
+                    className='absolute inset-0 flex justify-center p-1.5'
+                    style={{ transform: `rotate(${rotation}deg)` }}>
+                    <div
+                      className='bg-volume-indicator absolute -ml-0.5 size-1.5 rounded-full opacity-40'
+                      style={{ transform: `rotate(${-rotation}deg)` }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

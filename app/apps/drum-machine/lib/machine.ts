@@ -1,54 +1,45 @@
-import { createMachine } from 'xstate'
+import { assign, createMachine } from 'xstate'
 
-import { APP_ID, DEFAULT_BPM, STEPS } from './common'
-import {} from './utils'
+import { destination, synth } from 'app/lib'
 
-type Events =
-  | { type: 'play' }
-  | { type: 'pause' }
-  | { type: 'toggle_cell' }
-  | { type: 'set_bpm' }
+import { APP_ID } from './common'
 
 type State = {
-  steps: number
-  grid: boolean[][]
-  bpm: number
-  currentStep: number
-  nextNoteTime: number
-  schedulerTimer: number
+  volume: number
 }
-
-const initialState = {
-  steps: STEPS,
-  grid: [],
-  bpm: DEFAULT_BPM,
-  currentStep: 0,
-  nextNoteTime: 0,
-  schedulerTimer: 0,
-} satisfies State
+type Events =
+  | { type: 'CHANGE_VOLUME'; payload: number }
+  | { type: 'ATTACK_NOTE'; payload: string }
+  | { type: 'RELEASE_NOTE' }
 
 export const machine = createMachine({
   types: {
     context: {} as State,
     events: {} as Events,
   },
-  context: initialState,
   id: APP_ID,
-  description: 'The state machine for a drum machine.',
   initial: 'IDLE',
+  context: {
+    volume: 0,
+  },
   states: {
-    PAUSED: {
-      on: {
-        play: {
-          target: 'PLAYING',
-        },
+    IDLE: {},
+  },
+  on: {
+    CHANGE_VOLUME: {
+      actions: assign(({ event }) => {
+        destination.volume.rampTo(destination.volume.value + event.payload, 0.1)
+        return { volume: Math.round(destination.volume.value) }
+      }),
+    },
+    ATTACK_NOTE: {
+      actions: ({ event }) => {
+        synth?.triggerAttack(event.payload)
       },
     },
-    PLAYING: {
-      on: {
-        pause: {
-          target: 'PAUSE',
-        },
+    RELEASE_NOTE: {
+      actions: () => {
+        synth?.triggerRelease()
       },
     },
   },
