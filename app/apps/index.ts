@@ -3,6 +3,7 @@ import { metadata as camera } from './camera'
 import { metadata as drumMachine } from './drum-machine'
 import { metadata as files } from './files'
 import { metadata as gallery } from './gallery'
+import { metadata as magnetize } from './magnetize'
 import { metadata as radio } from './radio'
 import { metadata as typingTest } from './typing-test'
 
@@ -14,6 +15,7 @@ export const apps = {
   '2048': _2048,
   'typing-test': typingTest,
   'drum-machine': drumMachine,
+  magnetize,
 }
 
 export type AppID = keyof typeof apps

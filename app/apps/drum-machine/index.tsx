@@ -49,7 +49,6 @@ export default function App() {
   }, [])
 
   const handleReleaseNote = useCallback(() => {
-    console.log(destination?.volume.value)
     send({ type: 'RELEASE_NOTE' })
   }, [])
 

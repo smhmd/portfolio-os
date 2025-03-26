@@ -82,7 +82,7 @@ export default function App() {
       ) : (
         <>
           <div className='relative flex w-full max-w-3xl cursor-text items-start rounded bg-white p-2.5 sm:p-4'>
-            <p className='select-none'>
+            <p className='break-all'>
               {sentences.split('').map((char, index) => {
                 let className = ''
                 const letter = typed[index]
@@ -101,7 +101,7 @@ export default function App() {
             </p>
             <p
               role='textbox'
-              className='absolute inset-0 z-10 select-none p-2.5 text-transparent caret-black outline-none sm:p-4'
+              className='absolute inset-0 z-10 select-none break-all p-2.5 text-transparent caret-black outline-none sm:p-4'
               contentEditable={!endTimeRef.current}
               autoFocus
               spellCheck={false}

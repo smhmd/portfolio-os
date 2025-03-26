@@ -17,7 +17,7 @@ const homeRow: [AppID, AppID, AppID, AppID, AppID] = [
   'typing-test',
   '2048',
   'drum-machine',
-  'gallery',
+  'magnetize',
   'camera',
 ]
 

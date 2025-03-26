@@ -15,7 +15,7 @@ export function meta() {
 }
 
 export function links() {
-  const favicon = iconToFavicon(<metadata.Icon />)
+  const favicon = iconToFavicon(<metadata.Icon viewBox='13 13 73 73' />)
   return [favicon, { rel: 'stylesheet', href: styles }]
 }
 
@@ -51,7 +51,7 @@ export default function App() {
   return (
     <AppWrapper
       isDark
-      className='flex select-none flex-col items-center justify-center bg-[#F9F7EF] text-[#756452]'>
+      className='flex flex-col items-center justify-center bg-[#F9F7EF] text-[#756452]'>
       <GameHeader
         handleReset={handleReset}
         className='absolute inset-x-0 top-10'
