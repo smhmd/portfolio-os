@@ -1,4 +1,5 @@
 import type { BencodeType } from './types'
+import { binaryDecode, binaryEncode } from './utils'
 
 // Define constants for ASCII values relevant to the Bencode encoding.
 const ASCII_ZERO = 0x30 // '0'
@@ -9,36 +10,6 @@ const ASCII_I = 0x69 // 'i'
 const ASCII_L = 0x6c // 'l'
 const ASCII_D = 0x64 // 'd'
 const ASCII_E = 0x65 // 'e'
-
-/**
- * Decodes a Uint8Array to a string treating each byte as a single character
- * without UTF-8 interpretation.
- *
- * @param bytes - The Uint8Array containing binary data
- * @returns A string with each byte represented as a single character
- */
-export function binaryDecode(bytes: Uint8Array): string {
-  let result = ''
-  for (let i = 0; i < bytes.length; i++) {
-    result += String.fromCharCode(bytes[i])
-  }
-  return result
-}
-
-/**
- * Decodes a Uint8Array to a string treating each byte as a single character
- * without UTF-8 interpretation.
- *
- * @param bytes - The Uint8Array containing binary data
- * @returns A string with each byte represented as a single character
- */
-export function binaryEncode(bytes: string): Uint8Array {
-  const result = new Uint8Array(bytes.length)
-  for (let i = 0; i < bytes.length; i++) {
-    result[i] = bytes.charCodeAt(i) & 0xff
-  }
-  return result
-}
 
 /**
  * Decodes a Bencoded Uint8Array into its corresponding JavaScript data structure.
@@ -53,7 +24,7 @@ export function binaryEncode(bytes: string): Uint8Array {
  * @returns {BencodeType} - The decoded JavaScript object, which can be a string, number, array, or object.
  * @throws {Error} - Throws an error if the input data is invalid or cannot be decoded.
  */
-export function decode(input: Uint8Array | ArrayBuffer | string): BencodeType {
+function bencodeDecoder(input: Uint8Array | ArrayBuffer | string): BencodeType {
   // If the input is not encoded as a Uint8Array, we do it for you
   let data: Uint8Array
 
@@ -346,7 +317,7 @@ export function decode(input: Uint8Array | ArrayBuffer | string): BencodeType {
  * @returns The Bencode encoded string.
  * @throws Error if the input type is invalid or unsupported.
  */
-export function encode(data: BencodeType): string {
+function bencodeEncoder(data: BencodeType): string {
   if (typeof data === 'string') {
     return encodeString(data)
   } else if (typeof data === 'number') {
@@ -397,7 +368,7 @@ function encodeInteger(num: number): string {
  * @throws Error if the list contains unsupported data types.
  */
 function encodeList(list: BencodeType[]): string {
-  return `l${list.map((item) => encode(item)).join('')}e`
+  return `l${list.map((item) => bencodeEncoder(item)).join('')}e`
 }
 
 /**
@@ -427,15 +398,13 @@ function encodeDictionary(dict: Record<string, BencodeType>): string {
     }
 
     // Encode key and value inline to avoid extra array allocations
-    result += encodeString(key) + encode(dict[key])
+    result += encodeString(key) + bencodeEncoder(dict[key])
   }
 
   return result + 'e' // Append 'e' to close dictionary
 }
 
-export default {
-  encode,
-  decode,
-  binaryEncode,
-  binaryDecode,
+export const bencode = {
+  decode: bencodeDecoder,
+  encode: bencodeEncoder,
 }

@@ -16,7 +16,7 @@ const allMultiValueParams = ['tr', 'ws', 'as', 'xs', 'kt', 'x.pe'] as const
  * @returns {MagnetObject} An object representing the decoded magnet URI.
  * @throws {Error} Throws an error if the magnet URI does not use the 'magnet:' protocol or if the required 'xt' parameter is missing.
  */
-export function decode(magnetURI: string): MagnetObject {
+function magnetDecode(magnetURI: string): MagnetObject {
   // Use the URL constructor to decode the magnet URI.
   // The URL API automatically handles decoding of URL components.
   const url = new URL(magnetURI)
@@ -67,7 +67,7 @@ export function decode(magnetURI: string): MagnetObject {
  * @returns {string} A valid magnet URI string.
  * @throws {Error} Throws an error if the required 'xt' property is missing.
  */
-export function encode(magnet: MagnetObject): string {
+function magnetEncode(magnet: MagnetObject): string {
   // Ensure that the required parameter 'xt' is provided.
   if (!magnet.xt) {
     throw new Error("Invalid object: missing 'xt' property")
@@ -102,11 +102,11 @@ export function encode(magnet: MagnetObject): string {
     }
   }
 
-  // Return the final magnet URI string and replace the falsely encoded URN.
+  // Return the final magnet URI string.
   return `magnet:?${parts.map((part) => part.join('=')).join('&')}`
 }
 
-export default {
-  encode,
-  decode,
+export const magnet = {
+  encode: magnetEncode,
+  decode: magnetDecode,
 }

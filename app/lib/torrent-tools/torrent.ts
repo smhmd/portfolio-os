@@ -1,18 +1,19 @@
-import bencode from './bencode'
-import magnet from './magnet'
+import { bencode } from './bencode'
+import { magnet } from './magnet'
 import type { MagnetObject, TorrentObject } from './types'
+import { binaryEncode } from './utils'
 
-export async function torrentToMagnetObject(
+async function torrentToMagnetObject(
   torrentObject: TorrentObject,
 ): Promise<MagnetObject> {
   // Get the bencode-encoded info dictionary as a string
   const infoBencoded = bencode.encode(torrentObject.info)
 
   // Convert the string to a Uint8Array for hashing
-  // This is critical - we need the exact byte representation, not a UTF-8 interpretation
-  const data = bencode.binaryEncode(infoBencoded)
+  // This is critical - we are using binary encoding, not UTF-8 or any other encoding.
+  const data = binaryEncode(infoBencoded)
 
-  // Now hash the proper binary data
+  // Now hash the binary-encoded data
   const hashBuffer = await crypto.subtle.digest('SHA-1', data)
 
   // Convert to hex format
@@ -47,7 +48,12 @@ export async function torrentToMagnetObject(
   return magnetObject
 }
 
-export async function torrentToMagnetURI(torrent: TorrentObject) {
+async function torrentToMagnetURI(torrent: TorrentObject) {
   const magnetObject = await torrentToMagnetObject(torrent)
   return magnet.encode(magnetObject)
+}
+
+export const torrent = {
+  torrentToMagnetObject,
+  torrentToMagnetURI,
 }

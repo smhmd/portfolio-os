@@ -1,4 +1,4 @@
-export const FILE_LIMIT = 2000
+export const FILE_LIMIT = 1000
 
 export type Options = {
   includeName: boolean

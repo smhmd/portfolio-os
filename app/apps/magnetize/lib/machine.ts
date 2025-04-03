@@ -1,10 +1,13 @@
 import { assign, fromPromise, setup } from 'xstate'
 
-import { decode } from 'app/lib/torrent-tools/bencode'
-import { torrentToMagnetObject } from 'app/lib/torrent-tools/torrent'
-import type { MagnetObject, TorrentObject } from 'app/lib/torrent-tools/types'
+import {
+  bencode,
+  type MagnetObject,
+  torrent,
+  type TorrentObject,
+} from 'app/lib/torrent-tools'
 
-import { FILE_LIMIT, type Options } from './common'
+import { type Options } from './common'
 import { indexesToRange, magnetToMagnetURI } from './utils'
 
 type Events =
@@ -19,14 +22,13 @@ export type State = {
   magnetURI?: string
   options: Options
   selectedFiles?: string
-  error?: Error
+  error?: boolean
 }
 
 const initialState = {
   torrentObject: undefined,
   magnetObject: undefined,
   magnetURI: undefined,
-  error: undefined,
   options: {
     includeName: true,
     includeLength: true,
@@ -34,9 +36,20 @@ const initialState = {
     includeMultiTrackers: false,
   },
   selectedFiles: undefined,
+  error: false,
 } satisfies State
 
-export const compareState = (a: State, b: State) => a.magnetURI === b.magnetURI
+const errorState = {
+  ...initialState,
+  error: true,
+} satisfies State
+
+/**
+ * Will prompt useSelector to update the state when this is false
+ * We return `false` when `magnetURI` or `error` don't match the previous state
+ */
+export const compareState = (a: State, b: State) =>
+  a.magnetURI === b.magnetURI && a.error === b.error
 
 export const machine = setup({
   types: {
@@ -51,7 +64,7 @@ export const machine = setup({
       Pick<State, 'torrentObject'>
     >(async ({ input: { torrentObject } }) => {
       if (!torrentObject) throw new Error('This is an impossible state.')
-      return await torrentToMagnetObject(torrentObject)
+      return await torrent.torrentToMagnetObject(torrentObject)
     }),
   },
 }).createMachine({
@@ -59,13 +72,20 @@ export const machine = setup({
   context: initialState,
   initial: 'IDLE',
   states: {
-    IDLE: {},
+    IDLE: {
+      description:
+        'Initial state. No action has been taken yet. The user has not added a torrent.',
+    },
     LOADING: {
+      description:
+        'Process and convert a torrent object to a magnet object/URI.',
       invoke: {
         src: 'convertTorrentToMagnet',
         input: ({ context }) => ({ torrentObject: context.torrentObject }),
         onDone: {
           target: 'LOADED',
+          description:
+            'Transition to LOADED state when the torrent has been successfully converted to a magnet object/URI.',
           actions: assign(({ context, event }) => {
             return {
               magnetObject: event.output,
@@ -77,11 +97,19 @@ export const machine = setup({
             }
           }),
         },
+        onError: {
+          description:
+            'Update the state to have an error if the conversion fails.',
+          actions: assign(errorState),
+        },
       },
     },
     LOADED: {
+      description:
+        'State where the torrent has been successfully converted to a magnet URI. User can update options and selected files.',
       on: {
         'option.set': {
+          description: 'Update the options and regenerates the magnet URI.',
           actions: assign(({ context, event }) => {
             const { option, value } = event.payload
             const newOptions = { ...context.options, [option]: value }
@@ -102,10 +130,11 @@ export const machine = setup({
           }),
         },
         'selectedFiles.set': {
+          description:
+            'Update the selected files and regenerates the magnet URI.',
           guard: ({ context: { torrentObject } }) => {
             if (!torrentObject) return false
             if (!('files' in torrentObject.info)) return false
-            if (torrentObject.info.files.length > FILE_LIMIT) return false
             return true
           },
           actions: assign(({ context, event }) => {
@@ -133,14 +162,23 @@ export const machine = setup({
   },
   on: {
     'torrent.add': {
+      description:
+        'Decode the torrent file and generate a torrent object to be processed.',
       target: '.LOADING',
-      actions: assign({
-        torrentObject: ({ event }) => decode(event.payload) as TorrentObject,
+      actions: assign(({ event }) => {
+        try {
+          const torrentObject = bencode.decode(event.payload) as TorrentObject
+          return { torrentObject, selectedFiles: undefined }
+        } catch (e) {
+          console.error(e)
+        }
+        return errorState
       }),
     },
     reset: {
+      description: 'Reset the state machine to the initial state/context.',
       target: '.IDLE',
-      actions: assign(() => initialState),
+      actions: assign(initialState),
     },
   },
 })

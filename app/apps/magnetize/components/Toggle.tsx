@@ -1,12 +1,15 @@
 import React from 'react'
 
 import clsx from 'clsx'
+import { Label, Switch } from 'radix-ui'
 
-interface ToggleProps {
+type ToggleProps = {
   label: string
   checked: boolean
   onChange: (checked: boolean) => void
   disabled?: boolean
+  title?: string
+  className?: string
 }
 
 export function Toggle({
@@ -14,52 +17,44 @@ export function Toggle({
   checked,
   onChange,
   disabled = false,
+  className,
 }: ToggleProps) {
   return (
-    <label
+    <Label.Root
       className={clsx(
-        'group relative flex items-center',
+        'group relative flex items-center gap-2',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+        className,
       )}>
-      <div className='relative'>
-        <input
-          type='checkbox'
-          className='peer sr-only'
-          checked={checked}
-          onChange={(e) => onChange(e.target.checked)}
-          disabled={disabled}
-        />
-        <div
+      <Switch.Root
+        checked={checked}
+        onCheckedChange={onChange}
+        disabled={disabled}
+        className={clsx(
+          'relative rounded-full transition-colors',
+          'h-4 w-7',
+          disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+          checked
+            ? 'bg-purple-500 data-[disabled]:bg-purple-500/50'
+            : 'bg-gray-600 data-[disabled]:bg-gray-600/50',
+          'outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-900/60',
+        )}>
+        <Switch.Thumb
           className={clsx(
-            'rounded-full transition-all duration-200',
-            'peer-focus-visible:ring-2 peer-focus-visible:ring-purple-500 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-purple-800/90',
-            'h-4 w-7',
-            disabled
-              ? 'bg-gray-600'
-              : checked
-                ? 'bg-purple-500'
-                : 'bg-gray-600',
-            !disabled && 'group-hover:bg-opacity-80',
-          )}
-        />
-        <div
-          className={clsx(
-            'absolute top-0.5 rounded-full transition-all duration-200',
-            'h-3 w-3',
-            disabled ? 'bg-gray-400' : 'bg-white',
+            'absolute block rounded-full bg-white',
+            'transition-transform',
+            'top-0.5 size-3',
             checked ? 'translate-x-3.5' : 'translate-x-0.5',
-            !disabled && 'group-hover:shadow-lg',
           )}
         />
-      </div>
+      </Switch.Root>
       <span
         className={clsx(
-          'ml-2 select-none',
           'text-xs',
           disabled ? 'text-gray-400' : 'text-purple-200',
         )}>
         {label}
       </span>
-    </label>
+    </Label.Root>
   )
 }

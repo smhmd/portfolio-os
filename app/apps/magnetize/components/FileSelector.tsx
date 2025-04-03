@@ -1,8 +1,12 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useReducer, useState } from 'react'
 
-import { AlertTriangle, Check } from 'app/assets/svg'
+import clsx from 'clsx'
+import { Checkbox } from 'radix-ui'
+
+import { Check } from 'app/assets/svg'
 
 import { FILE_LIMIT, formatBytes } from '../lib'
+import { Alert } from './Alert'
 
 type File = {
   length: number
@@ -16,12 +20,16 @@ type FileSelectorProps = {
 
 export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
   const [selectedIndexes, setSelectedIndexes] = useState(new Set<number>())
+  const [isOverLimit, bypassLimit] = useReducer(
+    () => false,
+    files.length > FILE_LIMIT,
+  )
 
   useEffect(() => {
     onChange(selectedIndexes)
   }, [selectedIndexes])
 
-  const isOverLimit = files.length > FILE_LIMIT
+  const isFullySelected = selectedIndexes.size === files.length
 
   function toggleFile(index: number) {
     if (isOverLimit) return
@@ -45,80 +53,97 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
     )
   }
 
-  if (isOverLimit) {
-    return (
-      <div className='animate-fade-in'>
-        <div className='mb-3 flex items-center gap-2'>
-          <h3 className='text-xs font-medium text-purple-200'>Files</h3>
-          <span className='text-[10px] text-purple-300'>
-            ({files.length.toLocaleString()} files)
-          </span>
-        </div>
-        <div className='rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-4'>
-          <div className='flex items-center gap-2 text-yellow-300'>
-            <AlertTriangle className='h-4 w-4 fill-current' />
-            <p className='text-xs'>
-              File selection is disabled for torrents with more than{' '}
-              {FILE_LIMIT.toLocaleString()} files.
-            </p>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  const filesCount = files.length.toLocaleString()
 
   return (
-    <div className='animate-fade-in'>
-      <div className='mb-1.5 flex items-center justify-between'>
-        <div className='flex items-center gap-2'>
-          <h3 className='text-xs font-medium text-purple-200'>Files</h3>
-          <span className='text-[10px] text-purple-300'>
-            ({files.length.toLocaleString()} files)
-          </span>
-        </div>
-        <button
-          onClick={toggleAll}
-          className='text-xs text-purple-300 transition-colors hover:text-purple-200'>
-          {selectedIndexes.size === files.length
-            ? 'Deselect All'
-            : 'Select All'}
-        </button>
+    <fieldset
+      className={clsx(
+        'animate-fade-in flex flex-col',
+        isOverLimit && 'gap-y-2',
+      )}>
+      <div className='flex items-center justify-between gap-y-1'>
+        <legend>
+          <h3 className='inline text-xs font-medium text-purple-200'>Files </h3>
+          <p
+            className='text-xxs inline text-purple-300'
+            aria-label={`${filesCount} files`}>
+            ({filesCount} files)
+          </p>
+        </legend>
+        {!isOverLimit && (
+          <button
+            onClick={toggleAll}
+            className={clsx(
+              'cursor-pointer text-xs text-purple-300 transition-colors hover:text-purple-200',
+              '-mr-2 rounded-xl px-2 py-1 outline-none focus-visible:ring',
+            )}>
+            {isFullySelected ? 'Deselect All' : 'Select All'}
+            <span className='sr-only'> files</span>
+          </button>
+        )}
       </div>
-      <div className='custom-scrollbar max-h-32 space-y-1 overflow-y-auto'>
-        {files.map((file, index) => {
-          const isSelected = selectedIndexes.has(index)
+      {isOverLimit ? (
+        <Alert
+          severity='warning'
+          message={`File selection is disabled for torrents with more than ${FILE_LIMIT.toLocaleString()} files.`}
+          action={{
+            label: 'Open Anyway',
+            onClick: bypassLimit,
+          }}
+        />
+      ) : (
+        <ul
+          className='custom-scrollbar max-h-24 space-y-1 overflow-y-auto'
+          aria-label='Select files to include in the magnet link'>
+          {files.map((file, index) => {
+            const isSelected = selectedIndexes.has(index)
+            const filePath = file.path.join('/')
+            const bytes = formatBytes(file.length)
 
-          return (
-            <button
-              key={index}
-              onClick={() => toggleFile(index)}
-              className={`relative flex w-full items-center gap-2 overflow-hidden rounded px-2 py-1.5 transition-all duration-300 ${
-                isSelected
-                  ? 'border border-purple-500/30 bg-purple-500/10 text-purple-100'
-                  : 'border border-transparent text-purple-300 hover:bg-white/5'
-              }`}>
-              {isSelected && (
-                <div className='shimmer pointer-events-none absolute inset-0' />
-              )}
-              <div
-                className={`flex h-3.5 w-3.5 items-center justify-center rounded border transition-all duration-300 ${
-                  isSelected
-                    ? 'rotate-0 border-purple-500 bg-purple-500'
-                    : 'rotate-90 border-purple-400'
-                }`}>
-                {isSelected && <Check className='h-2.5 w-2.5 fill-white' />}
-              </div>
-              <div className='min-w-0 flex-1 text-left'>
-                <div className='truncate text-xs'>{file.path.join('/')}</div>
-                <div className='text-[10px] opacity-60'>
-                  {formatBytes(file.length)}
-                </div>
-              </div>
-            </button>
-          )
-        })}
-      </div>
-    </div>
+            return (
+              <li key={index}>
+                <label
+                  className={clsx(
+                    'relative flex w-full items-center gap-2 overflow-hidden',
+                    'cursor-pointer rounded border px-2 py-1.5',
+                    'transition-all duration-300',
+                    isSelected
+                      ? 'border-purple-500/30 bg-purple-500/10 text-purple-100'
+                      : 'border-transparent text-purple-300 hover:bg-white/5',
+                  )}
+                  aria-label={`${filePath} of ${bytes} in size`}>
+                  {isSelected && (
+                    <div className='shimmer pointer-events-none absolute inset-0' />
+                  )}
+                  <Checkbox.Root
+                    checked={isSelected}
+                    onCheckedChange={() => {
+                      toggleFile(index)
+                    }}
+                    className={clsx(
+                      'flex size-3.5 items-center justify-center',
+                      'rounded border',
+                      'transition-all duration-300',
+                      'outline-none focus-visible:ring focus-visible:ring-offset-1 focus-visible:ring-offset-purple-800',
+                      isSelected
+                        ? 'rotate-0 border-purple-500 bg-purple-500'
+                        : 'rotate-90 border-purple-400',
+                    )}>
+                    <Checkbox.Indicator>
+                      <Check aria-hidden className='size-2.5 fill-white' />
+                    </Checkbox.Indicator>
+                  </Checkbox.Root>
+                  <div className='w-0 flex-1 text-left' aria-hidden>
+                    <div className='truncate text-xs'>{filePath}</div>
+                    <div className='text-xxs/normal opacity-60'>{bytes}</div>
+                  </div>
+                </label>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </fieldset>
   )
 })
 
