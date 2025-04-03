@@ -1,12 +1,19 @@
 import { useRef, useState } from 'react'
 
-import { AppIcon, AppWrapper } from 'app/components'
+import { AppWrapper } from 'app/components'
 import { WavyText } from 'app/components/WavyText'
 import type { AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 import { Timer } from './components'
+import { AppIcon } from './Icon'
 import { analyzeTyping, sentences } from './lib'
+
+export const metadata: AppMetadata = {
+  id: 'typing-test',
+  name: 'Typing Test',
+  Icon: AppIcon,
+}
 
 export function meta() {
   return [
@@ -16,7 +23,7 @@ export function meta() {
 }
 
 export function links() {
-  const favicon = iconToFavicon(<metadata.Icon />)
+  const favicon = iconToFavicon(<AppIcon />)
   return [favicon]
 }
 
@@ -82,7 +89,7 @@ export default function App() {
       ) : (
         <>
           <div className='relative flex w-full max-w-3xl cursor-text items-start rounded bg-white p-2.5 sm:p-4'>
-            <p className='break-all'>
+            <p className=''>
               {sentences.split('').map((char, index) => {
                 let className = ''
                 const letter = typed[index]
@@ -101,7 +108,7 @@ export default function App() {
             </p>
             <p
               role='textbox'
-              className='absolute inset-0 z-10 select-none break-all p-2.5 text-transparent caret-black outline-none sm:p-4'
+              className='absolute inset-0 z-10 select-none p-2.5 text-transparent caret-black outline-none sm:p-4'
               contentEditable={!endTimeRef.current}
               autoFocus
               spellCheck={false}
@@ -132,21 +139,4 @@ export default function App() {
       )}
     </AppWrapper>
   )
-}
-
-export const metadata: AppMetadata = {
-  id: 'typing-test',
-  name: 'Typing Test',
-  Icon: (props) => (
-    <AppIcon fill='#292F33' {...props}>
-      <path
-        d='M86 66a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V34a4 4 0 0 1 4-4h64a4 4 0 0 1 4 4v32Z'
-        fill='#fff'
-      />
-      <path
-        d='M29.002 55.983a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm8 0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm8 0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm8 0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm8 0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm8 0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm8 0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm-43 8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2Zm40 0a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2Zm-10 0a2 2 0 0 1-2 2h-24a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h24a2 2 0 0 1 2 2v2ZM24.416 49.397a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM32.416 49.397a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM40.416 49.397a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM48.416 49.397a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM56.416 49.397a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM64.416 49.397a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM72.416 49.397a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM80.416 49.397a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM24.416 40.836a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM32.416 40.836a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM40.416 40.836a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM48.416 40.836a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM56.416 40.836a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM64.416 40.836a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM72.416 40.836a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586ZM80.416 40.836a2 2 0 0 0 .586-1.414v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 1.414-.586Z'
-        fill='#292F33'
-      />
-    </AppIcon>
-  ),
 }

@@ -21,19 +21,20 @@
   --spacing-18: calc(var(--spacing) * 18);
   --spacing-26: calc(var(--spacing) * 26);
   --spacing-5\.5: calc(var(--spacing) * 5.5);
+
   --shadow-inner-xl: inset 5px 5px 26px #b0a08d, inset -5px -5px 26px #cab8a3;
 
   --breakpoint-3xl: 120rem;
-}
-
-@utility vertical-rl {
-  writing-mode: vertical-rl;
 }
 
 /* @custom-variant html (html:has(&)); */
 @custom-variant html-dark (html:has(.app-is-dark-themed) &);
 @custom-variant thumb [&::-webkit-slider-thumb, &::-moz-range-thumb];
 @custom-variant track [&::-webkit-slider-runnable-track, &::-moz-range-track];
+
+@utility vertical-rl {
+  writing-mode: vertical-rl;
+}
 
 /* 
  * Use '?' class to visually highlight any element with an eye-catching effect. 

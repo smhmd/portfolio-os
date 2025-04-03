@@ -43,7 +43,7 @@ export default function Launcher() {
               key={tab}
               value={tab.toString()}
               className='cursor-pointer p-0.5'>
-              <PlaceholderIcon fill='white' />
+              <PlaceholderIcon aria-hidden fill='white' />
             </Tabs.Trigger>
           ))}
         </Tabs.TabsList>

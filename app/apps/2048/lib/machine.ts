@@ -52,7 +52,7 @@ export const machine = setup({
     isNotUpdated: ({ context }) => !context.updated,
   },
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAYgCc4wAXAbQAYBdRUABwHtZcrc39mQAHogCMANgDsAJgB04uqPniAHOICswgJyrJAGhABPRKOGrpdNeOF1VAFjrCbNpQF9netFjyEi0gJIARABkAURJYKnQyWkZ+dk5uXn4hBABmJRk6G2EUlIk1VVFRPUMEJSVhaQ1hcQl5VQ18lNd3DBwCYmkAYQAJYM6AaV8AOQBxEnomJBA4rh4+KeS1GzN8yTLhE01xYsQpcWkNjUkxUSVjcWVmkA827y7egeGxmmFJ1g5ZxIXd2xXVVUsSnUqjoGiUO1KNlM9XqklsGic5SuNy8HR6fUGo3Gkje0w+CXmoEWv3M-0BwNB4IMiA0ohkShsGg0oNUDPSrORrVRPgACoEAIIATSeJFQbAAbmAJrF8XMkjTMtIbJY6CkbJJaQzxCkIY4lNIUpJJOZxI4NCk6PJOZ52j4ALIAeQAaiLpVMZgT5Qhsil9pZNGttJI1XSISlfhY6GULg4UsJJKJrbcOo6XViBOF0FQwNJ0AAzbNkZAKUgo23SVNPN3veJy74IVl0aQM47HKHWeRFakIBPLXLB4wso3KmxJ7nSADKPP5AHUhq6Yu7ZV8iYhtMsmUpcgVWZsIRINNJRAV0ll1cyHGPyzOHUMSJheNx8ABXKWLmufQmCEQ5UxSSSMheaTHBCahNrkRxwmCxy+qOVz4GwEBwPwZbeDKtYrt+PaOM2xh2DkcIgtUVIlNkMj9rkyqiGqjIFFedwBCE6Gfl6Gr0nhqqGv89gkTSFoGgiwZWGIFr2PRaIPJiIzMZ69YgikBpKMymQAqIjjKqBIIGqIkH1Ok2SmuJvICsKowyXWq7ejYx6VA0GxKeadLGPuaRmEGFxSJadlGRWzpPOZmHJFYapKikDTKdZ8YaGGxxmGUCL2HIUZrD5U6zvOZlLhhX7JE4pjMpF8batGwgQtoTYag05QnqcWQ+TeQwBTlIjEZUap2eYZT2KooEJrhRx2OqOTCGcPmBA6E4ACpNV68byAc2rBloW5SGCEJnPqDL1NkBRqcoGiuK4QA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAYgCc4wAXAbQAYBdRUABwHtZcrc39mQAHogCMANgBM4gHQAOACziAnHQCsw9SroB2ADQgAnohUzFUlVvPCti4XXEy6igL5O9aLHkJEpASQAiADIAoiSwVOhktIz87JzcvPxCCADMMtJ0csLJyaJaFiqionqGCDIywlI2Wrl0oiqK+ckubhg4BMRSAMIAEkGdANI+AHIA4iT0TEggsVw8fFNJFnJS2ioq9uXCag3FiFriWlLqiuJiojKiVloyzSDubV5dvQPDYzTCk6wcswkLeyrLVaWGRqTSKGS7UpyFRmRT1cQAxRyMrCW73TwdHp9QajcbiT7Tb7xeagRYAlb5LTCEFbRwQgyIRQSWRyRTKOHyNLGNGtDHeAAKAQAggBNV4kVBsABuYAmMSJc0SiBk+zM1XEcjy4IydGEkLkmqOxmR6lyhVOoh5Hna3gAsgB5ABq4rlUxmxKVCCyyUOVOp8jkySRGkhSkOMlSNlE2gkEgBVoeHQdztxAjC6CoYCk6AAZpmyMho6R0TapMnXq6vnFFX8UmkVplktTjEDdAyEOJRMscuJUk2tgjagm+VIAMr8oUAdSGLuiboVv1JRg1lXB2WEDTyuTbJUKh0khRMJsuomcrjuvNLk-tQxImF43HwAFdZXOqz8SYIRNlRA3shrynkDJIQsOgpByE4EXBU4fTkFxz3wNgIDgfgSy8eVq0XL8OwNWRLjkOh-zWXVrkhLJpB7VJVHEWpUi0YdS38YIMI-T0lGkC5hAIojNGpSFFGSMCgwUJtdVEQTdQYx4sReUYWI9WtNGScCTDoDJzC7A0d3+ITT0keo0iyLQ4PPNCOkFUVXnkmsly9OQ6lXLQMns7YjMhcTDmo+xqWqYy0ikpMnSs+dMM-JJbDsMwDThVZbGScRIXiio6DKJESLUtIblMy9HnHKcZzkkLWNrZEYWUez1AOVIVT1dt1jApQGnKAoLnkVFsutR5ryGaysPCqwZEqZJWSpbQyl1FQQM7PCTgIkSmwuALvACe1RwAFV6sKRBo38rHioNjB9JR6RKVqWXqLICi7a4zxcIA */
   context: initialState,
   id: APP_ID,
   description: 'The state machine for the game 2048.',
@@ -92,8 +92,7 @@ export const machine = setup({
     PLAYING: {
       on: {
         move: {
-          description:
-            'While playing, the player can move tiles around. Notice that there is also a global reset action that applies here as well.',
+          description: 'While playing, the player can move tiles around.',
           target: 'MOVING',
           actions: 'move',
         },
@@ -136,6 +135,8 @@ export const machine = setup({
   },
   on: {
     reset: {
+      description:
+        'Transition directly to the playing state with 2 starting tiles.',
       target: '.PLAYING',
       actions: 'reset',
     },
