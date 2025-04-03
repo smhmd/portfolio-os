@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 
-import * as Tabs from '@radix-ui/react-tabs'
 import clsx from 'clsx'
+import { Tabs } from 'radix-ui'
 
 import { type AppID, apps } from 'app/apps'
 import { PlaceholderIcon } from 'app/assets/svg'

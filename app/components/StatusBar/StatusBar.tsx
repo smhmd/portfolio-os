@@ -1,5 +1,5 @@
-import * as Popover from '@radix-ui/react-popover'
 import clsx from 'clsx'
+import { Popover } from 'radix-ui'
 
 import { type AppID, apps } from 'app/apps'
 import { Battery, PlaceholderIcon, Wifi } from 'app/assets/svg'
