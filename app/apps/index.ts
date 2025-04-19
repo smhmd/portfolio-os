@@ -1,11 +1,11 @@
-import { metadata as _2048 } from './2048'
-import { metadata as camera } from './camera'
-import { metadata as drumMachine } from './drum-machine'
-import { metadata as files } from './files'
-import { metadata as gallery } from './gallery'
-import { metadata as magnetize } from './magnetize'
-import { metadata as radio } from './radio'
-import { metadata as typingTest } from './typing-test'
+import { metadata as _2048 } from './2048/metadata'
+import { metadata as camera } from './camera/metadata'
+import { metadata as drumMachine } from './drum-machine/metadata'
+import { metadata as files } from './files/metadata'
+import { metadata as gallery } from './gallery/metadata'
+import { metadata as magnetize } from './magnetize/metadata'
+import { metadata as radio } from './radio/metadata'
+import { metadata as typingTest } from './typing-test/metadata'
 
 export const apps = {
   camera,
@@ -19,3 +19,13 @@ export const apps = {
 }
 
 export type AppID = keyof typeof apps
+export type AppGridArray = Array<AppID | [string, AppID[]]>
+
+export const appIDs = Object.keys(apps) as AppID[]
+
+export const appGrid: AppGridArray = [
+  '2048',
+  'magnetize',
+  'drum-machine',
+  'typing-test',
+]

@@ -1,4 +1,12 @@
 import { AppIconWrapper } from 'app/components'
+import type { AppMetadata } from 'app/lib'
+
+export const metadata: AppMetadata = {
+  id: 'typing-test',
+  name: 'Typing Test',
+  description: 'Test your typing speed and accuracy',
+  Icon: AppIcon,
+}
 
 export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
   return (

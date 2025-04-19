@@ -7,7 +7,7 @@ import {
   type TorrentObject,
 } from 'app/lib/torrent-tools'
 
-import { type Options } from './common'
+import { APP_ID, type Options } from './common'
 import { indexesToRange, magnetToMagnetURI } from './utils'
 
 type Events =
@@ -63,12 +63,12 @@ export const machine = setup({
       MagnetObject,
       Pick<State, 'torrentObject'>
     >(async ({ input: { torrentObject } }) => {
-      if (!torrentObject) throw new Error('This is an impossible state.')
+      if (!torrentObject) throw new Error('IMPOSSIBLE_STATE_REACHED')
       return await torrent.torrentToMagnetObject(torrentObject)
     }),
   },
 }).createMachine({
-  id: 'magnetize',
+  id: APP_ID,
   context: initialState,
   initial: 'IDLE',
   states: {
@@ -115,7 +115,7 @@ export const machine = setup({
             const newOptions = { ...context.options, [option]: value }
 
             if (!context.magnetObject)
-              throw new Error('This is an impossible state')
+              throw new Error('IMPOSSIBLE_STATE_REACHED')
 
             const newMagnetURI = magnetToMagnetURI({
               magnet: context.magnetObject,
@@ -141,7 +141,7 @@ export const machine = setup({
             const selectedIndexes = event.payload
 
             if (!context.magnetObject)
-              throw new Error('This is an impossible state')
+              throw new Error('IMPOSSIBLE_STATE_REACHED')
 
             const newSelectedFiles = indexesToRange(selectedIndexes)
 

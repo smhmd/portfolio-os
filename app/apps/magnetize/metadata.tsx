@@ -1,4 +1,12 @@
 import { AppIconWrapper } from 'app/components'
+import type { AppMetadata } from 'app/lib'
+
+export const metadata: AppMetadata = {
+  id: 'magnetize',
+  name: 'Magnetize',
+  description: 'Torrent to magnet link converter',
+  Icon: AppIcon,
+}
 
 export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
   return (

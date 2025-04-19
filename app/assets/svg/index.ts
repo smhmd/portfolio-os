@@ -18,6 +18,7 @@ export { default as Play } from '@material-icons/svg/svg/play_arrow/baseline.svg
 export { default as Replay } from '@material-icons/svg/svg/replay/round.svg?react'
 export { default as AlertOctagon } from '@material-icons/svg/svg/report/round.svg?react'
 export { default as AlertTriangle } from '@material-icons/svg/svg/report_problem/round.svg?react'
+export { default as Search } from '@material-icons/svg/svg/search/round.svg?react'
 export { default as Settings } from '@material-icons/svg/svg/settings/round.svg?react'
 export { default as Cellular } from '@material-icons/svg/svg/signal_cellular_4_bar/round.svg?react'
 export { default as Wifi } from '@material-icons/svg/svg/signal_wifi_4_bar/round.svg?react'

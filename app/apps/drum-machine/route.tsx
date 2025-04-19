@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useMachine, useSelector } from '@xstate/react'
 
 import { AppWrapper } from 'app/components'
-import { type AppMetadata, initToneOnClick } from 'app/lib'
+import { initToneOnClick } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 import {
@@ -15,18 +15,15 @@ import {
   Speaker,
   Volume,
 } from './components'
-import { AppIcon } from './Icon'
 import { machine } from './lib'
+import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
-export const metadata: AppMetadata = {
-  id: 'drum-machine',
-  name: 'Drum Machine',
-  Icon: AppIcon,
-}
-
 export function meta() {
-  return [{ title: metadata.name }, { name: 'description', content: '2048' }]
+  return [
+    { title: metadata.name },
+    { name: 'description', content: metadata.description },
+  ]
 }
 
 export function links() {
@@ -60,7 +57,7 @@ export default function App() {
   }, [])
 
   return (
-    <AppWrapper isDark isFullscreen>
+    <AppWrapper className='bg-white'>
       <Frame>
         <Speaker />
         <Volume />

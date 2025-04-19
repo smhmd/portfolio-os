@@ -32,7 +32,7 @@ export const GameHeader = memo(
       <button
         className={clsx('justify-self-end rounded-lg', 'col-start-3')}
         onClick={handleReset}>
-        <Replay className='fill-current sm:hidden' />
+        <Replay aria-hidden className='fill-current sm:hidden' />
         <span
           className={clsx(
             'hidden rounded-lg sm:block',

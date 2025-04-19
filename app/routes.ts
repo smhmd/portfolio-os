@@ -3,10 +3,10 @@ import { index, route, type RouteConfig } from '@react-router/dev/routes'
 import { apps } from 'app/apps'
 
 const appRoutes = Object.keys(apps).map((app) =>
-  route(app, `apps/${app}/index.tsx`),
+  route(app, `apps/${app}/route.tsx`),
 )
 
 export default [
-  index('apps/launcher/index.tsx'),
+  index('apps/launcher/route.tsx'),
   ...appRoutes,
 ] satisfies RouteConfig

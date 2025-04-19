@@ -7,12 +7,7 @@ import {
   ScrollRestoration,
 } from 'react-router'
 
-import {
-  AppIconShape,
-  BreakpointDisplay,
-  NavBar,
-  StatusBar,
-} from 'app/components'
+import { AppIconShape, BreakpointDisplay, BSOD } from 'app/components'
 import { Providers } from 'app/contexts'
 import mainCSS from 'app/styles/main.css?url'
 
@@ -43,7 +38,7 @@ export function Layout({ children }: Props) {
         <Meta />
         <Links />
       </head>
-      <body className='select-none overscroll-none antialiased'>
+      <body className='select-none antialiased'>
         {children}
         <AppIconShape />
         <ScrollRestoration />
@@ -57,9 +52,7 @@ export function Layout({ children }: Props) {
 export default function App() {
   return (
     <Providers>
-      <StatusBar />
       <Outlet /> {/* Apps go here */}
-      <NavBar />
     </Providers>
   )
 }

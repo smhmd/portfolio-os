@@ -1,17 +1,13 @@
 import { AppWrapper } from 'app/components'
-import type { AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
-import { AppIcon } from './Icon'
-
-export const metadata: AppMetadata = {
-  id: 'gallery',
-  name: 'Gallery',
-  Icon: AppIcon,
-}
+import { AppIcon, metadata } from './metadata'
 
 export function meta() {
-  return [{ title: metadata.name }, { name: 'description', content: 'Gallery' }]
+  return [
+    { title: metadata.name },
+    { name: 'description', content: metadata.description },
+  ]
 }
 
 export function links() {

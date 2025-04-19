@@ -8,8 +8,8 @@ import type { TorrentObject } from 'app/lib/torrent-tools'
 import { fileToArrayBuffer } from '../lib'
 
 const dragClasses = {
-  on: 'scale-102 animate-pulse-glow border-purple-400 bg-purple-400/10',
-  off: 'border-purple-100/40 hover:border-purple-400',
+  idle: 'border-purple-100/40 hover:border-purple-400',
+  dragging: 'scale-102 animate-pulse-glow border-purple-400 bg-purple-400/10',
   error: 'scale-102 animate-pulse-glow border-red-400 bg-red-400/10 ',
 }
 
@@ -25,7 +25,7 @@ export function DropZone({
   onReset,
 }: DropZoneProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [dragStatus, setDragStatus] = useState<keyof typeof dragClasses>('off')
+  const [dragStatus, setDragStatus] = useState<keyof typeof dragClasses>('idle')
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const selectedFile = e.target.files?.[0]
@@ -48,18 +48,18 @@ export function DropZone({
     if (files.length === 1) {
       const { kind, type } = files[0]
       if (kind === 'file' && type === 'application/x-bittorrent') {
-        return setDragStatus('on')
+        return setDragStatus('dragging')
       }
     }
     setDragStatus('error')
   }
 
   function handleDragLeave() {
-    setDragStatus('off')
+    setDragStatus('idle')
   }
 
   function handleDrop() {
-    setDragStatus('off')
+    setDragStatus('idle')
   }
 
   return (
@@ -68,6 +68,7 @@ export function DropZone({
       aria-describedby='dropzone-instructions'
       className={clsx(
         'group relative rounded-xl border-2 border-dashed transition duration-500',
+        'focus-within:border-purple-400',
         dragClasses[dragStatus],
         torrentObject && 'bg-purple-900/20',
       )}

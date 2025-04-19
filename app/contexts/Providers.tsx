@@ -1,7 +1,7 @@
-import { CurrentAppProvider } from './CurrentApp'
+import { GlobalStateProvider } from './GlobalState/Provider'
 
 type ProvidersProps = React.PropsWithChildren
 
 export const Providers = ({ children }: ProvidersProps) => {
-  return <CurrentAppProvider>{children}</CurrentAppProvider>
+  return <GlobalStateProvider>{children}</GlobalStateProvider>
 }

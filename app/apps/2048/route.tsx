@@ -3,22 +3,18 @@ import { useCallback, useEffect } from 'react'
 import { useMachine, useSelector } from '@xstate/react'
 
 import { AppWrapper } from 'app/components'
-import type { AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 import { GameBoard, GameHeader } from './components'
-import { AppIcon } from './Icon'
 import { type Direction, machine } from './lib'
+import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
-export const metadata: AppMetadata = {
-  id: '2048',
-  name: '2048',
-  Icon: AppIcon,
-}
-
 export function meta() {
-  return [{ title: metadata.name }, { name: 'description', content: '2048' }]
+  return [
+    { title: metadata.name },
+    { name: 'description', content: metadata.description },
+  ]
 }
 
 export function links() {

@@ -1,6 +1,9 @@
 import { memo, useEffect } from 'react'
 
 import clsx from 'clsx'
+import { AnimatePresence } from 'motion/react'
+
+import { useGlobalState } from 'app/contexts'
 
 import {
   type Board,
@@ -8,6 +11,7 @@ import {
   directionKeyCodes,
   TILE_SIZE,
 } from '../lib'
+import { Overlay } from './Overlay'
 import { TileBlock } from './TileBlock'
 
 type GameBoardProps = {
@@ -29,6 +33,8 @@ export const GameBoard = memo(
     isLost,
     ...props
   }: GameBoardProps) => {
+    const { isAppDrawerOpen } = useGlobalState()
+
     useEffect(() => {
       if (isLost) return
 
@@ -36,6 +42,7 @@ export const GameBoard = memo(
       window.addEventListener(
         'keydown',
         (e) => {
+          if (isAppDrawerOpen.current) return
           const direction = directionKeyCodes[e.code]
           if (direction) {
             e.preventDefault()
@@ -72,55 +79,34 @@ export const GameBoard = memo(
           {board
             ?.sort((a, b) => a.id.localeCompare(b.id))
             ?.map((tile) => <TileBlock key={tile.id} {...tile} />)}
-          {isWon ? (
-            <Overlay title='You Win!' className='bg-[#edc02e]/50 text-white'>
-              <button
-                className='pl-5.5 cursor-pointer px-2'
-                onClick={handleContinue}>
-                Continue
-              </button>
-              |
-              <button className='cursor-pointer px-2' onClick={handleReset}>
-                New Game
-              </button>
-            </Overlay>
-          ) : null}
-          {isLost ? (
-            <Overlay
-              title='Game Over!'
-              className='bg-[#eee4da]/50 text-[#756452]'>
-              <button className='cursor-pointer px-2' onClick={handleReset}>
-                Try Again
-              </button>
-            </Overlay>
-          ) : null}
+          <AnimatePresence>
+            {isWon ? (
+              <Overlay title='You Win!' className='bg-[#edc02e]/50 text-white'>
+                <button
+                  className='pl-5.5 cursor-pointer px-2'
+                  onClick={handleContinue}>
+                  Continue
+                </button>
+                |
+                <button className='cursor-pointer px-2' onClick={handleReset}>
+                  New Game
+                </button>
+              </Overlay>
+            ) : null}
+            {isLost ? (
+              <Overlay
+                title='Game Over!'
+                className='bg-[#eee4da]/50 text-[#756452]'>
+                <button className='cursor-pointer px-2' onClick={handleReset}>
+                  Try Again
+                </button>
+              </Overlay>
+            ) : null}
+          </AnimatePresence>
         </div>
       </section>
     )
   },
 )
 
-type OverlayProps = {
-  title: string
-} & React.ComponentProps<'div'>
-
-const Overlay = memo(
-  ({ title, className, children, ...props }: OverlayProps) => {
-    return (
-      <div
-        className={clsx(
-          'animate-fade-in absolute -inset-2 flex items-center justify-center rounded-3xl text-6xl font-bold',
-          className,
-        )}
-        {...props}>
-        <p>{title}</p>
-        <div className='absolute bottom-[20%] flex items-center text-base'>
-          {children}
-        </div>
-      </div>
-    )
-  },
-)
-
 GameBoard.displayName = 'GameBoard'
-Overlay.displayName = 'GameBoardOverlay'

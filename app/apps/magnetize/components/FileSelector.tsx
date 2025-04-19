@@ -135,7 +135,7 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
                   </Checkbox.Root>
                   <div className='w-0 flex-1 text-left' aria-hidden>
                     <div className='truncate text-xs'>{filePath}</div>
-                    <div className='text-xxs/normal opacity-60'>{bytes}</div>
+                    <div className='text-xxs opacity-60'>{bytes}</div>
                   </div>
                 </label>
               </li>

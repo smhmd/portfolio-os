@@ -1,19 +1,12 @@
 import { useRef, useState } from 'react'
 
 import { AppWrapper } from 'app/components'
-import { WavyText } from 'app/components/WavyText'
-import type { AppMetadata } from 'app/lib'
+import { WavyText } from 'app/components'
 import { iconToFavicon } from 'app/utils'
 
 import { Timer } from './components'
-import { AppIcon } from './Icon'
 import { analyzeTyping, sentences } from './lib'
-
-export const metadata: AppMetadata = {
-  id: 'typing-test',
-  name: 'Typing Test',
-  Icon: AppIcon,
-}
+import { AppIcon, metadata } from './metadata'
 
 export function meta() {
   return [
@@ -69,9 +62,7 @@ export default function App() {
       : { accuracy: 0, wpm: 0, errors: 0 }
 
   return (
-    <AppWrapper
-      isDark
-      className='flex flex-col items-center justify-center gap-6 bg-[whitesmoke] p-4 font-mono text-black'>
+    <AppWrapper className='flex flex-col items-center justify-center gap-6 bg-[whitesmoke] p-4 font-mono text-black'>
       <h1 className='text-3xl font-black'>Typing Test</h1>
       {endTimeRef.current ? (
         <div className='flex flex-col items-center justify-center gap-y-4'>

@@ -1,4 +1,12 @@
 import { AppIconWrapper } from 'app/components'
+import type { AppMetadata } from 'app/lib'
+
+export const metadata: AppMetadata = {
+  id: '2048',
+  name: '2048',
+  description: 'Slide tiles to merge numbers and reach 2048',
+  Icon: AppIcon,
+}
 
 export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
   return (

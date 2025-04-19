@@ -1,19 +1,15 @@
 import { useEffect, useRef } from 'react'
 
 import { AppWrapper } from 'app/components'
-import type { AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
-import { AppIcon } from './Icon'
-
-export const metadata: AppMetadata = {
-  id: 'camera',
-  name: 'Camera',
-  Icon: AppIcon,
-}
+import { AppIcon, metadata } from './metadata'
 
 export function meta() {
-  return [{ title: metadata.name }, { name: 'description', content: 'Camera' }]
+  return [
+    { title: metadata.name },
+    { name: 'description', content: metadata.description },
+  ]
 }
 
 export function links() {
@@ -53,9 +49,7 @@ export default function Camera() {
   }, [])
 
   return (
-    <AppWrapper
-      className='flex items-center justify-center bg-black'
-      isFullscreen>
+    <AppWrapper className='flex items-center justify-center bg-black'>
       <video
         ref={videoRef}
         autoPlay

@@ -1,4 +1,12 @@
 import { AppIconWrapper } from 'app/components'
+import type { AppMetadata } from 'app/lib'
+
+export const metadata: AppMetadata = {
+  id: 'drum-machine',
+  name: 'Drum Machine',
+  description: 'OP-1 Field drum machine',
+  Icon: AppIcon,
+}
 
 export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
   return (

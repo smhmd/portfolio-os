@@ -1,11 +1,14 @@
 @import 'tailwindcss';
 
+:root {
+  color-scheme: dark light;
+}
+
 @theme {
   --font-roboto: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   --font-silkscreen: 'Silkscreen', 'Courier New', 'Lucida Console', monospace;
 
   --text-xxs: 0.625rem;
-  --text-xxs--line-height: 1.5rem;
 
   --blur-px: 1px;
 

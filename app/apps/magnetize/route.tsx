@@ -4,23 +4,19 @@ import { useMachine, useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
 import { AppWrapper } from 'app/components'
-import { type AppMetadata } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 import { AdvancedOptions, DropZone, MagnetLink } from './components'
 import { Alert } from './components/Alert'
-import { AppIcon } from './Icon'
 import { compareState, machine, type Options } from './lib'
+import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
-export const metadata: AppMetadata = {
-  id: 'magnetize',
-  name: 'Magnetize',
-  Icon: AppIcon,
-}
-
 export function meta() {
-  return [{ title: metadata.name }, { name: 'description', content: '2048' }]
+  return [
+    { title: metadata.name },
+    { name: 'description', content: metadata.description },
+  ]
 }
 
 export function links() {
@@ -59,7 +55,7 @@ export default function App() {
 
   return (
     <AppWrapper
-      isFullscreen
+      isDark
       className='flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 px-4 text-white selection:bg-purple-950/40'>
       <div className='flex w-full max-w-2xl flex-col gap-8'>
         <header className='flex flex-col gap-4 text-center'>
