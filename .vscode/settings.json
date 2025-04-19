@@ -1,1 +1,52 @@
-{}
+{
+  "material-icon-theme.files.customClones": [
+    {
+      "name": "index-ts",
+      "base": "typescript-def",
+      "color": "white",
+      "fileNames": ["index.ts"]
+    },
+    {
+      "name": "tailwindcss",
+      "base": "tailwindcss",
+      "color": "teal-300",
+      "fileNames": ["main.css", "tailwind.css"]
+    },
+    {
+      "name": "metadata",
+      "base": "react_ts",
+      "color": "amber-400",
+      "fileNames": ["metadata.tsx"]
+    },
+    {
+      "name": "hooks",
+      "base": "typescript",
+      "color": "deep-purple-400",
+      "fileNames": ["hook.ts", "hooks.ts"]
+    },
+    {
+      "name": "constants",
+      "base": "typescript",
+      "color": "blue-gray-100",
+      "fileNames": ["constants.ts", "common.ts"]
+    },
+    {
+      "name": "utils",
+      "base": "typescript",
+      "color": "green-400",
+      "fileNames": ["utils.ts", "helpers.ts", "lib.ts", "shared.ts"]
+    },
+    {
+      "name": "state-machines",
+      "base": "typescript",
+      "color": "orange-A400",
+      "fileNames": ["machine.ts"]
+    },
+    {
+      "name": "types",
+      "base": "typescript-def",
+      "color": "blue-500",
+      "fileNames": ["types.ts"]
+    }
+  ]
+}
