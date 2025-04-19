@@ -8,6 +8,9 @@
   --font-roboto: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   --font-silkscreen: 'Silkscreen', 'Courier New', 'Lucida Console', monospace;
 
+  --color-bsod: #0176e1;
+  --color-bsod-classic: #0000a3;
+
   --text-xxs: 0.625rem;
 
   --blur-px: 1px;
