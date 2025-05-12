@@ -4,6 +4,9 @@ An OS-like website that showcases hosts a bunch of useful (and less than useful)
 
 ## Ideas
 
+- Grid homepage (similar to https://populate.tools/)
+- Add shorter links for various apps (like /drum for /drum-machine) and corrections (like /2084 for /2048)
+
 ### Games:
 
 - 2048 Puzzle: A version of 2048 where no new tiles spawn. The goal is to merge all tiles within a limited number of moves. Introduce tiles that can go out of bounds, adding a unique and counterintuitive twist to the gameplay.
@@ -21,6 +24,7 @@ An OS-like website that showcases hosts a bunch of useful (and less than useful)
 - MIDI Off: battle against another person using your MIDI devices
 - Generative Art Museum: A dedicated space to showcase your personal generative art projects.
 - Roll-and-Write Playground: A digital space for roll-and-write game mechanics.
+- TV
 
 ### Utilities:
 
@@ -28,6 +32,7 @@ An OS-like website that showcases hosts a bunch of useful (and less than useful)
 - Typing Test with Ranking: A typing test that assigns a rank (from F to S) based on performance, rather than just showing average typing speeds.
 - Globe + Images: A visual tool inspired by Picto.World to explore images on a globe.
 - Chatbox: A widget that greets users so that they can chat among themselves like private trackers.
+- Controller/Gamepad tester
 
 ### OS:
 

@@ -47,6 +47,30 @@
       "base": "typescript-def",
       "color": "blue-500",
       "fileNames": ["types.ts"]
+    },
+    {
+      "name": "vite-def",
+      "base": "vite",
+      "color": "blue-400",
+      "fileNames": ["vite-env.d.ts"]
+    }
+  ],
+  "material-icon-theme.folders.customClones": [
+    {
+      "name": "sprites",
+      "base": "images",
+      "color": "light-green-500",
+      "lightColor": "light-green-700",
+      "folderNames": ["sprites"],
+      "rootFolderNames": ["public"]
+    },
+    {
+      "name": "models",
+      "base": "images",
+      "color": "pink-500",
+      "lightColor": "pink-700",
+      "folderNames": ["models"],
+      "rootFolderNames": ["public"]
     }
   ]
 }

@@ -20,9 +20,7 @@ export function meta() {
 }
 
 export function links() {
-  const favicon = iconToFavicon(
-    <AppIcon fill='transparent' viewBox='24 24 52 52' />,
-  )
+  const favicon = iconToFavicon(<AppIcon fill='transparent' padding={24} />)
   return [favicon, { rel: 'stylesheet', href: styles }]
 }
 

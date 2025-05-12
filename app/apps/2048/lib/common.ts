@@ -26,7 +26,7 @@ export type State = {
 export const APP_ID = '2048'
 export const TILE_SIZE = 4
 export const LOCALSTORAGE_ID = `${APP_ID}_${TILE_SIZE}`
-export const WIN_THRESHOLD = Math.pow(2, 11) // 2048
+export const WIN_THRESHOLD = 2 ** 11 // 2048
 
 export const directionKeyCodes: Record<string, Direction> = {
   ArrowUp: 'up',

@@ -9,6 +9,10 @@ type ErrorBoundaryProps = {
 }
 
 export function BSOD({ error }: ErrorBoundaryProps) {
+  function handleCopy(e: React.MouseEvent<HTMLElement, MouseEvent>) {
+    navigator.clipboard.writeText(e.currentTarget.innerText)
+  }
+
   return (
     <main
       role='alert'
@@ -80,12 +84,12 @@ export function BSOD({ error }: ErrorBoundaryProps) {
           }}
           className='fixed inset-0 size-full cursor-pointer'>
           <div className='container mx-auto px-4 pt-16'>
-            <p>
+            <p onClick={handleCopy}>
               {error.status}: {error.statusText}
             </p>
             {error.data && (
               <pre className='mt-4 h-[30lh] max-h-[70vh] w-full overflow-x-auto px-2'>
-                <code>{error.data}</code>
+                <code onClick={handleCopy}>{error.data}</code>
               </pre>
             )}
           </div>

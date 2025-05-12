@@ -18,7 +18,7 @@ export function meta() {
 }
 
 export function links() {
-  const favicon = iconToFavicon(<AppIcon viewBox='13 13 73 73' />)
+  const favicon = iconToFavicon(<AppIcon padding={13} />)
   return [favicon, { rel: 'stylesheet', href: styles }]
 }
 

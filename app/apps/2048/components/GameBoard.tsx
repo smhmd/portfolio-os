@@ -37,20 +37,20 @@ export const GameBoard = memo(
 
     useEffect(() => {
       if (isLost) return
-
       const controller = new AbortController()
-      window.addEventListener(
-        'keydown',
-        (e) => {
-          if (isAppDrawerOpen.current) return
-          const direction = directionKeyCodes[e.code]
-          if (direction) {
-            e.preventDefault()
-            handleMove(direction)
-          }
-        },
-        { signal: controller.signal },
-      )
+
+      function keydownEvenHandler(e: KeyboardEvent) {
+        if (isAppDrawerOpen.current) return
+        const direction = directionKeyCodes[e.code]
+        if (direction) {
+          e.preventDefault()
+          handleMove(direction)
+        }
+      }
+
+      window.addEventListener('keydown', keydownEvenHandler, {
+        signal: controller.signal,
+      })
 
       return () => controller.abort()
     }, [isLost])
@@ -72,7 +72,7 @@ export const GameBoard = memo(
               gridTemplateRows: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,
               gridTemplateColumns: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,
             }}>
-            {Array.from({ length: Math.pow(TILE_SIZE, 2) }).map((_, i) => (
+            {Array.from({ length: TILE_SIZE ** 2 }).map((_, i) => (
               <div key={i} className='tile-empty rounded-lx size-full' />
             ))}
           </div>
