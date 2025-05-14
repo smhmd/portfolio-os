@@ -1,5 +1,6 @@
 import { metadata as _2048 } from './2048/metadata'
 import { metadata as camera } from './camera/metadata'
+import { metadata as diceRoll } from './dice-roll/metadata'
 import { metadata as drumMachine } from './drum-machine/metadata'
 import { metadata as files } from './files/metadata'
 import { metadata as gallery } from './gallery/metadata'
@@ -16,6 +17,7 @@ export const apps = {
   'typing-test': typingTest,
   'drum-machine': drumMachine,
   magnetize,
+  'dice-roll': diceRoll,
 }
 
 export type AppID = keyof typeof apps
@@ -28,4 +30,5 @@ export const appGrid: AppGridArray = [
   'magnetize',
   'drum-machine',
   'typing-test',
+  'dice-roll',
 ]

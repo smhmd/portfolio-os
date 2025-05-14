@@ -63,6 +63,7 @@ const config = [
         },
       ],
       'react/react-in-jsx-scope': 'off',
+      'react/no-unknown-property': 'off',
       'prettier/prettier': 'warn',
       'arrow-body-style': 'off',
       'prefer-arrow-callback': 'warn',

@@ -13,6 +13,7 @@
     "@material-icons/svg": "^1.0.33",
     "@react-router/node": "^7.1.5",
     "@react-router/serve": "^7.1.5",
+    "@react-three/fiber": "^8.18.0",
     "@xstate/react": "^5.0.2",
     "clsx": "^2.1.1",
     "isbot": "^5.1.22",
@@ -22,6 +23,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router": "^7.1.5",
+    "three": "^0.176.0",
     "tone": "^15.0.4",
     "xstate": "^5.19.2"
   },
@@ -32,6 +34,7 @@
     "@types/node": "^20.17.17",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@types/three": "^0.176.0",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.3",
