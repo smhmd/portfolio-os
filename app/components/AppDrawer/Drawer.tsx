@@ -77,7 +77,7 @@ export const AppDrawer = () => {
             </Dialog.Overlay>
             <Dialog.Content onClick={handleClose} asChild>
               <motion.div
-                className='fixed inset-0 flex flex-col items-center p-2 sm:p-8'
+                className='fixed inset-0 flex cursor-auto flex-col items-center p-2 sm:p-8'
                 initial='hidden'
                 animate='visible'
                 exit='exit'
