@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useMemo, useReducer, useRef } from 'react'
 
 import { type PixiReactElementProps, useTick } from '@pixi/react'
 import type TMatter from 'matter-js'
@@ -11,7 +11,10 @@ import { useViewport } from '../lib'
 
 const { Engine, Composite, Body, Bodies, Vector, Events } = Matter
 
-const VISIBLE_WALLS = true
+const FREQUENCY = 1000 / 60
+const MAX_ACCUMULATED_FREQUENCY = 100
+
+const VISIBLE_WALLS = false
 
 const engine = Engine.create({
   gravity: { x: 0, y: 0 },
@@ -116,42 +119,25 @@ function applyMovementForce(body: TMatter.Body, target: TMatter.Vector) {
   Body.applyForce(body, body.position, Vector.mult(normal, magnitude))
 }
 
-function checkBoundaryCollision(position: TMatter.Vector) {
-  const magnitude = Vector.magnitude(position)
-  const inContact = magnitude >= OUTER_CIRCLE_RADIUS - PLAYER_RADIUS
-
-  if (inContact) {
-    return Vector.mult(position, BOUNDARY_BOUNCE_FORCE_SCALE)
-  }
-}
-
-function checkCollision(a: TMatter.Vector, b: TMatter.Vector) {
-  const delta = Vector.sub(b, a)
-  const magnitude = Vector.magnitude(delta)
-
-  const collisionDistance = PLAYER_RADIUS * 2
-  const inContact = magnitude < collisionDistance
-
-  if (inContact) {
-    return Vector.mult(delta, PLAYER_BOUNCE_FORCE_SCALE)
-  }
-}
-
 function applyAddedForce(pair: TMatter.Pair) {
   const { bodyA, bodyB, collision } = pair
 
-  const contactPoint = collision.supports[0]
-  const normal = Vector.neg(collision.normal)
+  collision.supports.forEach((point) => {
+    if (!point) return
+    const normal = Vector.neg(collision.normal)
 
-  const relativeVelocity = Vector.sub(bodyB.velocity, bodyA.velocity)
-  const speedDifference = ADDED_FORCE_SCALE * Vector.magnitude(relativeVelocity)
+    const relativeVelocity = Vector.sub(bodyB.velocity, bodyA.velocity)
+    const speedDifference =
+      ADDED_FORCE_SCALE * Vector.magnitude(relativeVelocity)
 
-  Body.applyForce(bodyA, contactPoint, Vector.mult(normal, -speedDifference))
-  Body.applyForce(bodyB, contactPoint, Vector.mult(normal, speedDifference))
+    Body.applyForce(bodyA, point, Vector.mult(normal, -speedDifference))
+    Body.applyForce(bodyB, point, Vector.mult(normal, speedDifference))
+  })
 }
 
 type CollisionPoint = {
   id: string
+  type: 'small' | 'big'
   position: TMatter.Vector
   delta: TMatter.Vector
 }
@@ -163,10 +149,46 @@ export function Game() {
   const armsRef = useRef<Sprite>(null)
   const playerRef = useRef<Container>(null)
   const computerRef = useRef<Container>(null)
+  const playerRimRef = useRef<Container>(null)
+  const computerRimRef = useRef<Container>(null)
 
   const { data: spritesheet } = useAsync(async () =>
     Assets.load<Spritesheet>('/sprites/spinning-tops.json'),
   )
+
+  const addedForceQueue = useRef<TMatter.Pair[]>([])
+
+  type State = CollisionPoint[]
+  type Actions =
+    | {
+        type: 'add'
+        payload: { position: TMatter.Vector; delta: TMatter.Vector }
+      }
+    | { type: 'remove'; payload: string }
+
+  const [sparks, send] = useReducer((state: State, action: Actions) => {
+    if (action.type === 'add') {
+      return [
+        ...state,
+        ...Array.from({ length: 4 }, () => ({
+          id: crypto.randomUUID(),
+          type: 'small' as const,
+          ...action.payload,
+        })),
+        ...Array.from({ length: 2 }, () => ({
+          id: crypto.randomUUID(),
+          type: 'big' as const,
+          ...action.payload,
+        })),
+      ]
+    }
+
+    if (action.type === 'remove') {
+      return state.filter(({ id }) => id !== action.payload)
+    }
+
+    return state
+  }, [])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -195,131 +217,121 @@ export function Game() {
       armsRef.current.position.y = crosshair.y
     }
 
-    window.addEventListener('mousemove', handleMouseMove, {
-      signal: controller.signal,
-    })
+    function handleCollisionStart(
+      event: TMatter.IEventCollision<TMatter.Engine>,
+    ) {
+      for (const pair of event.pairs) {
+        const { bodyA, bodyB, collision } = pair
 
-    return () => controller.abort()
-  }, [])
+        if (bodyA.isStatic || bodyB.isStatic) {
+          const playerBody = bodyA.isStatic ? bodyB : bodyA
 
-  const rimRef = useRef<Container>(null)
+          // REFACTOR
+          const delta = Vector.mult(
+            playerBody.position,
+            BOUNDARY_BOUNCE_FORCE_SCALE,
+          )
 
-  const collisionQueue = useRef<TMatter.Pair[]>([])
+          collision.supports.map((position) => {
+            if (position) {
+              send({
+                type: 'add',
+                payload: { delta, position },
+              })
+            }
+          })
+        } else {
+          const delta = Vector.mult(
+            Vector.sub(bodyB.position, bodyA.position),
+            PLAYER_BOUNCE_FORCE_SCALE,
+          )
 
-  useEffect(() => {
-    Events.on(engine, 'collisionStart', ({ pairs }) => {
-      for (const pair of pairs) {
-        if (pair.bodyA.isStatic || pair.bodyB.isStatic) continue
+          collision.supports.map((position) => {
+            if (position) {
+              send({
+                type: 'add',
+                payload: { delta, position },
+              })
 
-        collisionQueue.current.push(pair)
+              send({
+                type: 'add',
+                payload: { delta: Vector.neg(delta), position },
+              })
+            }
+          })
+
+          addedForceQueue.current.push(pair)
+
+          if (playerRimRef.current && computerRimRef.current) {
+            playerRimRef.current.visible = true
+            computerRimRef.current.visible = true
+          }
+        }
       }
-    })
+    }
 
-    Events.on(engine, 'beforeUpdate', () => {
+    function handleBeforeUpdate() {
       applyMovementForce(player, crosshair)
       // applyMovementForce(computer, player.position) // TODO: enhance
 
-      while (collisionQueue.current.length > 0) {
-        const pair = collisionQueue.current.shift()!
+      while (addedForceQueue.current.length > 0) {
+        const pair = addedForceQueue.current.shift()!
         applyAddedForce(pair)
       }
+    }
+
+    window.addEventListener('mousemove', handleMouseMove, {
+      signal: controller.signal,
     })
+    Events.on(engine, 'collisionStart', handleCollisionStart)
+    Events.on(engine, 'beforeUpdate', handleBeforeUpdate)
 
     return () => {
+      controller.abort()
       Events.off(engine, 'beforeUpdate')
       Events.off(engine, 'collisionStart')
     }
   }, [])
 
-  type State = { small: CollisionPoint[]; big: CollisionPoint[] }
-  type Actions =
-    | { type: 'add'; payload: Omit<CollisionPoint, 'id'> }
-    | { type: 'remove'; payload: string }
+  const accumulator = useRef(0)
 
-  const [sparks, send] = useReducer(
-    (state: State, action: Actions) => {
-      if (action.type === 'add') {
-        return {
-          small: [
-            ...state.small,
-            { id: crypto.randomUUID(), ...action.payload },
-            { id: crypto.randomUUID(), ...action.payload },
-          ],
-          big: [...state.big, { id: crypto.randomUUID(), ...action.payload }],
+  useTick(({ deltaTime, deltaMS }) => {
+    accumulator.current += Math.min(deltaMS, MAX_ACCUMULATED_FREQUENCY)
+
+    while (accumulator.current >= FREQUENCY) {
+      updateEngine(FREQUENCY)
+
+      accumulator.current -= FREQUENCY
+    }
+
+    if (
+      playerRef.current &&
+      computerRef.current &&
+      playerRimRef.current &&
+      computerRimRef.current
+    ) {
+      if (playerRimRef.current.visible && computerRef.current.visible) {
+        const RIM_DURATION = 800 // ms
+        const FADE_RATE = deltaMS / RIM_DURATION
+
+        playerRimRef.current.alpha -= FADE_RATE
+        computerRimRef.current.alpha -= FADE_RATE
+
+        if (playerRimRef.current.alpha < 0) {
+          playerRimRef.current.visible = false
+          playerRimRef.current.alpha = 1
+
+          computerRimRef.current.visible = false
+          computerRimRef.current.alpha = 1
         }
       }
 
-      if (action.type === 'remove') {
-        return {
-          small: state.small.filter(({ id }) => id !== action.payload),
-          big: state.big.filter(({ id }) => id !== action.payload),
-        }
-      }
+      playerRef.current.position = player.position
+      playerRef.current.rotation += 0.25 * deltaTime
 
-      return state
-    },
-    { small: [], big: [] },
-  )
-
-  useTick(({ deltaMS, deltaTime }) => {
-    if (!playerRef.current || !computerRef.current || !rimRef.current) return
-    updateEngine(deltaMS)
-
-    const playerBoundaryCollision = checkBoundaryCollision(player.position)
-
-    if (playerBoundaryCollision) {
-      send({
-        type: 'add',
-        payload: {
-          delta: playerBoundaryCollision,
-          position: player.position,
-        },
-      })
+      computerRef.current.position = computer.position
+      computerRef.current.rotation += 0.25 * deltaTime
     }
-
-    const computerBoundaryCollision = checkBoundaryCollision(computer.position)
-
-    if (computerBoundaryCollision) {
-      send({
-        type: 'add',
-        payload: {
-          delta: computerBoundaryCollision,
-          position: computer.position,
-        },
-      })
-    }
-
-    const playersCollision = checkCollision(player.position, computer.position)
-
-    if (playersCollision) {
-      send({
-        type: 'add',
-        payload: {
-          delta: playersCollision,
-          position: player.position,
-        },
-      })
-
-      rimRef.current.visible = true
-      setTimeout(() => {
-        if (!rimRef.current) return
-        rimRef.current.visible = false
-      }, 500)
-
-      send({
-        type: 'add',
-        payload: {
-          delta: Vector.neg(playersCollision),
-          position: computer.position,
-        },
-      })
-    }
-
-    playerRef.current.position = player.position
-    computerRef.current.position = computer.position
-
-    playerRef.current.rotation += 0.25 * deltaTime
-    computerRef.current.rotation += 0.25 * deltaTime
   })
 
   return (
@@ -342,7 +354,7 @@ export function Game() {
             x={start.x}
             y={start.y}
             draw={(g) =>
-              g.stroke(arenaStroke).lineTo(end.x - start.x, end.y - start.y)
+              g.lineTo(end.x - start.x, end.y - start.y).stroke(arenaStroke)
             }
           />
         ))}
@@ -351,21 +363,21 @@ export function Game() {
           label='Circle (outer)'
           draw={(g) => {
             g.fill(0x0e0d0f)
-              .stroke(arenaStroke)
               .circle(0, 0, OUTER_CIRCLE_RADIUS)
+              .stroke(arenaStroke)
           }}
         />
         <pixiGraphics
           label='Circle (inner)'
           draw={(g) => {
-            g.stroke({ width: 1, color: 0x1d2627 }).circle(
-              0,
-              0,
-              INNER_CIRCLE_RADIUS,
-            )
+            g.circle(0, 0, INNER_CIRCLE_RADIUS).stroke({
+              width: 1,
+              color: 0x1d2627,
+            })
           }}
         />
       </pixiContainer>
+
       <pixiContainer visible={VISIBLE_WALLS}>
         {walls.map((box, i) => (
           <pixiGraphics
@@ -385,24 +397,14 @@ export function Game() {
 
       {spritesheet && (
         <>
-          {sparks.small.map((spark) => (
-            <SmallSpark
+          {sparks.map((spark) => (
+            <Spark
               onComplete={() => {
                 send({ type: 'remove', payload: spark.id })
               }}
               key={spark.id}
+              textures={spritesheet.animations['spark-' + spark.type]}
               {...spark}
-              textures={spritesheet.animations['spark-small']}
-            />
-          ))}
-          {sparks.big.map((spark) => (
-            <BigSpark
-              onComplete={() => {
-                send({ type: 'remove', payload: spark.id })
-              }}
-              key={spark.id}
-              {...spark}
-              textures={spritesheet.animations['spark-big']}
             />
           ))}
           <pixiSprite
@@ -423,7 +425,7 @@ export function Game() {
             zIndex={1}
           />
           <pixiContainer
-            label='Top'
+            label='Player'
             ref={playerRef}
             x={player.position.x}
             y={player.position.y}>
@@ -443,7 +445,7 @@ export function Game() {
             </pixiContainer>
             <pixiContainer
               visible={false}
-              ref={rimRef}
+              ref={playerRimRef}
               label='Rim'
               blendMode='add'>
               <pixiSprite
@@ -477,22 +479,58 @@ export function Game() {
             </pixiContainer>
           </pixiContainer>
           <pixiContainer
-            label='Top2'
+            label='Computer'
             ref={computerRef}
             x={computer.position.x}
             y={computer.position.y}>
-            <pixiSprite
-              label='Top'
-              anchor={0.5}
-              texture={spritesheet.textures['top']}
+            <pixiContainer visible={true}>
+              <pixiSprite
+                label='Top'
+                anchor={0.5}
+                texture={spritesheet.textures['top']}
+                tint={0xffffff}
+              />
+              <pixiSprite
+                label='Bit Chip'
+                anchor={0.5}
+                position={{ x: 0, y: 0 }}
+                texture={spritesheet.textures['bitchip']}
+              />
+            </pixiContainer>
+            <pixiContainer
+              visible={false}
+              ref={computerRimRef}
+              label='Rim'
+              blendMode='add'>
+              <pixiSprite
+                label='Rim'
+                anchor={0.5}
+                texture={spritesheet.textures['rim']}
+              />
+              <pixiSprite
+                label='Burst'
+                anchor={0.5}
+                texture={spritesheet.textures['rim-burst']}
+              />
+            </pixiContainer>
+            <pixiContainer
+              visible={false}
+              label='Exit'
               tint={0xffffff}
-            />
-            <pixiSprite
-              label='Bit Chip'
-              anchor={0.5}
-              position={{ x: 0, y: 0 }}
-              texture={spritesheet.textures['bitchip-muted']}
-            />
+              anchor={0.5}>
+              <pixiAnimatedSprite
+                label='Exit'
+                textures={spritesheet.animations['exit']}
+                anchor={0.5}
+                blendMode='add'
+                animationSpeed={0.5}
+                loop={true}
+              />
+              <pixiSprite
+                anchor={0.5}
+                texture={spritesheet.textures['bitchip-muted']}
+              />
+            </pixiContainer>
           </pixiContainer>
         </>
       )}
@@ -502,74 +540,58 @@ export function Game() {
 
 type SparkProps = PixiReactElementProps<typeof AnimatedSprite> & CollisionPoint
 
-function SmallSpark({ id, delta, position, ...props }: SparkProps) {
+const variants = {
+  small: {
+    velocityScale: 0.5,
+    anchor: 0.5,
+    rotation: 0,
+    animationSpeed: 2,
+  },
+  big: {
+    velocityScale: 0.2,
+    anchor: { x: 0.5, y: 0.6 },
+    rotation: Math.PI,
+    animationSpeed: 1,
+  },
+} as const
+
+function Spark({ type, id, delta, position, ...props }: SparkProps) {
+  const { velocityScale, anchor, rotation, animationSpeed } = variants[type]
+
   const sparkRef = useRef<AnimatedSprite>(null)
 
-  const perp = Vector.perp(delta, true)
-  const velocity = {
-    x: -0.5 * perp.x + 5 - 10 * Math.random(),
-    y: -0.5 * perp.y + 5 - 10 * Math.random(),
-  }
-  const decay = 0.4 + 0.5 * Math.random()
+  const velocity = useMemo(() => {
+    const perp = Vector.perp(delta, true)
+    const decay = 0.4 + 0.5 * Math.random()
+    return {
+      x: -velocityScale * decay * perp.x + 5 - 10 * Math.random(),
+      y: -velocityScale * decay * perp.y + 5 - 10 * Math.random(),
+    }
+  }, [])
 
   useEffect(() => {
     if (!sparkRef.current) return
     sparkRef.current.play()
   }, [])
 
-  useTick(() => {
+  useTick(({ deltaMS }) => {
     if (!sparkRef.current) return
-    sparkRef.current.position.x += decay * velocity.x
-    sparkRef.current.position.y += decay * velocity.y
+    const correction = deltaMS / FREQUENCY
+
+    sparkRef.current.position.x += velocity.x * correction
+    sparkRef.current.position.y += velocity.y * correction
   })
 
   return (
     <pixiAnimatedSprite
       ref={sparkRef}
-      x={position.x + delta.x}
-      y={position.y + delta.y}
-      rotation={Math.atan2(delta.y, delta.x)}
-      label='Spark (small)'
-      anchor={0.5}
+      x={position.x}
+      y={position.y}
+      rotation={rotation + Math.atan2(delta.y, delta.x)}
+      label={`Spark (${type})`}
+      anchor={anchor}
       blendMode='add'
-      animationSpeed={2}
-      loop={false}
-      {...props}
-    />
-  )
-}
-
-function BigSpark({ id, delta, position, ...props }: SparkProps) {
-  const sparkRef = useRef<AnimatedSprite>(null)
-
-  const perp = Vector.perp(delta, true)
-  const velocity = {
-    x: -0.2 * perp.x + 5 - 10 * Math.random(),
-    y: -0.2 * perp.y + 5 - 10 * Math.random(),
-  }
-  const decay = 0.4 + 0.5 * Math.random()
-
-  useEffect(() => {
-    if (!sparkRef.current) return
-    sparkRef.current.play()
-  }, [])
-
-  useTick(() => {
-    if (!sparkRef.current) return
-    sparkRef.current.position.x += decay * velocity.x
-    sparkRef.current.position.y += decay * velocity.y
-  })
-
-  return (
-    <pixiAnimatedSprite
-      ref={sparkRef}
-      x={position.x + delta.x}
-      y={position.y + delta.y}
-      rotation={Math.PI + Math.atan2(delta.y, delta.x)}
-      label='Spark (big)'
-      anchor={{ x: 0.5, y: 0.6 }}
-      blendMode='add'
-      animationSpeed={1}
+      animationSpeed={animationSpeed}
       loop={false}
       {...props}
     />
