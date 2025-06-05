@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useReducer, useRef } from 'react'
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from 'react'
 
 import { type PixiReactElementProps, useTick } from '@pixi/react'
 import type TMatter from 'matter-js'
@@ -26,7 +33,7 @@ function updateEngine(delta: number) {
   Engine.update(engine, delta, 1)
 }
 
-function addBody(object: TMatter.Body | TMatter.Body[]) {
+function addBody(object: TMatter.Body) {
   Composite.add(engine.world, object)
 }
 
@@ -113,25 +120,22 @@ const ADDED_FORCE_SCALE = 0.005
 function applyMovementForce(body: TMatter.Body, target: TMatter.Vector) {
   const direction = Vector.sub(body.position, target)
   const normal = Vector.normalise(direction)
-  const magnitude =
-    -MOVEMENT_FORCE_SCALE * Math.min(Vector.magnitudeSquared(direction), 10)
+  const speed = Math.min(Vector.magnitudeSquared(direction), 10)
+  const force = Vector.mult(normal, -MOVEMENT_FORCE_SCALE * speed)
 
-  Body.applyForce(body, body.position, Vector.mult(normal, magnitude))
+  Body.applyForce(body, body.position, force)
 }
 
-function applyAddedForce(pair: TMatter.Pair) {
-  const { bodyA, bodyB, collision } = pair
-
+function applyAddedForce({ bodyA, bodyB, collision }: TMatter.Pair) {
   collision.supports.forEach((point) => {
     if (!point) return
-    const normal = Vector.neg(collision.normal)
 
-    const relativeVelocity = Vector.sub(bodyB.velocity, bodyA.velocity)
-    const speedDifference =
-      ADDED_FORCE_SCALE * Vector.magnitude(relativeVelocity)
+    const velocity = Vector.sub(bodyB.velocity, bodyA.velocity)
+    const speed = Vector.magnitude(velocity)
+    const force = Vector.mult(collision.normal, ADDED_FORCE_SCALE * speed)
 
-    Body.applyForce(bodyA, point, Vector.mult(normal, -speedDifference))
-    Body.applyForce(bodyB, point, Vector.mult(normal, speedDifference))
+    Body.applyForce(bodyA, point, force)
+    Body.applyForce(bodyB, point, Vector.neg(force))
   })
 }
 
@@ -147,10 +151,13 @@ export function Game() {
 
   const dotRef = useRef<Sprite>(null)
   const armsRef = useRef<Sprite>(null)
-  const playerRef = useRef<Container>(null)
-  const computerRef = useRef<Container>(null)
-  const playerRimRef = useRef<Container>(null)
-  const computerRimRef = useRef<Container>(null)
+
+  const isRimActive = useRef(false)
+  const loser = useRef<'player' | 'computer'>(null)
+
+  const deactivateRim = useCallback(() => {
+    isRimActive.current = false
+  }, [])
 
   const { data: spritesheet } = useAsync(async () =>
     Assets.load<Spritesheet>('/sprites/spinning-tops.json'),
@@ -241,6 +248,8 @@ export function Game() {
             }
           })
         } else {
+          isRimActive.current = true
+
           const delta = Vector.mult(
             Vector.sub(bodyB.position, bodyA.position),
             PLAYER_BOUNCE_FORCE_SCALE,
@@ -261,22 +270,31 @@ export function Game() {
           })
 
           addedForceQueue.current.push(pair)
-
-          if (playerRimRef.current && computerRimRef.current) {
-            playerRimRef.current.visible = true
-            computerRimRef.current.visible = true
-          }
         }
       }
     }
 
     function handleBeforeUpdate() {
       applyMovementForce(player, crosshair)
-      // applyMovementForce(computer, player.position) // TODO: enhance
+      applyMovementForce(computer, player.position) // simplified AI
 
       while (addedForceQueue.current.length > 0) {
         const pair = addedForceQueue.current.shift()!
         applyAddedForce(pair)
+      }
+
+      if (!loser.current) {
+        const playerMagnitude = Vector.magnitude(player.position)
+        const computerMagnitude = Vector.magnitude(computer.position)
+
+        if (playerMagnitude >= OUTER_CIRCLE_RADIUS) {
+          loser.current = 'player'
+        }
+
+        if (computerMagnitude >= OUTER_CIRCLE_RADIUS) {
+          console.log('hi')
+          loser.current = 'computer'
+        }
       }
     }
 
@@ -295,42 +313,13 @@ export function Game() {
 
   const accumulator = useRef(0)
 
-  useTick(({ deltaTime, deltaMS }) => {
+  useTick(({ deltaMS }) => {
     accumulator.current += Math.min(deltaMS, MAX_ACCUMULATED_FREQUENCY)
 
     while (accumulator.current >= FREQUENCY) {
       updateEngine(FREQUENCY)
 
       accumulator.current -= FREQUENCY
-    }
-
-    if (
-      playerRef.current &&
-      computerRef.current &&
-      playerRimRef.current &&
-      computerRimRef.current
-    ) {
-      if (playerRimRef.current.visible && computerRef.current.visible) {
-        const RIM_DURATION = 800 // ms
-        const FADE_RATE = deltaMS / RIM_DURATION
-
-        playerRimRef.current.alpha -= FADE_RATE
-        computerRimRef.current.alpha -= FADE_RATE
-
-        if (playerRimRef.current.alpha < 0) {
-          playerRimRef.current.visible = false
-          playerRimRef.current.alpha = 1
-
-          computerRimRef.current.visible = false
-          computerRimRef.current.alpha = 1
-        }
-      }
-
-      playerRef.current.position = player.position
-      playerRef.current.rotation += 0.25 * deltaTime
-
-      computerRef.current.position = computer.position
-      computerRef.current.rotation += 0.25 * deltaTime
     }
   })
 
@@ -424,17 +413,104 @@ export function Game() {
             anchor={0.5}
             zIndex={1}
           />
-          <pixiContainer
-            label='Player'
-            ref={playerRef}
-            x={player.position.x}
-            y={player.position.y}>
-            <pixiContainer visible={true}>
+
+          <Top
+            id='player'
+            position={player.position}
+            spritesheet={spritesheet}
+            isRimActive={isRimActive.current}
+            loser={loser.current}
+            deactivateRim={deactivateRim}
+            tint={0xffd87b}
+          />
+
+          <Top
+            id='computer'
+            position={computer.position}
+            spritesheet={spritesheet}
+            isRimActive={isRimActive.current}
+            loser={loser.current}
+            deactivateRim={deactivateRim}
+            tint={0xffffff}
+          />
+        </>
+      )}
+    </pixiContainer>
+  )
+}
+
+type TopProps = PixiReactElementProps<typeof Container> & {
+  id: string
+  position: TMatter.Vector
+  spritesheet: Spritesheet
+  isRimActive: boolean
+  loser: null | 'player' | 'computer'
+  deactivateRim: () => void
+}
+
+const Top = memo(
+  ({
+    id,
+    position,
+    spritesheet,
+    isRimActive,
+    loser,
+    deactivateRim,
+    tint,
+    ...props
+  }: TopProps) => {
+    const playerRef = useRef<Container>(null)
+    const topRef = useRef<Container>(null)
+    const rimRef = useRef<Container>(null)
+    const exitRef = useRef<Container>(null)
+
+    useTick(({ deltaTime, deltaMS }) => {
+      if (
+        !playerRef.current ||
+        !rimRef.current ||
+        !exitRef.current ||
+        !topRef.current
+      )
+        return
+
+      if (loser === id) {
+        exitRef.current.visible = true
+
+        topRef.current.visible = false
+        rimRef.current.visible = false
+        return
+      }
+
+      if (isRimActive) {
+        rimRef.current.visible = true
+        rimRef.current.alpha = 1
+        deactivateRim()
+      }
+
+      if (rimRef.current.visible) {
+        const RIM_DURATION = 400 // ms
+        const FADE_RATE = deltaMS / RIM_DURATION
+
+        rimRef.current.alpha -= FADE_RATE
+
+        if (rimRef.current.alpha < 0) {
+          rimRef.current.visible = false
+          rimRef.current.alpha = 1
+        }
+      }
+
+      playerRef.current.position = position
+      playerRef.current.rotation += 0.25 * deltaTime
+    })
+
+    return (
+      <pixiContainer label={id} ref={playerRef} position={position} {...props}>
+        <pixiContainer visible={true} ref={topRef}>
               <pixiSprite
                 label='Top'
                 anchor={0.5}
                 texture={spritesheet.textures['top']}
-                tint={0xffd87b}
+            tint={tint}
               />
               <pixiSprite
                 label='Bit Chip'
@@ -443,11 +519,7 @@ export function Game() {
                 texture={spritesheet.textures['bitchip']}
               />
             </pixiContainer>
-            <pixiContainer
-              visible={false}
-              ref={playerRimRef}
-              label='Rim'
-              blendMode='add'>
+        <pixiContainer visible={false} ref={rimRef} label='Rim' blendMode='add'>
               <pixiSprite
                 label='Rim'
                 anchor={0.5}
@@ -461,6 +533,7 @@ export function Game() {
             </pixiContainer>
             <pixiContainer
               visible={false}
+          ref={exitRef}
               label='Exit'
               tint={0xffd87b}
               anchor={0.5}>
@@ -478,65 +551,11 @@ export function Game() {
               />
             </pixiContainer>
           </pixiContainer>
-          <pixiContainer
-            label='Computer'
-            ref={computerRef}
-            x={computer.position.x}
-            y={computer.position.y}>
-            <pixiContainer visible={true}>
-              <pixiSprite
-                label='Top'
-                anchor={0.5}
-                texture={spritesheet.textures['top']}
-                tint={0xffffff}
-              />
-              <pixiSprite
-                label='Bit Chip'
-                anchor={0.5}
-                position={{ x: 0, y: 0 }}
-                texture={spritesheet.textures['bitchip']}
-              />
-            </pixiContainer>
-            <pixiContainer
-              visible={false}
-              ref={computerRimRef}
-              label='Rim'
-              blendMode='add'>
-              <pixiSprite
-                label='Rim'
-                anchor={0.5}
-                texture={spritesheet.textures['rim']}
-              />
-              <pixiSprite
-                label='Burst'
-                anchor={0.5}
-                texture={spritesheet.textures['rim-burst']}
-              />
-            </pixiContainer>
-            <pixiContainer
-              visible={false}
-              label='Exit'
-              tint={0xffffff}
-              anchor={0.5}>
-              <pixiAnimatedSprite
-                label='Exit'
-                textures={spritesheet.animations['exit']}
-                anchor={0.5}
-                blendMode='add'
-                animationSpeed={0.5}
-                loop={true}
-              />
-              <pixiSprite
-                anchor={0.5}
-                texture={spritesheet.textures['bitchip-muted']}
-              />
-            </pixiContainer>
-          </pixiContainer>
-        </>
-      )}
-    </pixiContainer>
-  )
-}
+    )
+  },
+)
+
+Top.displayName = 'Top'
 
 type SparkProps = PixiReactElementProps<typeof AnimatedSprite> & CollisionPoint
 
