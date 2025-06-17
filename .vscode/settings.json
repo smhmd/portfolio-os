@@ -1,4 +1,22 @@
 {
+  "material-icon-theme.folders.customClones": [
+    {
+      "name": "sprites",
+      "base": "images",
+      "color": "light-green-500",
+      "lightColor": "light-green-700",
+      "folderNames": ["sprites"],
+      "rootFolderNames": ["public"]
+    },
+    {
+      "name": "models",
+      "base": "images",
+      "color": "pink-500",
+      "lightColor": "pink-700",
+      "folderNames": ["models"],
+      "rootFolderNames": ["public"]
+    }
+  ],
   "material-icon-theme.files.customClones": [
     {
       "name": "index-ts",
@@ -17,6 +35,18 @@
       "base": "react_ts",
       "color": "amber-400",
       "fileNames": ["metadata.tsx"]
+    },
+    {
+      "name": "contexts",
+      "base": "typescript",
+      "color": "teal-600",
+      "fileNames": ["context.ts", "contexts.ts"]
+    },
+    {
+      "name": "provider",
+      "base": "react_ts",
+      "color": "teal-600",
+      "fileNames": ["Provider.tsx", "Providers.tsx"]
     },
     {
       "name": "hooks",
@@ -39,7 +69,7 @@
     {
       "name": "state-machines",
       "base": "typescript",
-      "color": "orange-A400",
+      "color": "cyan-600",
       "fileNames": ["machine.ts"]
     },
     {
@@ -53,24 +83,6 @@
       "base": "vite",
       "color": "blue-400",
       "fileNames": ["vite-env.d.ts"]
-    }
-  ],
-  "material-icon-theme.folders.customClones": [
-    {
-      "name": "sprites",
-      "base": "images",
-      "color": "light-green-500",
-      "lightColor": "light-green-700",
-      "folderNames": ["sprites"],
-      "rootFolderNames": ["public"]
-    },
-    {
-      "name": "models",
-      "base": "images",
-      "color": "pink-500",
-      "lightColor": "pink-700",
-      "folderNames": ["models"],
-      "rootFolderNames": ["public"]
     }
   ]
 }
