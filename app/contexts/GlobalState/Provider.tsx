@@ -1,20 +1,16 @@
 import { useRef } from 'react'
 
-import { Context } from './hook'
+import { GlobalStateContext } from './context'
 
-interface Props {
-  children: React.ReactNode
-}
-
-export const GlobalStateProvider = ({ children }: Props) => {
+export const GlobalStateProvider = ({ children }: React.PropsWithChildren) => {
   const isAppDrawerOpen = useRef(false)
 
   return (
-    <Context.Provider
+    <GlobalStateContext.Provider
       value={{
         isAppDrawerOpen,
       }}>
       {children}
-    </Context.Provider>
+    </GlobalStateContext.Provider>
   )
 }

@@ -36,15 +36,12 @@ export default function App() {
     () => !state.context.updated,
   )
 
-  const handleMove = useCallback((direction: Direction) => {
-    send({ type: 'move', payload: direction })
-  }, [])
-  const handleContinue = useCallback(() => {
-    send({ type: 'continue' })
-  }, [])
-  const handleReset = useCallback(() => {
-    send({ type: 'reset' })
-  }, [])
+  const handleMove = useCallback(
+    (payload: Direction) => send({ type: 'move', payload }),
+    [],
+  )
+  const handleContinue = useCallback(() => send({ type: 'continue' }), [])
+  const handleReset = useCallback(() => send({ type: 'reset' }), [])
 
   useEffect(() => {
     // Avoid SSR `window` is undefined behavior (cause we're using localStorage)

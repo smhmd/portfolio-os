@@ -3,11 +3,9 @@ import { useLocation } from 'react-router'
 
 import { type AppID, apps } from 'app/apps'
 
-import { CurrentAppContext } from './hook'
+import { CurrentAppContext } from './context'
 
-type Props = React.PropsWithChildren<unknown>
-
-export const CurrentAppProvider = (props: Props) => {
+export const CurrentAppProvider = (props: React.PropsWithChildren) => {
   const location = useLocation()
   const currentApp = useMemo(() => {
     const currentAppId = location.pathname.match(/[^/]+/)?.[0] as

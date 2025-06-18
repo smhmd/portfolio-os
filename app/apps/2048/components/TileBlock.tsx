@@ -22,7 +22,7 @@ export const TileBlock = memo(({ x, y, value }: TileBlockProps) => {
       className='@container duration-(--anim-duration) absolute transform-gpu p-1'
       style={{
         transitionTimingFunction: 'cubic-bezier(0.34, 1.26, 0.80, 1.01)',
-        translate: `calc(${x} * 100%) calc(${y} * 100%)`,
+        translate: `calc(${x} * 100%) calc(${y} * 100%)`, // the magic ✨
         width: `calc(100%/${TILE_SIZE})`,
         height: `calc(100%/${TILE_SIZE})`,
       }}>

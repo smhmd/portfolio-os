@@ -1,3 +1,5 @@
+import { uuid } from 'app/utils'
+
 import {
   type Board,
   type Direction,
@@ -200,7 +202,7 @@ export function addTile(board: Board): Board {
 
   // Create the new tile
   const value = Math.random() < 0.1 ? 4 : 2 // 10% chance of 4, otherwise 2
-  const id = crypto.randomUUID()
+  const id = uuid()
   const newTile: Tile = { id, x: selectedX, y: selectedY, value }
 
   return [...board, newTile]

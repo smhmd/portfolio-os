@@ -1,7 +1,5 @@
 import { GlobalStateProvider } from './GlobalState/Provider'
 
-type ProvidersProps = React.PropsWithChildren
-
-export const Providers = ({ children }: ProvidersProps) => {
+export const Providers = ({ children }: React.PropsWithChildren) => {
   return <GlobalStateProvider>{children}</GlobalStateProvider>
 }

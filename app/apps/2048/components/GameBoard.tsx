@@ -1,16 +1,11 @@
-import { memo, useEffect } from 'react'
+import { memo } from 'react'
 
 import clsx from 'clsx'
 import { AnimatePresence } from 'motion/react'
 
-import { useGlobalState } from 'app/contexts'
+import { useDirectionalKeyDown, useDirectionalSwipe } from 'app/hooks'
 
-import {
-  type Board,
-  type Direction,
-  directionKeyCodes,
-  TILE_SIZE,
-} from '../lib'
+import { type Board, type Direction, TILE_SIZE } from '../lib'
 import { Overlay } from './Overlay'
 import { TileBlock } from './TileBlock'
 
@@ -33,27 +28,9 @@ export const GameBoard = memo(
     isLost,
     ...props
   }: GameBoardProps) => {
-    const { isAppDrawerOpen } = useGlobalState()
-
-    useEffect(() => {
-      if (isLost) return
-      const controller = new AbortController()
-
-      function keydownEvenHandler(e: KeyboardEvent) {
-        if (isAppDrawerOpen.current) return
-        const direction = directionKeyCodes[e.code]
-        if (direction) {
-          e.preventDefault()
-          handleMove(direction)
-        }
-      }
-
-      window.addEventListener('keydown', keydownEvenHandler, {
-        signal: controller.signal,
-      })
-
-      return () => controller.abort()
-    }, [isLost])
+    // handle swipe gestures and arrow keys to move.
+    useDirectionalKeyDown({ handler: handleMove, disabled: isLost })
+    useDirectionalSwipe({ handler: handleMove, disabled: isLost })
 
     return (
       <section className='mx-auto pt-10' {...props}>

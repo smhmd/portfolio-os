@@ -1,3 +1,8 @@
+html,
+body {
+  overscroll-behavior: none;
+}
+
 :root {
   /* duration for animations in the game */
   --anim-duration: 0.15s;

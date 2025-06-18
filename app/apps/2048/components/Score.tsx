@@ -18,7 +18,7 @@ export const Score = memo(
     useEffect(() => {
       const diff = score - previousScore.current
       if (diff) {
-        setDiffs((d) => [...d, [id++, diff].slice(-10)])
+        setDiffs((d) => [...d, [id++, diff]].slice(-10))
       }
 
       previousScore.current = score

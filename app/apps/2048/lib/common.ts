@@ -8,7 +8,7 @@ export type Tile = {
 export type Board = Tile[]
 
 /** The direction in which a board can move its tiles. */
-export type Direction = 'up' | 'down' | 'left' | 'right'
+export type { Direction } from 'app/lib'
 
 export type State = {
   /** The current state of the board, represented as a flat array of tiles. */
@@ -27,14 +27,3 @@ export const APP_ID = '2048'
 export const TILE_SIZE = 4
 export const LOCALSTORAGE_ID = `${APP_ID}_${TILE_SIZE}`
 export const WIN_THRESHOLD = 2 ** 11 // 2048
-
-export const directionKeyCodes: Record<string, Direction> = {
-  ArrowUp: 'up',
-  ArrowDown: 'down',
-  ArrowLeft: 'left',
-  ArrowRight: 'right',
-  KeyW: 'up',
-  KeyS: 'down',
-  KeyA: 'left',
-  KeyD: 'right',
-}
