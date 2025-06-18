@@ -7,6 +7,7 @@
 @theme {
   --font-roboto: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   --font-silkscreen: 'Silkscreen', 'Courier New', 'Lucida Console', monospace;
+  --font-orbitron: 'Orbitron', 'Roboto', 'Helvetica', 'Arial', sans-serif;
 
   --color-bsod: #0176e1;
   --color-bsod-classic: #0000a3;
@@ -29,6 +30,8 @@
   --spacing-5\.5: calc(var(--spacing) * 5.5);
 
   --shadow-inner-xl: inset 5px 5px 26px #b0a08d, inset -5px -5px 26px #cab8a3;
+
+  --text-shadow-cyan-glow: 0 0 5px oklch(0.9 0.05 197);
 
   --breakpoint-3xl: 120rem;
 }

@@ -62,6 +62,9 @@ importers:
       tone:
         specifier: ^15.1.22
         version: 15.1.22
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
       xstate:
         specifier: ^5.19.3
         version: 5.19.3
@@ -3805,6 +3808,10 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+
+  uuid@11.1.0:
+    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+    hasBin: true
 
   valibot@0.41.0:
     resolution: {integrity: sha512-igDBb8CTYr8YTQlOKgaN9nSS0Be7z+WRuaeYqGf3Cjz3aKmSnqEmYnkfVjzIuumGqfHpa3fLIvMEAfhrpqN8ng==}
@@ -7916,6 +7923,8 @@ snapshots:
       react: 19.1.0
 
   utils-merge@1.0.1: {}
+
+  uuid@11.1.0: {}
 
   valibot@0.41.0(typescript@5.8.3):
     optionalDependencies:

@@ -1,0 +1,9 @@
+body,
+html,
+:root {
+  overscroll-behavior: none;
+}
+
+canvas {
+  cursor: none !important;
+}
