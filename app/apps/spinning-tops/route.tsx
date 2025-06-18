@@ -60,23 +60,3 @@ export default function App() {
     </AppWrapper>
   )
 }
-
-let initialWidth = 0
-let initialHeight = 0
-
-if (typeof window !== 'undefined') {
-  initialWidth = window.innerWidth
-  initialHeight = window.innerHeight
-}
-
-function PixiApplication() {
-  return (
-    <Application
-      antialias
-      width={initialWidth}
-      height={initialHeight}
-      background={'#222'}>
-      <Game />
-    </Application>
-  )
-}

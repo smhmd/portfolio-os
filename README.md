@@ -9,6 +9,7 @@ An OS-like website that showcases hosts a bunch of useful (and less than useful)
 
 ### Games:
 
+- Spinning tops: Add resizing and a Hide and Seek mode (where players can't see the other top save for moment of impact)
 - 2048 Puzzle: A version of 2048 where no new tiles spawn. The goal is to merge all tiles within a limited number of moves. Introduce tiles that can go out of bounds, adding a unique and counterintuitive twist to the gameplay.
 - Flappy Bird: A classic Flappy Bird game.
 - Pac-Man: A potential addition of the iconic Pac-Man game.
