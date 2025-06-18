@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import clsx from 'clsx'
 import { Accordion } from 'radix-ui'
 
-import { ArrowDown, Settings } from 'app/assets/svg'
+import { ArrowDown, Settings } from 'app/assets'
 import type { TorrentObject } from 'app/lib/torrent-tools'
 
 import type { Options } from '../lib'

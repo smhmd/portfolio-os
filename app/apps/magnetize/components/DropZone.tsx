@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import clsx from 'clsx'
 
-import { Close, FilePresent, Upload } from 'app/assets/svg'
+import { Close, FilePresent, Upload } from 'app/assets'
 import type { TorrentObject } from 'app/lib/torrent-tools'
 
 import { fileToArrayBuffer } from '../lib'

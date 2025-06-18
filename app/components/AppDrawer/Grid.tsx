@@ -14,13 +14,11 @@ type AppGridProps = {
 
 export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
   const [expandedFolders, toggle] = useReducer(
-    (state: Set<string>, folder: string) => {
-      const newState = new Set(state)
-      if (newState.has(folder)) newState.delete(folder)
-      else newState.add(folder)
-      return newState
-    },
-    new Set<string>(),
+    (state: Record<string, boolean>, folder: string) => ({
+      ...state,
+      [folder]: !state[folder],
+    }),
+    {},
   )
 
   const fullGrid = useMemo(() => {
@@ -29,7 +27,7 @@ export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
       result.push(item)
       if (Array.isArray(item)) {
         const [name, apps] = item
-        if (expandedFolders.has(name)) {
+        if (expandedFolders[name]) {
           result.push(...apps)
         }
       }
@@ -55,7 +53,7 @@ export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
             return <GridAppIcon key={`app-${id}`} id={id} />
           } else {
             const [name, ids] = id
-            const isExpanded = expandedFolders.has(name)
+            const isExpanded = expandedFolders[name]
             return (
               <GridFolderIcon
                 key={`folder-${name}`}

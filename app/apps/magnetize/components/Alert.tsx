@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-import { AlertOctagon, AlertTriangle } from 'app/assets/svg'
+import { AlertOctagon, AlertTriangle } from 'app/assets'
 
 type Severity = 'error' | 'warning'
 

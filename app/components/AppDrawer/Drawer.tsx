@@ -7,7 +7,7 @@ import * as motion from 'motion/react-client'
 import { Dialog } from 'radix-ui'
 
 import { appIDs } from 'app/apps'
-import { Search } from 'app/assets/svg'
+import { Search } from 'app/assets'
 import { useGlobalState } from 'app/contexts'
 
 import { AppDrawerButton } from './Button'
@@ -46,9 +46,9 @@ const variants = {
 } satisfies Record<string, Variants>
 
 export const AppDrawer = () => {
-  const { isAppDrawerOpen } = useGlobalState()
   const [open, setOpen] = useState(false)
   const handleClose = () => setOpen(false)
+  const { isAppDrawerOpen } = useGlobalState()
   const stopPropagation = (e: React.MouseEvent) => e.stopPropagation()
 
   const [search, setSearch] = useState('')
@@ -90,7 +90,7 @@ export const AppDrawer = () => {
                   <label
                     onClick={stopPropagation}
                     className={clsx(
-                      'relative mb-4 flex w-full max-w-[140px] rounded-lg',
+                      'relative mb-4 flex w-full rounded-lg',
                       'border border-white/20 bg-white/10 backdrop-blur-xl transition-colors',
                       'focus-within:border-white/40 sm:mb-8',
                     )}>
@@ -104,7 +104,7 @@ export const AppDrawer = () => {
                       aria-controls='applications-navigation-list'
                       aria-expanded={filteredApps.length > 0}
                       onChange={(e) => setSearch(e.target.value)}
-                      type='text'
+                      type='search'
                       placeholder='Search...'
                       className='h-6 w-full px-2 py-1 text-[10px] capitalize text-white placeholder-white/50 focus:outline-none'
                     />

@@ -2,7 +2,7 @@ import { memo } from 'react'
 
 import clsx from 'clsx'
 
-import { Replay } from 'app/assets/svg'
+import { Replay } from 'app/assets'
 
 import { Score } from './Score'
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import clsx from 'clsx'
 
-import { Check, Copy, Link } from 'app/assets/svg'
+import { Check, Copy, Link } from 'app/assets'
 
 interface MagnetLinkProps {
   link: string

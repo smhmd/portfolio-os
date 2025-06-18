@@ -3,7 +3,7 @@ import { memo, useEffect, useReducer, useState } from 'react'
 import clsx from 'clsx'
 import { Checkbox } from 'radix-ui'
 
-import { Check } from 'app/assets/svg'
+import { Check } from 'app/assets'
 
 import { FILE_LIMIT, formatBytes } from '../lib'
 import { Alert } from './Alert'

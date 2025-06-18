@@ -1,6 +1,13 @@
 {
   "material-icon-theme.folders.customClones": [
     {
+      "name": "apps",
+      "base": "project",
+      "color": "blue-400",
+      "folderNames": ["apps"],
+      "rootFolderNames": ["app"]
+    },
+    {
       "name": "sprites",
       "base": "images",
       "color": "light-green-500",
