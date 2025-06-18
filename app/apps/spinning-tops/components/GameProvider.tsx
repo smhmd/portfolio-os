@@ -24,7 +24,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
 
   useEffect(() => {
     const controller = new AbortController()
-    console.log(window.innerWidth)
+
     function handleResize() {
       setDimensions({ width: window.innerWidth, height: window.innerHeight })
     }

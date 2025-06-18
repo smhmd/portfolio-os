@@ -58,17 +58,19 @@ export const Menu = memo(() => {
 
   return (
     <div className='pointer-events-none'>
-      {isGameOver && winner ? (
-        <section
-          className={clsx(
-            'absolute inset-x-0 top-[18vh] flex flex-col items-center justify-center',
-          )}>
-          <img className='size-44' src='/spinning-tops-winner.png' />
-          <span className='text-shadow-cyan-glow text-5xl'>
-            {playerTitle[winner]} Won
-          </span>
-        </section>
-      ) : null}
+      <section
+        aria-hidden={!isGameOver}
+        className={clsx(
+          isGameOver ? 'block' : 'hidden',
+          'absolute inset-x-0 flex flex-col items-center justify-center',
+          'top-[8vh] sm:top-[18vh]',
+        )}>
+        <img className='size-32 sm:size-44' src='/spinning-tops-winner.png' />
+        <span className='text-shadow-cyan-glow text-4xl sm:text-5xl'>
+          {winner && playerTitle[winner]} Won
+        </span>
+      </section>
+
       <section
         className={clsx(
           'absolute inset-0 flex flex-col items-center justify-center gap-y-2',

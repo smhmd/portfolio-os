@@ -51,7 +51,12 @@ export default function App() {
             enableSleeping: false,
             positionIterations: 10,
           }}>
-          <Application antialias width={initialWidth} height={initialHeight}>
+          <Application
+            antialias
+            autoDensity
+            width={initialWidth}
+            height={initialHeight}
+            resizeTo={isClient ? window : undefined}>
             <Scene />
           </Application>
         </MatterProvider>
