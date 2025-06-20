@@ -22,6 +22,12 @@
       "lightColor": "pink-700",
       "folderNames": ["models"],
       "rootFolderNames": ["public"]
+    },
+    {
+      "name": "workers",
+      "base": "cloudflare",
+      "color": "orange-600",
+      "folderNames": ["workers"]
     }
   ],
   "material-icon-theme.files.customClones": [
@@ -90,6 +96,12 @@
       "base": "vite",
       "color": "blue-400",
       "fileNames": ["vite-env.d.ts"]
+    },
+    {
+      "name": "worker-configuration",
+      "base": "typescript-def",
+      "color": "orange-500",
+      "fileNames": ["worker-configuration.d.ts"]
     }
   ]
 }
