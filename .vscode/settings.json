@@ -1,5 +1,27 @@
 {
+  "explorer.excludeGitIgnore": true,
   "material-icon-theme.folders.customClones": [
+    {
+      "name": "applications",
+      "base": "project",
+      "color": "blue-400",
+      "folderNames": [
+        "2048",
+        "drum-machine",
+        "magnetize",
+        "spinning-tops",
+        "typing-test",
+        "dice-roll"
+      ],
+      "rootFolderNames": ["apps"]
+    },
+    {
+      "name": "home-application",
+      "base": "home",
+      "color": "light-green-700",
+      "folderNames": ["launcher"],
+      "rootFolderNames": ["apps"]
+    },
     {
       "name": "apps",
       "base": "project",
@@ -90,6 +112,12 @@
       "base": "typescript-def",
       "color": "blue-500",
       "fileNames": ["types.ts"]
+    },
+    {
+      "name": "react-router-config",
+      "base": "remix",
+      "color": "gray-300",
+      "fileNames": ["react-router.config.ts"]
     },
     {
       "name": "vite-def",

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { useMachine, useSelector } from '@xstate/react'
 
@@ -36,12 +36,20 @@ export default function App() {
     () => !state.context.updated,
   )
 
-  const handleMove = useCallback(
-    (payload: Direction) => send({ type: 'move', payload }),
+  const handle = useMemo(
+    () => ({
+      move(payload: Direction) {
+        send({ type: 'move', payload })
+      },
+      continue() {
+        send({ type: 'continue' })
+      },
+      reset() {
+        send({ type: 'reset' })
+      },
+    }),
     [],
   )
-  const handleContinue = useCallback(() => send({ type: 'continue' }), [])
-  const handleReset = useCallback(() => send({ type: 'reset' }), [])
 
   useEffect(() => {
     // Avoid SSR `window` is undefined behavior (cause we're using localStorage)
@@ -53,16 +61,16 @@ export default function App() {
       isDark
       className='flex flex-col items-center justify-center bg-[#F9F7EF] text-[#756452]'>
       <GameHeader
-        handleReset={handleReset}
+        onReset={handle.reset}
         className='absolute inset-x-0 top-10'
         score={score}
         best={best}
       />
       <GameBoard
         board={board}
-        handleMove={handleMove}
-        handleContinue={handleContinue}
-        handleReset={handleReset}
+        onMove={handle.move}
+        onContinue={handle.continue}
+        onReset={handle.reset}
         isWon={isWon}
         isLost={isLost}
       />

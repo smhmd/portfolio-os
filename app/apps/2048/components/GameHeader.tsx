@@ -7,13 +7,13 @@ import { Replay } from 'app/assets'
 import { Score } from './Score'
 
 type GameHeaderProps = {
-  handleReset: () => void
+  onReset: () => void
   score: number
   best: number
 } & React.ComponentProps<'header'>
 
 export const GameHeader = memo(
-  ({ score, best, handleReset, className, ...rest }: GameHeaderProps) => (
+  ({ score, best, onReset, className, ...rest }: GameHeaderProps) => (
     <header
       className={clsx(
         'grid w-full items-center gap-y-2 px-2 sm:px-8',
@@ -31,7 +31,7 @@ export const GameHeader = memo(
 
       <button
         className={clsx('justify-self-end rounded-lg', 'col-start-3')}
-        onClick={handleReset}>
+        onClick={onReset}>
         <Replay aria-hidden className='fill-current sm:hidden' />
         <span
           className={clsx(

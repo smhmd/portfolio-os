@@ -1,4 +1,4 @@
-import { assign, fromPromise, setup } from 'xstate'
+import { assign, createActor, fromPromise, setup } from 'xstate'
 
 import {
   bencode,
@@ -51,7 +51,7 @@ const errorState = {
 export const compareState = (a: State, b: State) =>
   a.magnetURI === b.magnetURI && a.error === b.error
 
-export const machine = setup({
+const machine = setup({
   types: {
     context: {} as State,
     events: {} as Events,
@@ -182,3 +182,6 @@ export const machine = setup({
     },
   },
 })
+
+export const actor = createActor(machine)
+actor.start()

@@ -4,6 +4,18 @@
   color-scheme: dark light;
 }
 
+body,
+main {
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar,
+main::-webkit-scrollbar {
+  display: none;
+}
+
 @theme {
   --font-roboto: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   --font-silkscreen: 'Silkscreen', 'Courier New', 'Lucida Console', monospace;

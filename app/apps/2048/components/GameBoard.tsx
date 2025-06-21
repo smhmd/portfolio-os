@@ -11,9 +11,9 @@ import { TileBlock } from './TileBlock'
 
 type GameBoardProps = {
   board: Board
-  handleMove: (direction: Direction) => void
-  handleContinue?: () => void
-  handleReset: () => void
+  onMove: (direction: Direction) => void
+  onContinue?: () => void
+  onReset: () => void
   isWon: boolean
   isLost: boolean
 } & React.ComponentProps<'section'>
@@ -21,16 +21,16 @@ type GameBoardProps = {
 export const GameBoard = memo(
   ({
     board,
-    handleMove,
-    handleContinue,
-    handleReset,
+    onMove,
+    onContinue,
+    onReset,
     isWon,
     isLost,
     ...props
   }: GameBoardProps) => {
     // handle swipe gestures and arrow keys to move.
-    useDirectionalKeyDown({ handler: handleMove, disabled: isLost })
-    useDirectionalSwipe({ handler: handleMove, disabled: isLost })
+    useDirectionalKeyDown({ handler: onMove, disabled: isLost })
+    useDirectionalSwipe({ handler: onMove, disabled: isLost })
 
     return (
       <section className='mx-auto pt-10' {...props}>
@@ -61,11 +61,11 @@ export const GameBoard = memo(
               <Overlay title='You Win!' className='bg-[#edc02e]/50 text-white'>
                 <button
                   className='pl-5.5 cursor-pointer px-2'
-                  onClick={handleContinue}>
+                  onClick={onContinue}>
                   Continue
                 </button>
                 |
-                <button className='cursor-pointer px-2' onClick={handleReset}>
+                <button className='cursor-pointer px-2' onClick={onReset}>
                   New Game
                 </button>
               </Overlay>
@@ -74,7 +74,7 @@ export const GameBoard = memo(
               <Overlay
                 title='Game Over!'
                 className='bg-[#eee4da]/50 text-[#756452]'>
-                <button className='cursor-pointer px-2' onClick={handleReset}>
+                <button className='cursor-pointer px-2' onClick={onReset}>
                   Try Again
                 </button>
               </Overlay>

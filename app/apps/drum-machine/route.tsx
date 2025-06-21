@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useMemo } from 'react'
 
 import { useMachine, useSelector } from '@xstate/react'
 
@@ -48,16 +48,26 @@ export default function App() {
   const [_, send, actor] = useMachine(machine)
   const { volume } = useSelector(actor, ({ context }) => context)
 
-  const handleAttackNote = useCallback((note: string) => {
-    send({ type: 'ATTACK_NOTE', payload: note })
-  }, [])
-
-  const handleReleaseNote = useCallback(() => {
-    send({ type: 'RELEASE_NOTE' })
-  }, [])
+  const handle = useMemo(
+    () => ({
+      attackNote(note: string) {
+        send({ type: 'ATTACK_NOTE', payload: note })
+      },
+      releaseNote() {
+        send({ type: 'RELEASE_NOTE' })
+      },
+      increaseVolume() {
+        send({ type: 'CHANGE_VOLUME', payload: 1 })
+      },
+      decreaseVolume() {
+        send({ type: 'CHANGE_VOLUME', payload: -1 })
+      },
+    }),
+    [],
+  )
 
   return (
-    <AppWrapper className='bg-white'>
+    <AppWrapper isDark className='bg-white'>
       <Frame>
         <Speaker />
         <Volume />
@@ -77,18 +87,8 @@ export default function App() {
         <Button />
         <Button />
         <Button />
-        <Button
-          onClick={async () => {
-            send({ type: 'CHANGE_VOLUME', payload: 1 })
-          }}>
-          +
-        </Button>
-        <Button
-          onClick={async () => {
-            send({ type: 'CHANGE_VOLUME', payload: -1 })
-          }}>
-          -
-        </Button>
+        <Button onClick={handle.increaseVolume}>+</Button>
+        <Button onClick={handle.decreaseVolume}>-</Button>
         <Button />
         <Button />
         <Button />
@@ -108,8 +108,8 @@ export default function App() {
         <Button />
         <Button />
         <Keyboard
-          onAttackNote={handleAttackNote}
-          onReleaseNote={handleReleaseNote}
+          onAttackNote={handle.attackNote}
+          onReleaseNote={handle.releaseNote}
         />
         <Button className='row-start-9' />
         <Button className='row-start-9' />

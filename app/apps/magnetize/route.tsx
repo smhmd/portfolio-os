@@ -1,6 +1,6 @@
-import { useCallback } from 'react'
+import { useMemo } from 'react'
 
-import { useMachine, useSelector } from '@xstate/react'
+import { useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
 import { AppWrapper } from 'app/components'
@@ -8,7 +8,7 @@ import { iconToFavicon } from 'app/utils'
 
 import { AdvancedOptions, DropZone, MagnetLink } from './components'
 import { Alert } from './components/Alert'
-import { compareState, machine, type Options } from './lib'
+import { actor, compareState, type Options } from './lib'
 import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
@@ -25,31 +25,29 @@ export function links() {
 }
 
 export default function App() {
-  const [_, send, actor] = useMachine(machine)
   const { torrentObject, magnetURI, options, error } = useSelector(
     actor,
     ({ context }) => context,
     compareState,
   )
 
-  const handleFileUpload = useCallback((payload: ArrayBuffer) => {
-    send({ type: 'torrent.add', payload })
-  }, [])
-
-  const handleOptionChange = useCallback(
-    (payload: { option: keyof Options; value: boolean }) => {
-      send({ type: 'option.set', payload })
-    },
+  const handle = useMemo(
+    () => ({
+      fileUpload(payload: ArrayBuffer) {
+        actor.send({ type: 'torrent.add', payload })
+      },
+      optionChange(payload: { option: keyof Options; value: boolean }) {
+        actor.send({ type: 'option.set', payload })
+      },
+      selectedFilesChange(payload: Set<number>) {
+        actor.send({ type: 'selectedFiles.set', payload })
+      },
+      reset() {
+        actor.send({ type: 'reset' })
+      },
+    }),
     [],
   )
-
-  const handleSelectedFilesChange = useCallback((payload: Set<number>) => {
-    send({ type: 'selectedFiles.set', payload })
-  }, [])
-
-  const handleReset = useCallback(() => {
-    send({ type: 'reset' })
-  }, [])
 
   return (
     <AppWrapper
@@ -86,8 +84,8 @@ export default function App() {
           {!error ? (
             <DropZone
               torrentObject={torrentObject}
-              onFileUpload={handleFileUpload}
-              onReset={handleReset}
+              onFileUpload={handle.fileUpload}
+              onReset={handle.reset}
             />
           ) : (
             <Alert
@@ -95,7 +93,7 @@ export default function App() {
               message='The file appears to be corrupted or in an unsupported format. Please try a different torrent file.'
               action={{
                 label: 'Try Again',
-                onClick: handleReset,
+                onClick: handle.reset,
               }}
             />
           )}
@@ -104,8 +102,8 @@ export default function App() {
               <AdvancedOptions
                 torrentObject={torrentObject}
                 options={options}
-                onOptionChange={handleOptionChange}
-                onSelectedFilesChange={handleSelectedFilesChange}
+                onOptionChange={handle.optionChange}
+                onSelectedFilesChange={handle.selectedFilesChange}
               />
               {magnetURI && <MagnetLink link={magnetURI} />}
             </div>
