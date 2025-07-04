@@ -19,6 +19,7 @@ main::-webkit-scrollbar {
 @theme {
   --font-roboto: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   --font-silkscreen: 'Silkscreen', 'Courier New', 'Lucida Console', monospace;
+  --font-unifraktur: 'UnifrakturCook', 'Old English Text MT', cursive, serif;
   --font-orbitron: 'Orbitron', 'Roboto', 'Helvetica', 'Arial', sans-serif;
 
   --color-bsod: #0176e1;

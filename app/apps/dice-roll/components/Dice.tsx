@@ -1,74 +1,175 @@
 import { useMemo, useRef } from 'react'
 
+import { PerspectiveCamera } from '@react-three/drei'
+import { useThree } from '@react-three/fiber'
 import {
+  InstancedRigidBodies,
+  type InstancedRigidBodiesProps,
+  type InstancedRigidBodyProps,
+  Physics,
   type RapierRigidBody,
   RigidBody,
-  type RigidBodyProps,
 } from '@react-three/rapier'
 import * as THREE from 'three'
 
-import { DICE_FONT_NAME } from '../lib'
+import { useAsync } from '~/hooks'
+
+import { colorLog, DICE_FONT_NAME, getFace, WALL_COLOR } from '../lib'
+
+const elevation = 1000
+const thickness = 0.1
+const zoom = 60
+
+export default function Experience() {
+  const { size } = useThree()
+  const width = (size.width / zoom) * 6
+  const height = (size.height / zoom) * 6
+
+  const { isLoading, error } = useAsync(async () => {
+    return document.fonts.load(`1pt ${DICE_FONT_NAME}`)
+  })
+
+  const isFontLoaded = !(isLoading || error)
+
+  return (
+    <>
+      <PerspectiveCamera
+        makeDefault
+        position={[8, 8, 20]}
+        fov={65}
+        near={0.1}
+        far={1000}
+        onUpdate={(self) => self.lookAt(0, 0, 0)}
+      />
+
+      {/* <OrthographicCamera
+        makeDefault
+        position={[0, 100, 0]}
+        zoom={zoom}
+        near={0.1}
+        far={1000}
+        onUpdate={(self) => self.lookAt(0, 0, 0)}
+      /> */}
+
+      <directionalLight position={[5, 7, 5]} intensity={1} />
+      {/*  <directionalLight position={[-10, 10, -10]} intensity={1} />
+      <directionalLight position={[10, 10, -20]} intensity={1} />
+      <directionalLight position={[-10, -10, 10]} intensity={0.2} />
+      <directionalLight position={[5, 10, 10]} intensity={1} />
+      <hemisphereLight intensity={1.2} /> */}
+      <ambientLight intensity={Math.PI / 2} />
+      <spotLight
+        position={[0, 10, 0]}
+        angle={Math.PI / 4}
+        penumbra={1.9}
+        decay={0.1}
+        intensity={Math.PI}
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-left={-width}
+        shadow-camera-right={width}
+        shadow-camera-top={height}
+        shadow-camera-bottom={-height}
+        shadow-camera-near={0.1}
+        shadow-camera-far={200}
+      />
+      <pointLight position={[0, 10, 0]} decay={0} intensity={Math.PI / 2} />
+
+      <fog attach='fog' args={['black', 0, 80]} />
+      <Physics gravity={[0, -9.81, 0]}>
+        {isFontLoaded ? <Dice /> : null}
+
+        <RigidBody type='fixed' colliders='cuboid'>
+          <mesh
+            position={[0, -0.1, 0]}
+            // rotation={[-Math.PI / 2, 0, 0]}
+            receiveShadow>
+            <cylinderGeometry args={[40, 40, 1]} />
+            <meshStandardMaterial color={WALL_COLOR} />
+          </mesh>
+
+          {/* {[
+            [width, 0, -(thickness + height) / 2, 0],
+            [width, 0, (thickness + height) / 2, 0],
+            [height, -(thickness + width) / 2, 0, Math.PI / 2],
+            [height, (thickness + width) / 2, 0, Math.PI / 2],
+          ].map(([length, x, z, rotY], i) => (
+            <mesh
+              key={i}
+              position={[x, elevation / 2, z]}
+              rotation={[0, rotY, 0]}
+              receiveShadow>
+              <boxGeometry args={[length, elevation, thickness]} />
+              <meshStandardMaterial
+                transparent
+                opacity={1}
+                color={WALL_COLOR}
+              />
+            </mesh>
+          ))} */}
+        </RigidBody>
+      </Physics>
+    </>
+  )
+}
 
 function createGeometry({
   vertices,
   indices,
-  padding = 0,
+  size = 0,
   angleOffset = Math.PI / 2,
   radius = 1,
   verticalOffset = 0,
+  normalLength,
 }: {
   vertices: number[][]
   indices: number[][]
-  padding?: number
+  size?: number
   verticalOffset?: number
   angleOffset?: number
   radius?: number
+  normalLength?: number
 }) {
   const geometry = new THREE.BufferGeometry()
+
   const positions: number[] = []
-  const UVs: number[] = []
+  const uvs: number[] = []
   const indexArray: number[] = []
   const groups: THREE.BufferGeometry['groups'] = []
 
-  // Create a vertex cache to avoid duplicates
-  const vertexCache: Record<string, number> = {}
+  const vertexCache = new Map<string, number>()
   let vertexIndex = 0
 
-  // Helper to normalize and scale vertices
-  const normalizeVertex = (v: number[]) => {
-    const [x, y, z] = v
-    const length = Math.sqrt(x * x + y * y + z * z)
-    return length > 0
-      ? [(x / length) * radius, (y / length) * radius, (z / length) * radius]
-      : [0, 0, 0]
-  }
-
   let indexOffset = 0
+  const denominator = 2 * (1 + size)
 
-  indices.forEach((face) => {
-    const vertexCount = face.length - 1 // Last item is material index
+  indices.forEach((face, index) => {
+    const vertexCount = face.length // Last item is material index
     const angleStep = (2 * Math.PI) / vertexCount
-    const materialIndex = face[vertexCount]
+    const materialIndex = index + 1 // Material ID (+1 because group 0 is reserved)
 
     const faceIndices: number[] = []
 
-    // Create vertices and UVs for this face
-    for (let j = 0; j < vertexCount; j++) {
-      const vertexKey = `${face[j]}-${j}`
+    for (let i = 0; i < vertexCount; i++) {
+      const index = face[i]
+      const key = `${index}-${i}`
 
-      if (vertexCache[vertexKey] === undefined) {
-        const normalized = normalizeVertex(vertices[face[j]])
-        positions.push(...normalized)
+      if (!vertexCache.has(key)) {
+        const vertex = new THREE.Vector3(...vertices[index])
+        vertex.normalize().multiplyScalar(radius)
+        positions.push(vertex.x, vertex.y, vertex.z)
 
-        const angle = j * angleStep + angleOffset
-        const u = (Math.cos(angle) + 1 + padding) / (2 * (1 + padding))
-        const v =
-          (Math.sin(angle) + 1 + padding) / (2 * (1 + padding)) + verticalOffset
-        UVs.push(u, v)
+        const angle = i * angleStep + angleOffset
+        uvs.push(
+          (Math.cos(angle) + 1 + size) / denominator,
+          (Math.sin(angle) + 1 + size) / denominator + verticalOffset,
+        )
 
-        vertexCache[vertexKey] = vertexIndex++
+        vertexCache.set(key, vertexIndex++)
       }
-      faceIndices.push(vertexCache[vertexKey])
+
+      faceIndices.push(vertexCache.get(key)!)
     }
 
     // Create triangles (fan triangulation)
@@ -76,7 +177,6 @@ function createGeometry({
       indexArray.push(faceIndices[0], faceIndices[j], faceIndices[j + 1])
     }
 
-    // Add material group
     const triangleCount = vertexCount - 2
     groups.push({
       start: indexOffset,
@@ -92,10 +192,14 @@ function createGeometry({
     'position',
     new THREE.Float32BufferAttribute(positions, 3),
   )
-  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(UVs, 2))
+  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2))
   geometry.setIndex(indexArray)
 
-  // Add material groups
+  geometry.clearGroups()
+
+  // first group covers the whole geometry (reserved for the color)
+  geometry.addGroup(0, indexArray.length, 0)
+
   groups.forEach((group) => {
     geometry.addGroup(group.start, group.count, group.materialIndex)
   })
@@ -104,7 +208,15 @@ function createGeometry({
   geometry.computeVertexNormals()
   geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), radius)
 
-  return geometry
+  const normals = indices.slice(0, normalLength).map(([a, b, c]) => {
+    const v0 = new THREE.Vector3(...vertices[a])
+    const v1 = new THREE.Vector3(...vertices[b])
+    const v2 = new THREE.Vector3(...vertices[c])
+
+    return v1.sub(v0).cross(v2.sub(v0)).normalize()
+  })
+
+  return { geometry, normals }
 }
 
 function createD4Geometry() {
@@ -115,16 +227,16 @@ function createD4Geometry() {
     [1, -1, -1],
   ]
   const indices = [
-    [1, 0, 2, 1],
-    [0, 1, 3, 2],
-    [0, 3, 2, 3],
-    [1, 2, 3, 4],
+    [1, 0, 2],
+    [0, 1, 3],
+    [0, 3, 2],
+    [1, 2, 3],
   ]
 
   return createGeometry({
     vertices,
     indices,
-    padding: -0.1,
+    size: -0.1,
     angleOffset: (Math.PI * 7) / 6,
   })
 }
@@ -141,19 +253,19 @@ function createD6Geometry() {
     [-1, 1, 1],
   ]
   const indices = [
-    [0, 3, 2, 1, 1],
-    [1, 2, 6, 5, 2],
-    [0, 1, 5, 4, 3],
-    [3, 7, 6, 2, 4],
-    [0, 4, 7, 3, 5],
-    [4, 5, 6, 7, 6],
+    [0, 3, 2, 1],
+    [1, 2, 6, 5],
+    [0, 1, 5, 4],
+    [3, 7, 6, 2],
+    [0, 4, 7, 3],
+    [4, 5, 6, 7],
   ]
 
   return createGeometry({
     vertices,
     indices,
-    padding: 0.1,
     angleOffset: -Math.PI / 4,
+    verticalOffset: 0.02,
   })
 }
 
@@ -167,61 +279,62 @@ function createD8Geometry() {
     [0, 0, -1],
   ]
   const indices = [
-    [0, 2, 4, 1],
-    [0, 4, 3, 2],
-    [0, 3, 5, 3],
-    [0, 5, 2, 4],
-    [1, 3, 4, 5],
-    [1, 4, 2, 6],
-    [1, 2, 5, 7],
-    [1, 5, 3, 8],
+    [0, 2, 4],
+    [0, 4, 3],
+    [0, 3, 5],
+    [0, 5, 2],
+    [1, 3, 4],
+    [1, 4, 2],
+    [1, 2, 5],
+    [1, 5, 3],
   ]
 
   return createGeometry({
     vertices,
     indices,
-    angleOffset: Math.PI / 2,
   })
 }
 
 function createD10Geometry() {
-  const a = (Math.PI * 2) / 10,
-    h = 0.105,
-    v = -1
+  const a = (Math.PI * 2) / 10
+  const h = 0.105
   const vertices = []
   for (let i = 0, b = 0; i < 10; ++i, b += a) {
     vertices.push([Math.cos(b), Math.sin(b), h * (i % 2 ? 1 : -1)])
   }
-  vertices.push([0, 0, -1])
-  vertices.push([0, 0, 1])
+  vertices.push([0, 0, -1], [0, 0, 1])
+
   const indices = [
-    [5, 7, 11, 0],
-    [4, 2, 10, 1],
-    [1, 3, 11, 2],
-    [0, 8, 10, 3],
-    [7, 9, 11, 4],
-    [8, 6, 10, 5],
-    [9, 1, 11, 6],
-    [2, 0, 10, 7],
-    [3, 5, 11, 8],
-    [6, 4, 10, 9],
-    [1, 0, 2, v],
-    [1, 2, 3, v],
-    [3, 2, 4, v],
-    [3, 4, 5, v],
-    [5, 4, 6, v],
-    [5, 6, 7, v],
-    [7, 6, 8, v],
-    [7, 8, 9, v],
-    [9, 8, 0, v],
-    [9, 0, 1, v],
+    // big triangles:
+    [10, 0, 8],
+    [11, 1, 3],
+    [10, 2, 0],
+    [11, 3, 5],
+    [10, 4, 2],
+    [11, 5, 7],
+    [10, 6, 4],
+    [11, 7, 9],
+    [10, 8, 6],
+    [11, 9, 1],
+    // small triangles:
+    [1, 0, 2],
+    [1, 2, 3],
+    [3, 2, 4],
+    [3, 4, 5],
+    [5, 4, 6],
+    [5, 6, 7],
+    [7, 6, 8],
+    [7, 8, 9],
+    [9, 8, 0],
+    [9, 0, 1],
   ]
 
   return createGeometry({
     vertices,
     indices,
-    angleOffset: (Math.PI * 6) / 5,
+    size: -0.1,
     verticalOffset: 0.04,
+    normalLength: 10,
   })
 }
 
@@ -251,26 +364,25 @@ function createD12Geometry() {
     [-1, -1, -1],
   ]
   const indices = [
-    [2, 14, 4, 12, 0, 1],
-    [15, 9, 11, 19, 3, 2],
-    [16, 10, 17, 7, 6, 3],
-    [6, 7, 19, 11, 18, 4],
-    [6, 18, 2, 0, 16, 5],
-    [18, 11, 9, 14, 2, 6],
-    [1, 17, 10, 8, 13, 7],
-    [1, 13, 5, 15, 3, 8],
-    [13, 8, 12, 4, 5, 9],
-    [5, 4, 14, 9, 15, 10],
-    [0, 12, 8, 10, 16, 11],
-    [3, 19, 7, 17, 1, 12],
+    [2, 14, 4, 12, 0],
+    [15, 9, 11, 19, 3],
+    [16, 10, 17, 7, 6],
+    [6, 7, 19, 11, 18],
+    [6, 18, 2, 0, 16],
+    [18, 11, 9, 14, 2],
+    [1, 17, 10, 8, 13],
+    [1, 13, 5, 15, 3],
+    [13, 8, 12, 4, 5],
+    [5, 4, 14, 9, 15],
+    [0, 12, 8, 10, 16],
+    [3, 19, 7, 17, 1],
   ]
 
   return createGeometry({
     vertices,
     indices,
     radius: 0.9,
-    padding: 0.2,
-    angleOffset: Math.PI / 2,
+    size: 0.2,
     verticalOffset: 0.02,
   })
 }
@@ -292,35 +404,74 @@ function createD20Geometry() {
     [-t, 0, 1],
   ]
   const indices = [
-    [0, 11, 5, 1],
-    [0, 5, 1, 2],
-    [0, 1, 7, 3],
-    [0, 7, 10, 4],
-    [0, 10, 11, 5],
-    [1, 5, 9, 6],
-    [5, 11, 4, 7],
-    [11, 10, 2, 8],
-    [10, 7, 6, 9],
-    [7, 1, 8, 10],
-    [3, 9, 4, 11],
-    [3, 4, 2, 12],
-    [3, 2, 6, 13],
-    [3, 6, 8, 14],
-    [3, 8, 9, 15],
-    [4, 9, 5, 16],
-    [2, 4, 11, 17],
-    [6, 2, 10, 18],
-    [8, 6, 7, 19],
-    [9, 8, 1, 20],
+    [0, 11, 5],
+    [0, 5, 1],
+    [0, 1, 7],
+    [0, 7, 10],
+    [0, 10, 11],
+    [1, 5, 9],
+    [5, 11, 4],
+    [11, 10, 2],
+    [10, 7, 6],
+    [7, 1, 8],
+    [3, 9, 4],
+    [3, 4, 2],
+    [3, 2, 6],
+    [3, 6, 8],
+    [3, 8, 9],
+    [4, 9, 5],
+    [2, 4, 11],
+    [6, 2, 10],
+    [8, 6, 7],
+    [9, 8, 1],
   ]
 
   return createGeometry({
     vertices,
     indices,
-    padding: -0.1,
+    size: -0.1,
     angleOffset: -Math.PI / 6,
   })
 }
+
+const d4Geometry = createD4Geometry()
+const d6Geometry = createD6Geometry()
+const d8Geometry = createD8Geometry()
+const d10Geometry = createD10Geometry()
+const d12Geometry = createD12Geometry()
+const d20Geometry = createD20Geometry()
+
+const labels = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+]
+
+const d10Labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+const d100Labels = ['00', '10', '20', '30', '40', '50', '60', '70', '80', '90']
+const d4Labels = [
+  ['2', '4', '3'],
+  ['1', '3', '4'],
+  ['2', '1', '4'],
+  ['1', '2', '3'],
+]
 
 const TEXTURE_SIZE = 256
 
@@ -372,61 +523,20 @@ function createTextTexture(text: string | string[]) {
   return new THREE.CanvasTexture(canvas)
 }
 
-function createMaterials(labels: string[] | string[][]) {
+function createLabelMaterials(
+  labels: string[] | string[][],
+  color: string = 'white',
+) {
   return labels.map(
     (text) =>
       new THREE.MeshPhongMaterial({
         map: createTextTexture(text),
-        color: '#ffffff',
-        specular: '#171d1f',
-        emissive: '#000000',
-        shininess: 70,
+        color,
         transparent: true,
         depthWrite: false,
       }),
   )
 }
-
-const genericLabels = [
-  '0',
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10',
-  '11',
-  '12',
-  '13',
-  '14',
-  '15',
-  '16',
-  '17',
-  '18',
-  '19',
-  '20',
-]
-
-const d100Labels = ['00', '10', '20', '30', '40', '50', '60', '70', '80', '90']
-
-const d4Labels = [
-  [],
-  ['2', '4', '3'],
-  ['1', '3', '4'],
-  ['2', '1', '4'],
-  ['1', '2', '3'],
-]
-
-const d4Geometry = createD4Geometry()
-const d6Geometry = createD6Geometry()
-const d8Geometry = createD8Geometry()
-const d10Geometry = createD10Geometry()
-const d12Geometry = createD12Geometry()
-const d20Geometry = createD20Geometry()
 
 function createColorMaterial(color: string) {
   return new THREE.MeshStandardMaterial({
@@ -437,137 +547,132 @@ function createColorMaterial(color: string) {
   })
 }
 
-const crimsonMaterial = createColorMaterial('crimson')
-const goldMaterial = createColorMaterial('gold')
-const darkorangeMaterial = createColorMaterial('darkorange')
-const mediumpurpleMaterial = createColorMaterial('mediumpurple')
-const royalblueMaterial = createColorMaterial('royalblue')
-const mediumseagreenMaterial = createColorMaterial('mediumseagreen')
-const tomatoMaterial = createColorMaterial('tomato')
-
-const dice = [
-  { position: [0, 0, -3], type: 6 },
-  { position: [0, 0, 0], type: 8 },
-  { position: [3, 0, 3], type: 4 },
-  { position: [0, 0, 3], type: 10 },
-  { position: [3, 0, -2], type: 12 },
-  { position: [-3, 0, -1], type: 20 },
-  { position: [-3, 0, 2], type: 100 },
-] as const
-
-export function Dice() {
-  const diceTypes = useMemo(() => {
-    const genericMaterials = createMaterials(genericLabels)
-    const d100Materials = createMaterials(d100Labels)
-    const d4Materials = createMaterials(d4Labels)
-
-    const types = {
-      4: {
-        geometry: d4Geometry,
-        labels: d4Materials,
-        color: crimsonMaterial,
-      },
-      6: {
-        geometry: d6Geometry,
-        labels: genericMaterials,
-        color: goldMaterial,
-      },
-      8: {
-        geometry: d8Geometry,
-        labels: genericMaterials,
-        color: darkorangeMaterial,
-      },
-      10: {
-        geometry: d10Geometry,
-        labels: genericMaterials,
-        color: mediumpurpleMaterial,
-      },
-      12: {
-        geometry: d12Geometry,
-        labels: genericMaterials,
-        color: royalblueMaterial,
-      },
-      20: {
-        geometry: d20Geometry,
-        labels: genericMaterials,
-        color: mediumseagreenMaterial,
-      },
-      100: {
-        geometry: d10Geometry,
-        labels: d100Materials,
-        color: tomatoMaterial,
-      },
-    }
-
-    return types
-  }, [])
-
-  return dice.map(({ type, position }, i) => {
-    const { geometry, labels, color } = diceTypes[type]
-    const colliders = type === 6 ? 'cuboid' : 'hull'
-
-    return (
-      <Die
-        colliders={colliders}
-        key={i}
-        position={position}
-        rotation={[Math.PI * 0.3, Math.PI * 0.4, Math.PI * 1.8]}
-        geometry={geometry}
-        color={color}
-        labels={labels}
-      />
-    )
-  })
+function Dice() {
+  return dice.map(({ variant, count }, i) => (
+    <Die key={i} variant={variant} position={positions[i]} count={count} />
+  ))
 }
 
 type DieProps = {
-  geometry: THREE.BufferGeometry<THREE.NormalBufferAttributes>
-  color: THREE.MeshStandardMaterial
-  labels: THREE.MeshPhongMaterial[]
+  variant: keyof typeof variants
   position: Readonly<[number, number, number]>
-} & RigidBodyProps
+  count: number
+} & Partial<InstancedRigidBodiesProps>
 
-function getInwardImpulse(
-  pos: { x: number; y: number; z: number },
-  mass: number,
-) {
-  return {
-    x: (-pos.x + (Math.random() - 0.5)) * mass,
-    y: (2 - pos.y + (Math.random() - 0.5)) * mass,
-    z: (-pos.z + (Math.random() - 0.5)) * mass,
-  }
-}
+function Die({ variant, position, count, ...props }: DieProps) {
+  const { background, color, geometry, labels, normals } = variants[variant]
 
-function Die({ geometry, color, labels, position, ...props }: DieProps) {
-  const body = useRef<RapierRigidBody>(null)
-  const mesh = useRef<THREE.Mesh>(null)
+  const colliders = variant === 6 ? 'cuboid' : 'hull'
+  const materials = useMemo(
+    () => [
+      createColorMaterial(background),
+      ...createLabelMaterials(labels, color),
+    ],
+    [],
+  )
 
-  function handleJump() {
-    if (!body.current) return
-    const mass = body.current.mass()
-    const pos = body.current.translation()
-    body.current.applyImpulse(getInwardImpulse(pos, mass), true)
-
-    body.current.applyTorqueImpulse(
-      {
-        x: Math.random() - 0.5,
-        y: Math.random() - 0.5,
-        z: Math.random() - 0.5,
-      },
-      true,
+  const instances = useMemo(() => {
+    return Array.from<number, InstancedRigidBodyProps>(
+      { length: count },
+      (_, i) => ({
+        key: `d${variant}-${i}`,
+        position: [-i * 2.3, i * 2, 0],
+        rotation: [Math.PI * 0.2, Math.PI * 0.6, Math.PI * 1.3],
+      }),
     )
-  }
+  }, [])
 
+  const bodies = useRef<RapierRigidBody[]>([])
+  const meshes = useRef(null)
+
+  function handleSleep() {
+    bodies.current.forEach((body) => {
+      const topFaceIndex = getFace({ body, normals, variant })
+
+      if (topFaceIndex !== -1) {
+        const faceLabel = labels[topFaceIndex]
+        colorLog(background, `D${variant}: ${faceLabel}`)
+      }
+    })
+  }
   return (
-    <RigidBody ref={body} position={position} {...props}>
-      <mesh
-        ref={mesh}
-        geometry={geometry}
-        material={color}
+    <InstancedRigidBodies
+      onSleep={handleSleep}
+      ref={bodies}
+      instances={instances}
+      position={position}
+      colliders={colliders}
+      {...props}>
+      <instancedMesh
+        ref={meshes}
+        args={[geometry, materials, count]}
         castShadow
-        onClick={handleJump}
       />
-      <mesh geometry={geometry} material={labels} />
-    </RigidBody>
+    </InstancedRigidBodies>
   )
 }
+
+const variants = {
+  4: {
+    ...d4Geometry,
+    labels: d4Labels,
+    background: 'crimson',
+    color: 'white',
+  },
+  6: {
+    ...d6Geometry,
+    labels: labels,
+    background: 'darkorange',
+    color: 'white',
+  },
+  8: {
+    ...d8Geometry,
+    labels: labels,
+    background: 'teal',
+    color: 'white',
+  },
+  10: {
+    ...d10Geometry,
+    labels: d10Labels,
+    background: 'mediumpurple',
+    color: 'white',
+  },
+  12: {
+    ...d12Geometry,
+    labels: labels,
+    background: 'royalblue',
+    color: 'white',
+  },
+  20: {
+    ...d20Geometry,
+    labels: labels,
+    background: 'seagreen',
+    color: 'white',
+  },
+  100: {
+    ...d10Geometry,
+    labels: d100Labels,
+    background: 'tomato',
+    color: 'white',
+  },
+}
+
+const dice = [
+  { count: 1, variant: 8 },
+  { count: 1, variant: 4 },
+  { count: 1, variant: 100 },
+  { count: 1, variant: 12 },
+  { count: 1, variant: 6 },
+  { count: 1, variant: 20 },
+  { count: 1, variant: 10 },
+] as const
+
+const positions = [
+  [0, 1, 0],
+  [0, 1, -3],
+  [-3, 1, 0],
+  [-3, 1, 3],
+  [0, 1, 3],
+  [3, 1, 0],
+  [3, 1, 3],
+] as const

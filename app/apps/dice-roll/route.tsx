@@ -26,14 +26,14 @@ export function links() {
   ]
 }
 
-const Experience = lazy(() => import('./components/Experience'))
+const Dice = lazy(() => import('./components/Dice'))
 
 export default function App() {
   return (
     <AppWrapper className='relative h-screen w-full'>
-      <Canvas shadows className='h-full w-full bg-[#333333]'>
+      <Canvas shadows className='h-full w-full bg-[black]'>
         <Suspense fallback={null}>
-          <Experience />
+          <Dice />
         </Suspense>
       </Canvas>
     </AppWrapper>
