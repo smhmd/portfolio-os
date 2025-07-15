@@ -1,7 +1,7 @@
-import { useMemo, useRef } from 'react'
+import { use, useMemo, useRef } from 'react'
 
 import { PerspectiveCamera } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import {
   InstancedRigidBodies,
   type InstancedRigidBodiesProps,
@@ -9,61 +9,41 @@ import {
   Physics,
   type RapierRigidBody,
   RigidBody,
+  type RigidBodyAutoCollider,
 } from '@react-three/rapier'
 import * as THREE from 'three'
 
-import { useAsync } from '~/hooks'
+import { createClientPromise } from '~/lib'
 
-import { colorLog, DICE_FONT_NAME, getFace, WALL_COLOR } from '../lib'
+import { colorLog, DICE_FONT_NAME, getFace } from '../lib'
 
-const elevation = 1000
-const thickness = 0.1
-const zoom = 60
+const zoom = 65
+
+const fontPromise = createClientPromise(
+  document.fonts.load(`1pt ${DICE_FONT_NAME}`),
+)
 
 export default function Experience() {
+  use(fontPromise)
+
   const { size } = useThree()
-  const width = (size.width / zoom) * 6
-  const height = (size.height / zoom) * 6
-
-  const { isLoading, error } = useAsync(async () => {
-    return document.fonts.load(`1pt ${DICE_FONT_NAME}`)
-  })
-
-  const isFontLoaded = !(isLoading || error)
+  const width = (size.width / zoom) * 2
+  const height = (size.height / zoom) * 2
 
   return (
     <>
       <PerspectiveCamera
         makeDefault
-        position={[8, 8, 20]}
-        fov={65}
+        position={[0, 18, 20]}
+        fov={zoom}
         near={0.1}
         far={1000}
-        onUpdate={(self) => self.lookAt(0, 0, 0)}
+        onUpdate={(self) => self.lookAt(0, 6, 0)}
       />
 
-      {/* <OrthographicCamera
-        makeDefault
-        position={[0, 100, 0]}
-        zoom={zoom}
-        near={0.1}
-        far={1000}
-        onUpdate={(self) => self.lookAt(0, 0, 0)}
-      /> */}
-
-      <directionalLight position={[5, 7, 5]} intensity={1} />
-      {/*  <directionalLight position={[-10, 10, -10]} intensity={1} />
-      <directionalLight position={[10, 10, -20]} intensity={1} />
-      <directionalLight position={[-10, -10, 10]} intensity={0.2} />
-      <directionalLight position={[5, 10, 10]} intensity={1} />
-      <hemisphereLight intensity={1.2} /> */}
-      <ambientLight intensity={Math.PI / 2} />
-      <spotLight
-        position={[0, 10, 0]}
-        angle={Math.PI / 4}
-        penumbra={1.9}
-        decay={0.1}
-        intensity={Math.PI}
+      <directionalLight
+        position={[5, 7, 5]}
+        intensity={1}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -74,40 +54,29 @@ export default function Experience() {
         shadow-camera-near={0.1}
         shadow-camera-far={200}
       />
+      <ambientLight intensity={Math.PI / 2} />
+      <spotLight
+        position={[0, 10, 0]}
+        angle={Math.PI / 4}
+        penumbra={1.9}
+        decay={0.1}
+        intensity={Math.PI}
+      />
+
       <pointLight position={[0, 10, 0]} decay={0} intensity={Math.PI / 2} />
 
       <fog attach='fog' args={['black', 0, 80]} />
       <Physics gravity={[0, -9.81, 0]}>
-        {isFontLoaded ? <Dice /> : null}
+        <Dice />
 
         <RigidBody type='fixed' colliders='cuboid'>
           <mesh
             position={[0, -0.1, 0]}
-            // rotation={[-Math.PI / 2, 0, 0]}
+            rotation={[-Math.PI / 2, 0, 0]}
             receiveShadow>
-            <cylinderGeometry args={[40, 40, 1]} />
-            <meshStandardMaterial color={WALL_COLOR} />
+            <boxGeometry args={[width, height, 1]} />
+            <meshStandardMaterial color='black' />
           </mesh>
-
-          {/* {[
-            [width, 0, -(thickness + height) / 2, 0],
-            [width, 0, (thickness + height) / 2, 0],
-            [height, -(thickness + width) / 2, 0, Math.PI / 2],
-            [height, (thickness + width) / 2, 0, Math.PI / 2],
-          ].map(([length, x, z, rotY], i) => (
-            <mesh
-              key={i}
-              position={[x, elevation / 2, z]}
-              rotation={[0, rotY, 0]}
-              receiveShadow>
-              <boxGeometry args={[length, elevation, thickness]} />
-              <meshStandardMaterial
-                transparent
-                opacity={1}
-                color={WALL_COLOR}
-              />
-            </mesh>
-          ))} */}
         </RigidBody>
       </Physics>
     </>
@@ -562,48 +531,80 @@ type DieProps = {
 function Die({ variant, position, count, ...props }: DieProps) {
   const { background, color, geometry, labels, normals } = variants[variant]
 
-  const colliders = variant === 6 ? 'cuboid' : 'hull'
-  const materials = useMemo(
-    () => [
+  const { colliders, materials, instances } = useMemo(() => {
+    const colliders: RigidBodyAutoCollider = variant === 6 ? 'cuboid' : 'hull'
+    const materials = [
       createColorMaterial(background),
       ...createLabelMaterials(labels, color),
-    ],
-    [],
-  )
+    ]
 
-  const instances = useMemo(() => {
-    return Array.from<number, InstancedRigidBodyProps>(
+    const instances = Array.from<number, InstancedRigidBodyProps>(
       { length: count },
       (_, i) => ({
         key: `d${variant}-${i}`,
         position: [-i * 2.3, i * 2, 0],
-        rotation: [Math.PI * 0.2, Math.PI * 0.6, Math.PI * 1.3],
+        rotation: [Math.PI * 0.5, Math.PI * 0.6, Math.PI * 1.3],
+        linearVelocity: [-12, 1, -19],
       }),
     )
+
+    return {
+      colliders,
+      materials,
+      instances,
+    }
   }, [])
 
   const bodies = useRef<RapierRigidBody[]>([])
   const meshes = useRef(null)
 
-  function handleSleep() {
-    bodies.current.forEach((body) => {
-      const topFaceIndex = getFace({ body, normals, variant })
+  const value = useRef<string>(null)
+  const stableFrames = useRef(0)
 
-      if (topFaceIndex !== -1) {
-        const faceLabel = labels[topFaceIndex]
-        colorLog(background, `D${variant}: ${faceLabel}`)
-      }
+  useFrame(() => {
+    if (!bodies.current.length || value.current) return
+
+    const allStill = bodies.current.every((body) => {
+      const linvel = body.linvel()
+      const angvel = body.angvel()
+
+      const speed = Math.sqrt(linvel.x ** 2 + linvel.y ** 2 + linvel.z ** 2)
+      const rotation = Math.sqrt(angvel.x ** 2 + angvel.y ** 2 + angvel.z ** 2)
+
+      return speed < 0.05 && rotation < 0.05
     })
-  }
+
+    if (allStill) {
+      stableFrames.current++
+      if (stableFrames.current === 15) {
+        bodies.current.forEach((body) => {
+          const topFaceIndex = getFace({ body, normals, variant })
+          if (topFaceIndex !== -1) {
+            const faceLabel = labels[topFaceIndex]
+            colorLog(background, `D${variant}: ${faceLabel}`)
+            value.current = faceLabel.toString()
+          }
+        })
+      }
+    } else {
+      stableFrames.current = 0
+    }
+  })
+
   return (
     <InstancedRigidBodies
-      onSleep={handleSleep}
+      gravityScale={2.5}
+      restitution={0.6}
+      friction={0.5}
+      linearDamping={0.2}
+      angularDamping={0.15}
       ref={bodies}
       instances={instances}
       position={position}
       colliders={colliders}
       {...props}>
       <instancedMesh
+        frustumCulled={false}
         ref={meshes}
         args={[geometry, materials, count]}
         castShadow
@@ -659,20 +660,20 @@ const variants = {
 
 const dice = [
   { count: 1, variant: 8 },
-  { count: 1, variant: 4 },
+  { count: 2, variant: 4 },
   { count: 1, variant: 100 },
-  { count: 1, variant: 12 },
-  { count: 1, variant: 6 },
+  { count: 2, variant: 12 },
+  { count: 2, variant: 6 },
   { count: 1, variant: 20 },
   { count: 1, variant: 10 },
 ] as const
 
 const positions = [
-  [0, 1, 0],
-  [0, 1, -3],
-  [-3, 1, 0],
-  [-3, 1, 3],
-  [0, 1, 3],
-  [3, 1, 0],
-  [3, 1, 3],
+  [12, 2, 20],
+  [12, 2, 20],
+  [12 - 3, 2, 20],
+  [12 - 3, 2, 20],
+  [12, 2, 20],
+  [12 + 3, 2, 20],
+  [12 + 3, 2, 20],
 ] as const
