@@ -13,7 +13,7 @@ import {
 } from '@react-three/rapier'
 import * as THREE from 'three'
 
-import { createClientPromise } from '~/lib'
+import { createClientPromise } from 'app/lib'
 
 import { colorLog, DICE_FONT_NAME, getFace } from '../lib'
 

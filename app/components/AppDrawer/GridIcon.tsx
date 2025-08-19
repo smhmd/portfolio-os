@@ -48,7 +48,8 @@ const GridIcon = forwardRef<HTMLLIElement, GridIconProps>(
       <motion.li
         ref={ref}
         className={clsx(
-          'group relative flex cursor-pointer flex-col items-center justify-center gap-2',
+          'group/icon',
+          'relative flex cursor-pointer flex-col items-center justify-center gap-2',
           className,
         )}
         layout
@@ -70,7 +71,7 @@ GridIcon.displayName = 'GridIcon'
 type GridAppIconProps = { id: AppID; disableAnimation?: boolean }
 
 const iconClassName =
-  'size-12 transition-transform group-active:scale-90 sm:size-16'
+  'size-18 transition-transform group-active:scale-90 sm:size-28'
 
 export const GridAppIcon = forwardRef<HTMLLIElement, GridAppIconProps>(
   ({ id, disableAnimation }, ref) => {

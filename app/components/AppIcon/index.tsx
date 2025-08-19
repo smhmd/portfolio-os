@@ -2,7 +2,12 @@ type Props = React.ComponentProps<'svg'> & {
   padding?: number
 }
 
-export const AppIconWrapper = ({ padding = 0, children, ...props }: Props) => {
+export const AppIconWrapper = ({
+  padding = 0,
+  fill = 'url(#fill)', // can be used to add interesting fills
+  children,
+  ...props
+}: Props) => {
   const size = 100 - padding * 2
   const viewBox = `${padding} ${padding} ${size} ${size}`
 
@@ -13,7 +18,7 @@ export const AppIconWrapper = ({ padding = 0, children, ...props }: Props) => {
       viewBox={viewBox}
       {...props}>
       <g clipPath='url(#app-icon)'>
-        <rect width='100' height='100' />
+        <rect width='100' height='100' fill={fill} />
         {children}
       </g>
     </svg>

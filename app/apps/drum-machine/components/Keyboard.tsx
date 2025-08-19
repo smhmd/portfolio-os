@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
 import { initToneOnClick } from 'app/lib'
 
@@ -12,35 +12,35 @@ type KeyboardProps = {
 export function Keyboard({ onAttackNote, onReleaseNote }: KeyboardProps) {
   const isMouseDown = useRef(false)
 
-  function handleMouseClick(note: string) {
-    onAttackNote(note)
-    isMouseDown.current = true
-    const controller = new AbortController()
-    document.addEventListener(
-      'mouseup',
-      () => {
-        if (isMouseDown.current) {
-          onReleaseNote()
-          isMouseDown.current = false
-          controller.abort()
-        }
+  const handle = useMemo(
+    () => ({
+      click(note: string) {
+        onAttackNote(note)
+        isMouseDown.current = true
+        const controller = new AbortController()
+        document.addEventListener(
+          'mouseup',
+          () => {
+            if (!isMouseDown.current) return
+            onReleaseNote()
+            isMouseDown.current = false
+            controller.abort()
+          },
+          { signal: controller.signal },
+        )
       },
-      { signal: controller.signal },
-    )
-  }
-
-  function handleMouseEnter(note: string) {
-    if (isMouseDown.current) {
-      onReleaseNote()
-      onAttackNote(note)
-    }
-  }
-
-  function handleMouseLeave() {
-    if (isMouseDown.current) {
-      onReleaseNote()
-    }
-  }
+      enter(note: string) {
+        if (!isMouseDown.current) return
+        onReleaseNote()
+        onAttackNote(note)
+      },
+      leave() {
+        if (!isMouseDown.current) return
+        onReleaseNote()
+      },
+    }),
+    [],
+  )
 
   return (
     <div className='contents' role='group'>
@@ -51,13 +51,13 @@ export function Keyboard({ onAttackNote, onReleaseNote }: KeyboardProps) {
           variant={variant}
           onMouseDown={async () => {
             await initToneOnClick()
-            handleMouseClick(note)
+            handle.click(note)
           }}
           onMouseEnter={() => {
-            handleMouseEnter(note)
+            handle.enter(note)
           }}
           onMouseLeave={() => {
-            handleMouseLeave()
+            handle.leave()
           }}
         />
       ))}
@@ -66,16 +66,25 @@ export function Keyboard({ onAttackNote, onReleaseNote }: KeyboardProps) {
 }
 
 const keys = [
+  // Triplet keys:
   { note: 'F#3', variant: 'right' },
-  { note: 'G#3', variant: 'DEFAULT' },
+  { note: 'G#3', variant: 'middle' },
   { note: 'A#3', variant: 'left' },
+
+  // Twin keys:
   { note: 'C#4', variant: 'right' },
   { note: 'D#4', variant: 'left' },
+
+  // Triplet keys:
   { note: 'F#4', variant: 'right' },
-  { note: 'G#4', variant: 'DEFAULT' },
+  { note: 'G#4', variant: 'middle' },
   { note: 'A#4', variant: 'left' },
+
+  // Twin keys:
   { note: 'C#5', variant: 'right' },
   { note: 'D#5', variant: 'left' },
+
+  // White keys:
   { note: 'F3', variant: 'large' },
   { note: 'G3', variant: 'large' },
   { note: 'A3', variant: 'large' },

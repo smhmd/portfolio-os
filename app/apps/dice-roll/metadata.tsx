@@ -4,7 +4,7 @@ import type { AppMetadata } from 'app/lib'
 export const metadata: AppMetadata = {
   id: 'dice-roll',
   name: '3D Dice Roll',
-  description: 'Roll Dice from d4 to d20',
+  description: 'Roll Dice from d4 to d100',
   Icon: AppIcon,
 }
 

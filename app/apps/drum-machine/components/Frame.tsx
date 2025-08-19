@@ -1,8 +1,8 @@
 import clsx from 'clsx'
 
-type FrameProps = React.PropsWithChildren
+type FrameProps = React.ComponentProps<'div'>
 
-export function Frame({ children }: FrameProps) {
+export function Frame({ children, className, ...props }: FrameProps) {
   return (
     <div
       id='frame'
@@ -10,7 +10,9 @@ export function Frame({ children }: FrameProps) {
         'bg-frame rounded-3.5xl relative flex justify-center py-5 pl-5',
         'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform',
         'w-[1446px] origin-center',
-      )}>
+        className,
+      )}
+      {...props}>
       <div
         className={clsx(
           'aspect-17/6 bg-keyboard rounded-ml grow',

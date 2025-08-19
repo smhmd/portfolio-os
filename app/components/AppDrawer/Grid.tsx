@@ -44,8 +44,9 @@ export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
       aria-atomic='true'
       className={clsx(
         'flex flex-wrap items-start justify-between',
-        'md:*:w-1/7 *:w-1/5 sm:*:w-1/6',
-        'w-full max-w-7xl gap-3 sm:gap-6 md:gap-8',
+        'w-full max-w-7xl',
+        '*:w-1/4 sm:*:w-1/5 md:*:w-1/5',
+        'gap-4 sm:gap-6 md:gap-8',
       )}>
       <AnimatePresence mode='popLayout'>
         {gridItems.map((id) => {

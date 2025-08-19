@@ -32,7 +32,9 @@ export function Volume() {
         </div>
       </div>
 
-      <div data-name='volume-mute' className='relative aspect-square size-full'>
+      <div
+        data-name='volume-mute'
+        className='relative aspect-square size-full cursor-pointer'>
         <div className='bg-bump-mute blur-px absolute inset-2.5 rounded-[11px]' />
         <div className='z-1 absolute inset-4'>
           <div className='bg-mute size-full rounded-md' />

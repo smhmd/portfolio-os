@@ -3,25 +3,25 @@ import clsx from 'clsx'
 import { Base } from './Base'
 
 type ButtonProps = React.ComponentProps<'button'> & {
-  variant?: 'DEFAULT' | 'large' | 'right' | 'left'
+  variant?: 'middle' | 'large' | 'right' | 'left'
   black?: boolean
 }
 
 const variants = {
   base: {
-    DEFAULT: 'col-span-2 row-span-2 aspect-square',
+    middle: 'col-span-2 row-span-2 aspect-square',
     right: 'col-span-3 row-span-2',
     left: 'col-span-3 row-span-2',
     large: 'col-span-2 row-span-4',
   },
   bump: {
-    DEFAULT: 'bg-bump inset-x-1.25 aspect-square',
+    middle: 'bg-bump inset-x-1.25 aspect-square',
     right: 'bg-bump right-1.25 aspect-square',
     left: 'bg-bump left-1.25 aspect-square',
     large: 'bg-bump-lg inset-x-1.25',
   },
   top: {
-    DEFAULT: 'bg-radial-border inset-x-2.5 aspect-square',
+    middle: 'bg-radial-border inset-x-2.5 aspect-square',
     right: 'bg-radial-border right-2.5 aspect-square',
     left: 'bg-radial-border left-2.5 aspect-square',
     large: 'bg-radial-lg-border inset-x-2.5',
@@ -34,7 +34,7 @@ const variants = {
  * @returns {object} JSX
  */
 export function Button({
-  variant = 'DEFAULT',
+  variant = 'middle',
   black,
   className,
   ...props

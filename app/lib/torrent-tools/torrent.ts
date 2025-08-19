@@ -1,7 +1,7 @@
 import { bencode } from './bencode'
 import { magnet } from './magnet'
 import type { MagnetObject, TorrentObject } from './types'
-import { binaryEncode } from './utils'
+import { binaryEncode, bytesToHex } from './utils'
 
 async function torrentToMagnetObject(
   torrentObject: TorrentObject,
@@ -17,9 +17,7 @@ async function torrentToMagnetObject(
   const hashBuffer = await crypto.subtle.digest('SHA-1', data)
 
   // Convert to hex format
-  const infoHash = Array.from(new Uint8Array(hashBuffer))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('')
+  const infoHash = bytesToHex(hashBuffer)
 
   // Create the magnet object
   const magnetObject: MagnetObject = {

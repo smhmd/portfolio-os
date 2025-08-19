@@ -38,3 +38,15 @@ export function utf8Encode(bytes: string): Uint8Array {
   textEncoder ??= new TextEncoder()
   return textEncoder.encode(bytes)
 }
+
+/**
+ * Convert bytes to a hex string.
+ */
+export function bytesToHex(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer)
+  let hex = ''
+  for (let i = 0; i < bytes.length; i++) {
+    hex += bytes[i].toString(16).padStart(2, '0')
+  }
+  return hex
+}
