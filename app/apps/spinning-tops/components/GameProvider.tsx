@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { use, useEffect, useMemo, useRef, useState } from 'react'
 
 import Matter from 'matter-js'
 import { Assets, Spritesheet } from 'pixi.js'
 
-import { useAsync } from 'app/hooks'
-
 import { GameContext } from '../lib'
+import { createClientPromise } from '~/lib'
 
 const { Vector } = Matter
 
@@ -13,10 +12,12 @@ interface GameProviderProps {
   children?: React.ReactNode
 }
 
+const spritesheetPromise = createClientPromise(
+  Assets.load<Spritesheet>('/spinning-tops/sprite.json'),
+)
+
 export const GameProvider = ({ children }: GameProviderProps) => {
-  const { data: spritesheet } = useAsync(async () =>
-    Assets.load<Spritesheet>('/sprites/spinning-tops.json'),
-  )
+  const spritesheet = use(spritesheetPromise)
 
   const crosshair = useRef(Vector.create(99999, 99999)) // start outside of the screen
 
@@ -43,12 +44,14 @@ export const GameProvider = ({ children }: GameProviderProps) => {
 
   const { scaleFactor, centerX, centerY } = useMemo(
     () => ({
-      scaleFactor: 0.00098 * Math.min(width, height),
+      scaleFactor: Math.min(width, height) / 1010,
       centerX: width / 2,
       centerY: height / 2,
     }),
     [width, height],
   )
+
+  if (!spritesheet) return null
 
   const value = {
     width,

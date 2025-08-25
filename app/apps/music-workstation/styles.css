@@ -1,7 +1,8 @@
 .bg-frame {
   --noise-size: 40px;
   background:
-    url(/noise.png) 0% 0% / var(--noise-size) var(--noise-size) repeat,
+    url(/music-workstation/noise.png) 0% 0% / var(--noise-size)
+      var(--noise-size) repeat,
     linear-gradient(90deg, #d1d1d1 0.2%, #858585 100%);
 
   border: 1px solid #b7b7b7;
@@ -128,7 +129,8 @@
 }
 
 .bg-screen-border {
-  background: linear-gradient(
+  background:
+    linear-gradient(
       114deg,
       rgba(255, 255, 255, 0.8) -2%,
       rgba(255, 255, 255, 0) 2%,

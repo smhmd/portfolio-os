@@ -10,7 +10,7 @@ export const metadata: AppMetadata = {
 
 export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
   return (
-    <AppIconWrapper fill='#222' {...props}>
+    <AppIconWrapper fill='#222' wip {...props}>
       <g stroke='#fff' fill='#222'>
         <path d='m77.965 57.997-7.028-28.188-27.965-7.997-20.937 20.191 7.028 28.188 27.965 7.996 20.937-20.19Z' />
         <path d='m68.9 57.055 2.037-27.244-25.32 2.61-23.582 9.583 14.589 23.1L57.029 78.19 68.9 57.055Z' />

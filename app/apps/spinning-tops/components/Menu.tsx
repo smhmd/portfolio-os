@@ -65,7 +65,7 @@ export const Menu = memo(() => {
           'absolute inset-x-0 flex flex-col items-center justify-center',
           'top-[8vh] sm:top-[18vh]',
         )}>
-        <img className='size-32 sm:size-44' src='/spinning-tops-winner.png' />
+        <img className='size-32 sm:size-44' src='/spinning-tops/winner.png' />
         <span className='text-shadow-cyan-glow text-4xl sm:text-5xl'>
           {winner && playerTitle[winner]} Won
         </span>

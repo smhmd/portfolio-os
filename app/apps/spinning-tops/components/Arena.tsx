@@ -107,27 +107,25 @@ export function Arena() {
 
   return (
     <pixiContainer label='Arena'>
-      {BARRIER_ARC.map(({ start, end }, i) => (
-        <pixiGraphics
-          label='Arc'
-          key={`arc-${i}`}
-          draw={(g) =>
-            g.arc(0, 0, BARRIER_RADIUS, start, end).stroke(outerStroke)
-          }
-        />
-      ))}
+      <pixiGraphics
+        label='Arcs'
+        draw={(g) => {
+          BARRIER_ARC.forEach(({ start, end }) => {
+            g.arc(0, 0, BARRIER_RADIUS, start, end)
+          })
+          g.stroke(outerStroke)
+        }}
+      />
 
-      {BARRIER_CORNER_LINES.map(({ start, end }, i) => (
-        <pixiGraphics
-          label='Line'
-          key={`line-${i}`}
-          x={start.x}
-          y={start.y}
-          draw={(g) =>
-            g.lineTo(end.x - start.x, end.y - start.y).stroke(outerStroke)
-          }
-        />
-      ))}
+      <pixiGraphics
+        label='Lines'
+        draw={(g) => {
+          BARRIER_CORNER_LINES.forEach(({ start, end }) => {
+            g.moveTo(start.x, start.y).lineTo(end.x, end.y)
+          })
+          g.stroke(outerStroke)
+        }}
+      />
 
       <pixiGraphics
         visible={VISIBLE_CIRCLES}
@@ -137,13 +135,15 @@ export function Arena() {
         }}
       />
 
-      {INNER_ARENA_LINES.map(({ x, y }, i) => (
-        <pixiGraphics
-          label='Line'
-          key={`line-${i}`}
-          draw={(g) => g.lineTo(x, y).stroke(innerStroke)}
-        />
-      ))}
+      <pixiGraphics
+        label='Inner Lines'
+        draw={(g) => {
+          INNER_ARENA_LINES.forEach(({ x, y }) => {
+            g.moveTo(0, 0).lineTo(x, y)
+          })
+          g.stroke(innerStroke)
+        }}
+      />
 
       <pixiGraphics
         visible={VISIBLE_CIRCLES}

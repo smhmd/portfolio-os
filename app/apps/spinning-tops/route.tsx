@@ -40,7 +40,7 @@ export default function App() {
     <AppWrapper
       isDark
       className={clsx(
-        'bg-[url("/backdrop.png")] bg-cover bg-center bg-no-repeat',
+        'bg-radial to-220% from-[#171519] from-10% to-black bg-cover bg-center bg-no-repeat',
         'cursor-none! flex flex-col items-center justify-center overscroll-none',
         'font-orbitron text-cyan-200/70',
       )}>

@@ -27,7 +27,9 @@ export function meta() {
 }
 
 export function links() {
-  const favicon = iconToFavicon(<AppIcon fill='transparent' padding={13} />)
+  const favicon = iconToFavicon(
+    <AppIcon fill='transparent' padding={13} wip={false} />,
+  )
   return [
     favicon,
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -71,9 +73,7 @@ export default function App() {
       <Frame>
         <Speaker />
         <Volume />
-        <Screen>
-          <span>Volume: {volume}</span>
-        </Screen>
+        <Screen />
         <Parameter variant='blue' />
         <Parameter variant='brown' />
         <Parameter variant='gray' />

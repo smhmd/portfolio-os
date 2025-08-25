@@ -124,7 +124,7 @@ export const GridFolderIcon = forwardRef<HTMLLIElement, GridFolderIconProps>(
           aria-label={`${name} folder, ${ids.length} apps`}
         />
         <span aria-hidden className={iconClassName}>
-          <AppIconWrapper>
+          <AppIconWrapper fill='#ffffff33'>
             {ids.slice(0, 9).map((id, index) => {
               const { x, y } = getPosition(index)
 

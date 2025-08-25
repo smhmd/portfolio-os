@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react'
 
 import type TMatter from 'matter-js'
+import { ensureContext } from 'app/utils'
 
 type EngineEventMap = {
   afterUpdate: TMatter.IEngineCallback
@@ -28,8 +29,6 @@ export const MatterContext = createContext<MatterContextType | undefined>(
 
 export const useMatter = () => {
   const context = useContext(MatterContext)
-  if (!context) {
-    throw new Error('useMatter must be used within a MatterProvider')
-  }
+  ensureContext(context)
   return context
 }
