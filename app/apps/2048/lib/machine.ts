@@ -12,7 +12,7 @@ import {
   reset,
 } from './utils'
 
-type Events =
+export type Events =
   | { type: 'start' }
   | { type: 'move'; payload: Direction }
   | { type: 'reset' }

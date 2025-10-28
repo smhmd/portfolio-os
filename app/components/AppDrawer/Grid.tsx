@@ -51,7 +51,7 @@ export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
       <AnimatePresence mode='popLayout'>
         {gridItems.map((id) => {
           if (typeof id === 'string') {
-            return <GridAppIcon key={`app-${id}`} id={id} />
+            return <GridAppIcon onClick={onClick} key={`app-${id}`} id={id} />
           } else {
             const [name, ids] = id
             const isExpanded = expandedFolders[name]
@@ -61,8 +61,7 @@ export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
                 name={name}
                 ids={ids}
                 isExpanded={isExpanded}
-                onClick={(e) => {
-                  onClick?.(e)
+                onClick={() => {
                   toggle(name)
                 }}
               />

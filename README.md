@@ -5,7 +5,7 @@ An OS-like website that showcases hosts a bunch of useful (and less than useful)
 ## Ideas
 
 - Grid homepage (similar to https://populate.tools/)
-- Add shorter links for various apps (like /drum for /drum-machine) and corrections (like /2084 for /2048)
+- Add shorter links for various apps (like /music for /music-workstation) and corrections (like /2084 for /2048)
 
 ### Games:
 

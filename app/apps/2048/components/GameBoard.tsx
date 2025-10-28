@@ -20,6 +20,7 @@ type GameBoardProps = {
 
 export const GameBoard = memo(
   ({
+    className,
     board,
     onMove,
     onContinue,
@@ -33,8 +34,14 @@ export const GameBoard = memo(
     useDirectionalSwipe({ handler: onMove, disabled: isLost })
 
     return (
-      <section className='mx-auto pt-10' {...props}>
-        <div className='relative m-2 aspect-square size-[525px] max-h-[90vw] max-w-[90vw]'>
+      <section
+        className={clsx('flex items-center justify-center', className)}
+        {...props}>
+        <div
+          className={clsx(
+            'relative aspect-square size-[min(min(92vw,70vh),32rem)]',
+            'l:vsm:m-2 p:sm:m-2 m-1',
+          )}>
           <div
             className={clsx(
               'bg-board',
@@ -42,8 +49,11 @@ export const GameBoard = memo(
               // A: We are using percentages to place and shift tiles around.
               // That means we need a square that's perfectly splittable by 4 (25%) to be able to say, shift this tile 50% or 75%, etc.
               // The outer div (the relative one) needs some padding, but that messes up the percentages. So, we use inset instead.
-              'absolute -inset-2',
-              'grid gap-3.5 rounded-3xl p-3.5',
+              'absolute -inset-1',
+              'grid',
+              'gap-2 rounded-2xl p-2',
+              'p:sm:-inset-2 p:sm:gap-3.5 p:sm:rounded-3xl p:sm:p-3.5',
+              'l:vsm:-inset-2 l:vsm:gap-3.5 l:vsm:rounded-3xl l:vsm:p-3.5',
             )}
             style={{
               gridTemplateRows: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,

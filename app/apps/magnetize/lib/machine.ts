@@ -7,13 +7,15 @@ import {
   type TorrentObject,
 } from 'app/lib/torrent-tools'
 
+import type { API } from '~/lib'
+
 import { APP_ID, type Options } from './common'
 import { indexesToRange, magnetToMagnetURI } from './utils'
 
 type Events =
-  | { type: 'torrent.add'; payload: string | ArrayBuffer }
+  | { type: 'file.upload'; payload: string | ArrayBuffer }
   | { type: 'option.set'; payload: { option: keyof Options; value: boolean } }
-  | { type: 'selectedFiles.set'; payload: Set<number> }
+  | { type: 'files.select'; payload: Set<number> }
   | { type: 'reset' }
 
 export type State = {
@@ -48,8 +50,9 @@ const errorState = {
  * Will prompt useSelector to update the state when this is false
  * We return `false` when `magnetURI` or `error` don't match the previous state
  */
-export const compareState = (a: State, b: State) =>
-  a.magnetURI === b.magnetURI && a.error === b.error
+export const compareState = (a: State, b: State) => {
+  return a.magnetURI === b.magnetURI && a.error === b.error
+}
 
 const machine = setup({
   types: {
@@ -129,7 +132,7 @@ const machine = setup({
             }
           }),
         },
-        'selectedFiles.set': {
+        'files.select': {
           description:
             'Update the selected files and regenerates the magnet URI.',
           guard: ({ context: { torrentObject } }) => {
@@ -161,7 +164,7 @@ const machine = setup({
     },
   },
   on: {
-    'torrent.add': {
+    'file.upload': {
       description:
         'Decode the torrent file and generate a torrent object to be processed.',
       target: '.LOADING',
@@ -184,4 +187,19 @@ const machine = setup({
 })
 
 export const actor = createActor(machine)
+export const api = {
+  uploadFile(payload) {
+    actor.send({ type: 'file.upload', payload })
+  },
+  setOption(payload) {
+    actor.send({ type: 'option.set', payload })
+  },
+  selectFiles(payload) {
+    actor.send({ type: 'files.select', payload })
+  },
+  reset() {
+    actor.send({ type: 'reset' })
+  },
+} satisfies API<Events>
+
 actor.start()

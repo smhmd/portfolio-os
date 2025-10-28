@@ -1,12 +1,16 @@
 import { useEffect, useMemo } from 'react'
 
 import { useMachine, useSelector } from '@xstate/react'
+import clsx from 'clsx'
 
 import { AppWrapper } from 'app/components'
 import { iconToFavicon } from 'app/utils'
 
+import { Info } from '~/assets'
+import type { API } from '~/lib'
+
 import { GameBoard, GameHeader } from './components'
-import { type Direction, machine } from './lib'
+import { type Events, machine } from './lib'
 import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
@@ -36,37 +40,32 @@ export default function App() {
     () => !state.context.updated,
   )
 
-  const handle = useMemo(
-    () => ({
-      move(payload: Direction) {
-        send({ type: 'move', payload })
-      },
-      continue() {
-        send({ type: 'continue' })
-      },
-      reset() {
-        send({ type: 'reset' })
-      },
-    }),
-    [],
-  )
+  const handle = useMemo<API<Events>>(() => {
+    return {
+      start: () => send({ type: 'start' }),
+      continue: () => send({ type: 'continue' }),
+      reset: () => send({ type: 'reset' }),
+      move: (payload) => send({ type: 'move', payload }),
+    }
+  }, [])
 
   useEffect(() => {
     // Avoid SSR `window` is undefined behavior (cause we're using localStorage)
-    send({ type: 'start' })
+    handle.start()
   }, [])
 
   return (
     <AppWrapper
       isDark
-      className='flex flex-col items-center justify-center bg-[#F9F7EF] text-[#756452]'>
+      className='isolate flex flex-col items-center justify-between bg-[#F9F7EF] text-[#756452]'>
       <GameHeader
         onReset={handle.reset}
-        className='absolute inset-x-0 top-10'
+        className='z-1'
         score={score}
         best={best}
       />
       <GameBoard
+        className='vsm:absolute inset-0 grow'
         board={board}
         onMove={handle.move}
         onContinue={handle.continue}
@@ -74,8 +73,21 @@ export default function App() {
         isWon={isWon}
         isLost={isLost}
       />
-      <footer className='absolute bottom-[5vh] text-xs opacity-70'>
-        Originally created by Gabriele Cirulli.
+      <footer
+        className={clsx(
+          'h-[24svh]',
+          'vmd:block hidden items-center justify-center',
+          'py-18 vxl:py-24 px-2',
+          'text-center text-xs opacity-70',
+        )}>
+        <p>
+          <Info
+            aria-hidden
+            className='mb-0.75 mr-1 inline size-4 fill-current'
+          />
+          <b>Swipe</b> or use <b>arrow keys</b> to merge tiles and make{' '}
+          <b className='bg-yellow-500 text-white'>2048</b>
+        </p>
       </footer>
     </AppWrapper>
   )

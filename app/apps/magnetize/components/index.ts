@@ -1,4 +1,5 @@
 export * from './AdvancedOptions'
+export * from './Alert'
 export * from './DropZone'
 export * from './FileSelector'
 export * from './MagnetLink'

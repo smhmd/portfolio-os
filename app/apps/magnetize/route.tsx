@@ -1,14 +1,13 @@
-import { useMemo } from 'react'
-
 import { useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
 import { AppWrapper } from 'app/components'
 import { iconToFavicon } from 'app/utils'
 
-import { AdvancedOptions, DropZone, MagnetLink } from './components'
-import { Alert } from './components/Alert'
-import { actor, compareState, type Options } from './lib'
+import { Bolt, Play, Sparkles } from '~/assets'
+
+import { AdvancedOptions, Alert, DropZone, MagnetLink } from './components'
+import { actor, api, compareState, createDummyTorrent } from './lib'
 import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
@@ -31,29 +30,16 @@ export default function App() {
     compareState,
   )
 
-  const handle = useMemo(
-    () => ({
-      fileUpload(payload: ArrayBuffer) {
-        actor.send({ type: 'torrent.add', payload })
-      },
-      optionChange(payload: { option: keyof Options; value: boolean }) {
-        actor.send({ type: 'option.set', payload })
-      },
-      selectedFilesChange(payload: Set<number>) {
-        actor.send({ type: 'selectedFiles.set', payload })
-      },
-      reset() {
-        actor.send({ type: 'reset' })
-      },
-    }),
-    [],
-  )
-
   return (
     <AppWrapper
       isDark
-      className='flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 px-4 text-white selection:bg-purple-950/40'>
-      <div className='flex w-full max-w-2xl flex-col gap-8'>
+      className={clsx(
+        'flex items-center justify-center px-4',
+        'text-white selection:bg-purple-950/40',
+        'bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900',
+        'scrollbar-purple-400',
+      )}>
+      <div className='vmd:gap-8 flex w-full max-w-2xl flex-col gap-4'>
         <header className='flex flex-col gap-4 text-center'>
           <h1
             aria-label='Torrent Magnetizer'
@@ -67,53 +53,76 @@ export default function App() {
             />
             nt Magnetizer
           </h1>
-          <p className='block text-lg text-purple-200 [@media(max-height:700px)]:sr-only'>
+          <p className='vmd:not-sr-only sr-only block text-lg text-purple-200'>
             <span>
-              Transform your torrent files into magnetic
-              <span className='whitespace-nowrap'> energy ⚡</span>
+              Transform your torrent files into magnetic energy
+              <Bolt aria-hidden className='inline size-4 fill-yellow-400' />
             </span>
           </p>
         </header>
 
         <section
           aria-label='Torrent conversion panel'
-          className={clsx(
-            'flex flex-col gap-y-2',
-            'rounded-2xl border border-white/20 bg-white/10 p-4 shadow-2xl backdrop-blur-xl sm:p-8',
-          )}>
-          {!error ? (
-            <DropZone
-              torrentObject={torrentObject}
-              onFileUpload={handle.fileUpload}
-              onReset={handle.reset}
-            />
-          ) : (
-            <Alert
-              severity='error'
-              message='The file appears to be corrupted or in an unsupported format. Please try a different torrent file.'
-              action={{
-                label: 'Try Again',
-                onClick: handle.reset,
-              }}
-            />
-          )}
-          {torrentObject && (
-            <div className='flex flex-col gap-y-4'>
-              <AdvancedOptions
+          className='flex flex-col items-center justify-center'>
+          <div
+            className={clsx(
+              'flex w-full flex-col gap-y-2',
+              'rounded-2xl border border-white/20 bg-white/10 p-4 shadow-2xl backdrop-blur-xl sm:p-8',
+            )}>
+            {!error ? (
+              <DropZone
                 torrentObject={torrentObject}
-                options={options}
-                onOptionChange={handle.optionChange}
-                onSelectedFilesChange={handle.selectedFilesChange}
+                onUploadFile={api.uploadFile}
+                onReset={api.reset}
               />
-              {magnetURI && <MagnetLink link={magnetURI} />}
-            </div>
-          )}
+            ) : (
+              <Alert
+                severity='error'
+                message='The file appears to be corrupted or in an unsupported format. Please try a different torrent file.'
+                action={{
+                  label: 'Try Again',
+                  handler: api.reset,
+                }}
+              />
+            )}
+            {torrentObject && (
+              <div className='flex flex-col gap-y-4'>
+                <AdvancedOptions
+                  torrentObject={torrentObject}
+                  options={options}
+                  onSelectFiles={api.selectFiles}
+                  onSetOption={api.setOption}
+                />
+                {magnetURI && <MagnetLink link={magnetURI} />}
+              </div>
+            )}
+          </div>
+          <button
+            onClick={async () => {
+              const torrentFile = await createDummyTorrent()
+              api.uploadFile(torrentFile)
+            }}
+            className={clsx(
+              'cursor-pointer px-2 py-1 text-xs text-white',
+              'opacity-70 transition-opacity hover:opacity-85',
+              'outline-none focus-visible:ring-2 focus-visible:ring-purple-500',
+              'bg-white/8 rounded-b-lg border border-t-0 border-white/30',
+            )}>
+            View Demo
+            <Play
+              aria-hidden
+              className='mb-0.5 ml-1 inline size-3 fill-current'
+            />
+          </button>
         </section>
 
-        <footer className='text-center text-sm text-purple-300 [@media(max-height:700px)]:sr-only'>
+        <footer className='vlg:not-sr-only sr-only mt-4 text-center text-sm text-purple-300'>
           <p>
-            Powered by quantum entanglement and
-            <span className='whitespace-nowrap'> digital magic ✨</span>
+            Powered by quantum entanglement and digital magic
+            <Sparkles
+              aria-hidden
+              className='mb-px ml-0.5 inline size-4 fill-yellow-400'
+            />
           </p>
         </footer>
       </div>

@@ -1,5 +1,18 @@
 @import 'tailwindcss';
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overscroll-behavior: none;
+}
+
+body {
+  min-height: 100svh;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
 :root {
   color-scheme: dark light;
 }
@@ -52,10 +65,58 @@ main::-webkit-scrollbar {
   --animate-spin-wobble: spin-wobble 0.8s ease-in-out infinite;
 }
 
+@custom-variant init {
+  @layer initial {
+    @slot;
+  }
+}
+
 /* @custom-variant html (html:has(&)); */
 @custom-variant html-dark (html:has(.app-is-dark-themed) &);
 @custom-variant thumb [&::-webkit-slider-thumb, &::-moz-range-thumb];
 @custom-variant track [&::-webkit-slider-runnable-track, &::-moz-range-track];
+
+@custom-variant l {
+  @media (orientation: landscape) {
+    @slot;
+  }
+}
+
+@custom-variant p {
+  @media (orientation: portrait) {
+    @slot;
+  }
+}
+
+@custom-variant vsm {
+  @media (height >= 30rem) {
+    @slot;
+  }
+}
+
+@custom-variant vmd {
+  @media (height >= 45rem) {
+    @slot;
+  }
+}
+
+@custom-variant vlg {
+  @media (height >= 56rem) {
+    @slot;
+  }
+}
+
+@custom-variant vxl {
+  @media (height >= 68rem) {
+    @slot;
+  }
+}
+
+@custom-variant v2xl {
+  @media (height >= 90rem) {
+    @slot;
+  }
+}
 
 @utility vertical-rl {
   writing-mode: vertical-rl;
@@ -67,6 +128,22 @@ main::-webkit-scrollbar {
 
 @utility animate-running {
   animation-play-state: running;
+}
+
+@utility scrollbar-* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, --value(--color- *) 50%, transparent)
+    transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklch, --value(--color- *) 50%, transparent);
+    border-radius: 3px;
+  }
 }
 
 /* 

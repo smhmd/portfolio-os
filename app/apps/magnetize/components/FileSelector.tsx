@@ -88,15 +88,16 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
           message={`File selection is disabled for torrents with more than ${FILE_LIMIT.toLocaleString()} files.`}
           action={{
             label: 'Open Anyway',
-            onClick: bypassLimit,
+            handler: bypassLimit,
           }}
         />
       ) : (
         <ul
-          className='custom-scrollbar max-h-24 space-y-1 overflow-y-auto'
+          className='max-h-24 space-y-1 overflow-y-auto'
           aria-label='Select files to include in the magnet link'>
           {files.map((file, index) => {
             const isSelected = selectedIndexes.has(index)
+            if (!file.path) return null
             const filePath = file.path.join('/')
             const bytes = formatBytes(file.length)
 

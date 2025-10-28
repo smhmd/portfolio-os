@@ -1,6 +1,6 @@
 import { magnet, type MagnetObject } from 'app/lib/torrent-tools'
 
-import type { Options } from './common'
+import { DUMMY_TORRENT, type Options } from './common'
 
 // List of size units
 const units = ['B', 'KB', 'MB', 'GB', 'TB']
@@ -148,4 +148,17 @@ export function indexesToRange(indexSet: Set<number>) {
   }
 
   return ranges.join(',') // Return the formatted string
+}
+
+export async function createDummyTorrent() {
+  const encoder = new TextEncoder()
+  const torrentBytes = encoder.encode(DUMMY_TORRENT)
+  const torrentFile = new File([torrentBytes], 'dummy.torrent', {
+    type: 'application/x-bittorrent',
+  })
+
+  const dt = new DataTransfer()
+  dt.items.add(torrentFile)
+
+  return await fileToArrayBuffer(dt.files[0])
 }

@@ -10,7 +10,7 @@ type AlertProps = {
   message?: string
   action?: {
     label: string
-    onClick: () => void
+    handler: () => void
   }
 }
 
@@ -54,7 +54,7 @@ export function Alert({ severity = 'warning', message, action }: AlertProps) {
       </div>
       {action && (
         <button
-          onClick={action.onClick}
+          onClick={action.handler}
           className={clsx(
             styles.button,
             'w-full sm:w-auto',

@@ -35,11 +35,16 @@ export const Overlay = memo(
         animate='animate'
         exit='exit'
         className={clsx(
-          'absolute -inset-2 flex items-center justify-center rounded-3xl text-6xl font-bold',
+          '@container absolute flex items-center justify-center text-6xl font-bold',
+          '-inset-1 rounded-2xl',
+          'p:sm:-inset-2 p:sm:rounded-3xl',
+          'l:vsm:-inset-2 l:vsm:rounded-3xl',
           className,
         )}
         {...props}>
-        <p>{title}</p>
+        <p className='whitespace-nowrap text-[clamp(2rem,12cqw,4rem)]'>
+          {title}
+        </p>
         <div className='absolute bottom-[20%] flex items-center text-base'>
           {children}
         </div>

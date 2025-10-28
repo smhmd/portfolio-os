@@ -6,9 +6,15 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from 'react-router'
 
-import { AppIconShape, BreakpointDisplay, BSOD } from 'app/components'
+import {
+  AppDrawer,
+  AppIconShape,
+  BreakpointDisplay,
+  BSOD,
+} from 'app/components'
 import { Providers } from 'app/contexts'
 import mainCSS from 'app/styles/main.css?url'
 
@@ -46,14 +52,14 @@ type Props = React.PropsWithChildren
 
 export function Layout({ children }: Props) {
   return (
-    <html lang='en'>
+    <html lang='en' className='touch-none select-none'>
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <Meta />
         <Links />
       </head>
-      <body className='select-none antialiased'>
+      <body className='antialiased'>
         {children}
         <AppIconShape />
         <ScrollRestoration />
@@ -65,8 +71,16 @@ export function Layout({ children }: Props) {
 }
 
 export default function App() {
+  const location = useLocation()
+  const isApp = location.pathname !== '/'
+
   return (
     <Providers>
+      {isApp && (
+        <nav>
+          <AppDrawer />
+        </nav>
+      )}
       <Outlet /> {/* Apps go here */}
     </Providers>
   )

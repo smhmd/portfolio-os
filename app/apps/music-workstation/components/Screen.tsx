@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useRef } from 'react'
+
 import { Application, extend } from '@pixi/react'
 import clsx from 'clsx'
 import { AnimatedSprite, Container, Graphics, Sprite } from 'pixi.js'

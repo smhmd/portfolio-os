@@ -63,10 +63,13 @@ export const Menu = memo(() => {
         className={clsx(
           isGameOver ? 'block' : 'hidden',
           'absolute inset-x-0 flex flex-col items-center justify-center',
-          'top-[8vh] sm:top-[18vh]',
+          'vsm:top-[8vh] vlg:top-[12vh] vxl:top-[18vh] v2xl:top-[20vh] top-[6vh]',
         )}>
-        <img className='size-32 sm:size-44' src='/spinning-tops/winner.png' />
-        <span className='text-shadow-cyan-glow text-4xl sm:text-5xl'>
+        <img
+          className='l:vsm:size-28 l:vmd:size-44 l:size-20 size-28 sm:size-44'
+          src='/spinning-tops/winner.png'
+        />
+        <span className='text-shadow-cyan-glow l:vsm:text-3xl l:vmd:text-5xl l:text-xl text-3xl sm:text-5xl'>
           {winner && playerTitle[winner]} Won
         </span>
       </section>

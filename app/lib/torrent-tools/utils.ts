@@ -12,7 +12,7 @@ export function binaryDecode(bytes: Uint8Array): string {
 /**
  * Encodes a string into a Uint8Array by converting each character to its byte representation
  */
-export function binaryEncode(bytes: string): Uint8Array {
+export function binaryEncode(bytes: string): Uint8Array<ArrayBuffer> {
   const result = new Uint8Array(bytes.length)
   for (let i = 0; i < bytes.length; i++) {
     result[i] = bytes.charCodeAt(i) & 0xff

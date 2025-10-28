@@ -7,6 +7,8 @@ import * as motion from 'motion/react-client'
 
 import { type AppID, apps } from 'app/apps'
 
+import type { Props } from '~/lib'
+
 import { AppIconWrapper } from '../AppIcon'
 
 // Constants for grid layout
@@ -68,13 +70,16 @@ const GridIcon = forwardRef<HTMLLIElement, GridIconProps>(
 
 GridIcon.displayName = 'GridIcon'
 
-type GridAppIconProps = { id: AppID; disableAnimation?: boolean }
+type GridAppIconProps = Props<
+  typeof Link,
+  { id: AppID; disableAnimation?: boolean; to?: undefined }
+>
 
 const iconClassName =
   'size-18 transition-transform group-active:scale-90 sm:size-28'
 
 export const GridAppIcon = forwardRef<HTMLLIElement, GridAppIconProps>(
-  ({ id, disableAnimation }, ref) => {
+  ({ id, disableAnimation, ...props }, ref) => {
     const { name, Icon, description } = apps[id]
     return (
       <GridIcon
@@ -86,7 +91,9 @@ export const GridAppIcon = forwardRef<HTMLLIElement, GridAppIconProps>(
           className='absolute inset-0 z-50 cursor-pointer'
           tabIndex={0}
           prefetch='intent'
-          to={`/${id}`}></Link>
+          to={`/${id}`}
+          {...props}
+        />
         <span aria-hidden className={iconClassName}>
           <Icon />
         </span>

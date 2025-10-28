@@ -1,7 +1,6 @@
-import { lazy, Suspense, useRef } from 'react'
+import { lazy, Suspense } from 'react'
 
 import { Canvas } from '@react-three/fiber'
-import * as THREE from 'three'
 
 import { AppWrapper } from 'app/components'
 import { iconToFavicon } from 'app/utils'

@@ -19,7 +19,10 @@ export const TileBlock = memo(({ x, y, value }: TileBlockProps) => {
 
   return (
     <div
-      className='@container duration-(--anim-duration) absolute transform-gpu p-1'
+      className={clsx(
+        '@container duration-(--anim-duration) absolute transform-gpu',
+        'p:sm:p-1 l:vsm:p-1 p-0.5',
+      )}
       style={{
         transitionTimingFunction: 'cubic-bezier(0.34, 1.26, 0.80, 1.01)',
         translate: `calc(${x} * 100%) calc(${y} * 100%)`, // the magic ✨

@@ -87,7 +87,7 @@ export function MagnetLink({ link }: MagnetLinkProps) {
             )}
           </button>
         </div>
-        <div className='custom-scrollbar max-h-24 overflow-y-auto p-2'>
+        <div className='max-h-24 overflow-y-auto p-2'>
           <HighlightedMagnetLink link={link} />
         </div>
       </div>

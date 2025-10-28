@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useGlobalState } from 'app/contexts'
+import { useGlobals } from 'app/contexts'
 import type { Direction } from 'app/lib'
 
 type Props = {
@@ -14,7 +14,7 @@ const MIN_SWIPE_DISTANCE = 30
  * Detects swipe gestures in four directions (up, down, left, right).
  */
 export const useDirectionalSwipe = ({ handler, disabled }: Props) => {
-  const { isAppDrawerOpen } = useGlobalState()
+  const { isAppDrawerOpen } = useGlobals()
 
   useEffect(() => {
     if (disabled) return
@@ -75,7 +75,7 @@ const directionKeyCodes: Record<string, Direction> = {
  * Detects directional keyboard input (arrow keys or WASD).
  */
 export const useDirectionalKeyDown = ({ handler, disabled }: Props) => {
-  const { isAppDrawerOpen } = useGlobalState()
+  const { isAppDrawerOpen } = useGlobals()
 
   useEffect(() => {
     if (disabled) return

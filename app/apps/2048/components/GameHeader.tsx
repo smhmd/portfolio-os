@@ -16,21 +16,27 @@ export const GameHeader = memo(
   ({ score, best, onReset, className, ...rest }: GameHeaderProps) => (
     <header
       className={clsx(
-        'grid w-full items-center gap-y-2 px-2 sm:px-8',
-        'grid-cols-3 grid-rows-2 md:grid-cols-3 md:grid-rows-1',
+        'w-full max-w-[110rem]',
+        'l:grid-rows-1 grid grid-cols-3 grid-rows-2 items-center',
+        'vlg:px-8 l:lg:pt-4 gap-y-2 px-2 py-2 lg:xl:p-10',
         className,
       )}
       {...rest}>
       <h1
         className={clsx(
           'text-5xl font-black',
-          'col-start-2 place-self-center sm:col-start-1 sm:place-self-auto',
+          'p:col-start-2 p:place-self-center vlg:place-self-auto vlg:col-start-1 col-start-1 place-self-auto',
         )}>
         2048
       </h1>
 
+      <Score className='p:col-span-3' score={score} best={best} />
+
       <button
-        className={clsx('justify-self-end rounded-lg', 'col-start-3')}
+        className={clsx(
+          'justify-self-end rounded-lg',
+          'col-start-3 row-start-1',
+        )}
         onClick={onReset}>
         <Replay aria-hidden className='fill-current sm:hidden' />
         <span
@@ -43,12 +49,6 @@ export const GameHeader = memo(
           New Game
         </span>
       </button>
-
-      <Score
-        className='col-span-3 md:col-span-1 md:col-start-2 md:row-start-1'
-        score={score}
-        best={best}
-      />
     </header>
   ),
 )

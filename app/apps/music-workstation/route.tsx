@@ -48,7 +48,7 @@ export function links() {
 
 export default function App() {
   const [_, send, actor] = useMachine(machine)
-  const { volume } = useSelector(actor, ({ context }) => context)
+  useSelector(actor, ({ context }) => context)
 
   const handle = useMemo(
     () => ({

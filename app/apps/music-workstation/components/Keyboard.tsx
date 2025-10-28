@@ -17,16 +17,14 @@ export function Keyboard({ onAttackNote, onReleaseNote }: KeyboardProps) {
       click(note: string) {
         onAttackNote(note)
         isMouseDown.current = true
-        const controller = new AbortController()
         document.addEventListener(
           'mouseup',
           () => {
             if (!isMouseDown.current) return
             onReleaseNote()
             isMouseDown.current = false
-            controller.abort()
           },
-          { signal: controller.signal },
+          { once: true },
         )
       },
       enter(note: string) {

@@ -35,7 +35,12 @@ export const Score = memo(
           {diffs.map(([id, diff]) => (
             <span
               key={id}
-              className='animate-fade-up absolute inset-0 flex items-center justify-center text-[#4f2c11]'>
+              className={clsx(
+                'absolute inset-0',
+                'flex items-center justify-center',
+                diff > 0 ? 'text-yellow-600' : 'text-[#f45732]',
+                'animate-fade-up',
+              )}>
               {diff > 0 ? '+' : ''}
               {diff}
             </span>
@@ -64,8 +69,8 @@ function ScoreDisplay({
   return (
     <p
       className={clsx(
-        'flex items-center justify-between sm:flex-col',
-        'w-full md:max-w-32',
+        'vlg:flex-col flex items-center justify-between',
+        'w-full lg:max-w-32',
         'rounded-xl border-2 border-[#eae7d9] sm:rounded-2xl',
         'px-4 py-2 sm:py-1',
         'uppercase text-[#988876]',

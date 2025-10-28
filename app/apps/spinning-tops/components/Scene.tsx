@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { useTick } from '@pixi/react'
 import { useSelector } from '@xstate/react'
 
-import { useGlobalState, useMatter } from 'app/contexts'
+import { useGlobals, useMatter } from 'app/contexts'
 
 import { actor, FREQUENCY, MAX_ACCUMULATED_FREQUENCY, useGame } from '../lib'
 import { Arena, Battle, Crosshair } from '.'
@@ -13,7 +13,7 @@ export function Scene() {
     useGame()
 
   const { updateEngine } = useMatter()
-  const { isAppDrawerOpen } = useGlobalState()
+  const { isAppDrawerOpen } = useGlobals()
   const isBattling = useSelector(
     actor,
     (state) => state.matches('PLAYING') || state.matches('GAME_OVER'),
