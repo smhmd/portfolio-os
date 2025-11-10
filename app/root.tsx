@@ -48,9 +48,7 @@ export const links: Route.LinksFunction = () => [
   { rel: 'stylesheet', href: mainCSS },
 ]
 
-type Props = React.PropsWithChildren
-
-export function Layout({ children }: Props) {
+export function Layout({ children }: React.PropsWithChildren) {
   return (
     <html lang='en' className='touch-none select-none'>
       <head>

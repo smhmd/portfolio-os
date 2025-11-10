@@ -13,4 +13,7 @@ export default defineConfig({
     tsconfigPaths(),
     svgr(),
   ],
+  ssr: {
+    noExternal: ['@react-three/drei'],
+  },
 })
