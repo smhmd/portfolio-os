@@ -1,5 +1,5 @@
 import type { RapierRigidBody } from '@react-three/rapier'
-import * as THREE from 'three'
+import { Quaternion, type Vector3 } from 'three'
 
 function getInwardImpulse(
   pos: { x: number; y: number; z: number },
@@ -37,16 +37,11 @@ export function getFace({
   variant,
 }: {
   body: RapierRigidBody
-  normals: THREE.Vector3[]
+  normals: Vector3[]
   variant: number
 }) {
   const rotation = body.rotation()
-  const quat = new THREE.Quaternion(
-    rotation.x,
-    rotation.y,
-    rotation.z,
-    rotation.w,
-  )
+  const quat = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w)
 
   let maxY = 0
   let topFaceIndex = -1

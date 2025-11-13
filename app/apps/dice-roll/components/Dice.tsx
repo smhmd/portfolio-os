@@ -11,7 +11,15 @@ import {
   RigidBody,
   type RigidBodyAutoCollider,
 } from '@react-three/rapier'
-import * as THREE from 'three'
+import {
+  BufferGeometry,
+  CanvasTexture,
+  Float32BufferAttribute,
+  MeshPhongMaterial,
+  MeshStandardMaterial,
+  Sphere,
+  Vector3,
+} from 'three'
 
 import { createClientPromise } from 'app/lib'
 
@@ -100,12 +108,12 @@ function createGeometry({
   radius?: number
   normalLength?: number
 }) {
-  const geometry = new THREE.BufferGeometry()
+  const geometry = new BufferGeometry()
 
   const positions: number[] = []
   const uvs: number[] = []
   const indexArray: number[] = []
-  const groups: THREE.BufferGeometry['groups'] = []
+  const groups: BufferGeometry['groups'] = []
 
   const vertexCache = new Map<string, number>()
   let vertexIndex = 0
@@ -125,7 +133,7 @@ function createGeometry({
       const key = `${index}-${i}`
 
       if (!vertexCache.has(key)) {
-        const vertex = new THREE.Vector3(...vertices[index])
+        const vertex = new Vector3(...vertices[index])
         vertex.normalize().multiplyScalar(radius)
         positions.push(vertex.x, vertex.y, vertex.z)
 
@@ -157,11 +165,8 @@ function createGeometry({
   })
 
   // Set geometry attributes
-  geometry.setAttribute(
-    'position',
-    new THREE.Float32BufferAttribute(positions, 3),
-  )
-  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2))
+  geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))
+  geometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2))
   geometry.setIndex(indexArray)
 
   geometry.clearGroups()
@@ -175,12 +180,12 @@ function createGeometry({
 
   // Compute normals
   geometry.computeVertexNormals()
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), radius)
+  geometry.boundingSphere = new Sphere(new Vector3(), radius)
 
   const normals = indices.slice(0, normalLength).map(([a, b, c]) => {
-    const v0 = new THREE.Vector3(...vertices[a])
-    const v1 = new THREE.Vector3(...vertices[b])
-    const v2 = new THREE.Vector3(...vertices[c])
+    const v0 = new Vector3(...vertices[a])
+    const v1 = new Vector3(...vertices[b])
+    const v2 = new Vector3(...vertices[c])
 
     return v1.sub(v0).cross(v2.sub(v0)).normalize()
   })
@@ -489,7 +494,7 @@ function createTextTexture(text: string | string[]) {
     })
   }
 
-  return new THREE.CanvasTexture(canvas)
+  return new CanvasTexture(canvas)
 }
 
 function createLabelMaterials(
@@ -498,7 +503,7 @@ function createLabelMaterials(
 ) {
   return labels.map(
     (text) =>
-      new THREE.MeshPhongMaterial({
+      new MeshPhongMaterial({
         map: createTextTexture(text),
         color,
         transparent: true,
@@ -508,7 +513,7 @@ function createLabelMaterials(
 }
 
 function createColorMaterial(color: string) {
-  return new THREE.MeshStandardMaterial({
+  return new MeshStandardMaterial({
     color,
     roughness: 0.2,
     metalness: 0.1,

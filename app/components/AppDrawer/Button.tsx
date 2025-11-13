@@ -12,6 +12,7 @@ export const AppDrawerButton = ({ isDark }: AppDrawerButtonProps) => (
       'fixed z-10',
       'bottom-4 left-4 sm:bottom-6 sm:left-6',
       'p-2 sm:p-3',
+      'corner-shape-squircle supports-squircle:rounded-full',
       'rounded-lg bg-black/30 text-white shadow-lg backdrop-blur-lg',
       'cursor-pointer transition-transform hover:scale-105 active:scale-95',
       'border focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',

@@ -7,7 +7,7 @@ export function useDebounced(callback: () => void, delay = 1000) {
     (override = delay) => {
       if (timeout.current) clearTimeout(timeout.current)
 
-      timeout.current = window.setTimeout(() => {
+      timeout.current = setTimeout(() => {
         callback()
         timeout.current = null
       }, override)

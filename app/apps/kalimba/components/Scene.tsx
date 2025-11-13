@@ -5,7 +5,7 @@ import { lazy, Suspense, useMemo, useReducer } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import clsx from 'clsx'
 import * as motion from 'motion/react-client'
-import * as THREE from 'three'
+import { DoubleSide, MathUtils } from 'three'
 
 import { DISTANCE, FOV, SMILE_TEXTURE, useInstrument } from '../lib'
 
@@ -50,7 +50,7 @@ function Stage() {
   const { size } = useThree()
 
   const radius = useMemo(() => {
-    const vFov = THREE.MathUtils.degToRad(FOV)
+    const vFov = MathUtils.degToRad(FOV)
     const visibleHeight = 2 * Math.tan(vFov / 2) * DISTANCE
     const visibleWidth = visibleHeight * (size.width / size.height)
 
@@ -64,7 +64,7 @@ function Stage() {
           <ambientLight intensity={Math.PI} />
           <mesh position={[0, 0, 0]} scale={0.495}>
             <circleGeometry args={[radius, 64]} />
-            <meshStandardMaterial map={SMILE_TEXTURE} side={THREE.DoubleSide} />
+            <meshStandardMaterial map={SMILE_TEXTURE} side={DoubleSide} />
           </mesh>
         </>
       )}
