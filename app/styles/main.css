@@ -158,6 +158,28 @@ main::-webkit-scrollbar {
   }
 }
 
+@custom-variant supports-squircle {
+  @supports (corner-shape: squircle) {
+    @slot;
+  }
+}
+
+@utility corner-shape-* {
+  corner-shape: --value(
+    'round',
+    'scoop',
+    'bevel',
+    'notch',
+    'square',
+    'squircle'
+  );
+  corner-shape: superellipse(--value(number));
+}
+
+@utility -corner-shape-* {
+  corner-shape: superellipse(calc(--value(number) * -1));
+}
+
 /* 
  * Use '?' class to visually highlight any element with an eye-catching effect. 
  * 

@@ -17,7 +17,7 @@ export default function Mascot({ radius, onRender, ...props }: MascotProps) {
   )
 
   useLayoutEffect(() => {
-    setTimeout(onRender, 1)
+    setTimeout(onRender, 50)
   }, [])
 
   if (!spriteObj) return null

@@ -7,7 +7,7 @@ import {
   type SpriteData,
 } from '@react-three/drei'
 import { type ThreeElements, useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+import type * as THREE from 'three'
 
 type SphereSpriteAnimatorProps = {
   spriteDataset: {

@@ -1,25 +1,28 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import clsx from 'clsx'
-import { useAnimate } from 'motion/react'
+import { animate } from 'motion/react'
 import * as motion from 'motion/react-client'
 
 import { useGlobals } from '~/contexts'
 import { gpuTier, type Props } from '~/lib'
 import { interpolate } from '~/utils'
 
-import { useInstrument, useOptions } from '../lib'
+import {
+  getTineOrder,
+  keyboardKeys,
+  type TineInfo,
+  useInstrument,
+  useOptions,
+} from '../lib'
 
 type TineProps = Props<
   'button',
   {
     index: number
-    num: number
-    octave: number
-    note: string
-    padding: string
     height: number
-  }
+    padding: string
+  } & TineInfo
 >
 
 let isMouseDown = false
@@ -27,6 +30,7 @@ let isMouseDown = false
 export function Tine({
   index,
   num,
+  pips,
   octave,
   note,
   className,
@@ -43,16 +47,17 @@ export function Tine({
     [width],
   )
 
-  const [outer, pluckAnimate] = useAnimate<HTMLSpanElement>()
-  const [inner, flashAnimate] = useAnimate<HTMLSpanElement>()
+  const outerRef = useRef<HTMLSpanElement>(null)
+  const innerRef = useRef<HTMLSpanElement>(null)
 
   function pluck() {
+    if (!outerRef.current) return
+    if (!innerRef.current) return
+
     playNote({ index, note, octave })
 
-    if (gpuTier < 1) return
-
-    pluckAnimate(
-      outer.current,
+    animate(
+      outerRef.current,
       { y: [-11, -10] },
       {
         type: 'spring',
@@ -63,8 +68,8 @@ export function Tine({
       },
     )
 
-    flashAnimate(
-      inner.current,
+    const flash = animate(
+      innerRef.current,
       { opacity: [1, 0.2, 0] },
       {
         duration: 1.5,
@@ -72,6 +77,8 @@ export function Tine({
         ease: ['easeOut', 'easeOut'],
       },
     )
+
+    if (gpuTier < 1) flash.cancel()
   }
 
   function handleClick() {
@@ -91,13 +98,27 @@ export function Tine({
     pluck()
   }
 
+  useEffect(() => {
+    const code = keyboardKeys[index]
+    const controller = new AbortController()
+
+    document.addEventListener(
+      'keydown',
+      (e) => !e.repeat && e.code == code && pluck(),
+      { signal: controller.signal },
+    )
+
+    return () => controller.abort()
+  }, [])
+
   return (
     <button
       style={{
         height: `${height}%`,
         padding: `0 clamp(1px,${padding}vw,8px)`,
+        order: getTineOrder(index),
       }}
-      className='group w-full cursor-pointer outline-none'
+      className='@container group w-full cursor-pointer outline-none'
       onPointerDown={handleClick}
       onPointerEnter={handleEnter}
       {...props}>
@@ -110,33 +131,36 @@ export function Tine({
           damping: 25,
           bounce: 0,
         }}
-        ref={outer}
+        ref={outerRef}
         className={clsx(
-          '@container relative flex flex-col justify-end gap-y-2.5 overflow-hidden',
-          'size-full rounded-b-full',
+          'relative flex flex-col justify-end gap-y-2.5 overflow-hidden',
+          'corner-shape-1.5 size-full rounded-b-full',
           'bg-gradient-to-b from-5%',
           'from-white/94 to-white/86',
           'font-quicksand tabular-nums',
           'shadow-[0_3px] shadow-black/25 sm:shadow-[0_4px]',
           'text-shadow-[0_1.5px] text-shadow-white/60',
+          'whitespace-pre text-[clamp(.875rem,60cqw,3.5rem)] leading-[clamp(1rem,50cqw,4rem)]',
         )}>
         <motion.span
-          ref={inner}
+          ref={innerRef}
           initial={{ opacity: 0 }}
           className='absolute inset-0 bg-gradient-to-b from-white from-40% to-transparent'
         />
-        <span className='font-roboto -mb-2 whitespace-pre text-[clamp(.75rem,60cqw,2.75rem)] leading-[2vw]'>
-          {'•\n'.repeat(octave - 4)}
+        <span className='font-roboto -mb-2 text-[clamp(.75rem,60cqw,2.75rem)] leading-[2vw]'>
+          {'•\n'.repeat(pips)}
         </span>
-        <span className='whitespace-pre text-[clamp(.875rem,60cqw,3.5rem)] leading-[clamp(1rem,60cqw,4rem)]'>
-          {options.labelType == 0 && num}
-          {options.labelType == 1 && note}
-          {options.labelType == 2 && `${num}\n${note}`}
-        </span>
+        {options.labelType != 1 && <span>{num}</span>}
+        {options.labelType != 0 && (
+          <span className='-tracking-wide'>
+            <span>{note[0]}</span>
+            <span className='leading-0 text-[clamp(.3rem,30cqw,2rem)]'>
+              {note[1]}
+            </span>
+          </span>
+        )}
         <span
-          style={{
-            height: `${tipHeight}vh`,
-          }}
+          style={{ height: `${tipHeight}vh` }}
           className={clsx(
             'w-full shrink-0 bg-gradient-to-b from-40%',
             'from-white/50 to-transparent',

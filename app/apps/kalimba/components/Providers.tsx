@@ -1,11 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react'
+import { useLoaderData } from 'react-router'
 
 import { animate } from 'motion/react'
 import type * as THREE from 'three'
 
 import { useDebounced } from '~/hooks'
 import { gpuTier } from '~/lib'
-import { interpolate } from '~/utils'
+import { interpolate, isEven } from '~/utils'
 
 import {
   Instrument,
@@ -20,11 +21,15 @@ import { InstrumentContext, type Options, OptionsContext } from '../lib'
 
 const kalimba = new Instrument(KALIMBA_SOUNDS)
 
-export function OptionsProvider({ children }: React.PropsWithChildren) {
+type OptionsProviderProps = React.PropsWithChildren
+
+export function OptionsProvider({ children }: OptionsProviderProps) {
+  const hi = useLoaderData()
+  console.log(hi)
   const [options, setOptions] = useState<Options>({
-    color: 17,
-    labelType: 2,
-    tines: 13,
+    color: 10,
+    labelType: 0,
+    tines: 17,
     tuning: 4,
     reverb: 0,
   })
@@ -59,7 +64,7 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
       { duration: 0.4 },
     )
 
-    if (gpuTier < 2) reset.complete()
+    if (gpuTier < 0) reset.complete()
   }, 1400)
 
   const playNote = useCallback<InstrumentContextType['playNote']>(
@@ -71,7 +76,8 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
 
       if (index < 0) return
 
-      const rotation = interpolate(index, [0, options.tines - 1], [-1, 1])
+      let rotation = interpolate(index, [0, options.tines - 1], [0, 1])
+      rotation = isEven(index) ? rotation : -rotation
 
       if (gpuTier > 0) {
         const rotate = animate(
@@ -83,7 +89,7 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
           },
           { duration: 0.4 },
         )
-        if (gpuTier < 2) rotate.complete()
+        if (gpuTier < 1) rotate.complete()
 
         const bounce = animate(
           containerRef.current,
@@ -95,7 +101,7 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
             mass: 0.4,
           },
         )
-        if (gpuTier < 3) bounce.complete()
+        if (gpuTier < 1) bounce.complete()
       }
 
       const newAnim = Math.min(

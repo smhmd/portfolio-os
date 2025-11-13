@@ -1,3 +1,11 @@
+export function isOdd(n: number) {
+  return n % 2 !== 0
+}
+
+export function isEven(n: number) {
+  return n % 2 == 0
+}
+
 export function uuid(): string {
   const template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
   const randomBytes = crypto.getRandomValues(new Uint8Array(16))

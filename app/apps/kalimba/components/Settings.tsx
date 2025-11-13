@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import clsx from 'clsx'
 import { Dialog, RadioGroup, Slider } from 'radix-ui'
@@ -44,9 +44,7 @@ function Controls() {
         min={MIN_COUNT}
         max={MAX_COUNT}
         value={options.tines}
-        onValueChange={([value]) => {
-          setOption({ option: 'tines', value })
-        }}
+        onValueCommit={([value]) => setOption({ option: 'tines', value })}
       />
       <Range
         name='tuning'
@@ -57,8 +55,8 @@ function Controls() {
         onValueChange={([value]) => {
           const octave = value < 4 ? 3 : 4
           playNote({ note: tunings[value], index: -1, octave })
-          setOption({ option: 'tuning', value })
         }}
+        onValueCommit={([value]) => setOption({ option: 'tuning', value })}
       />
       <Range
         name='reverb'
@@ -67,9 +65,7 @@ function Controls() {
         step={10}
         value={options.reverb}
         formatValue={(value) => `${value}%`}
-        onValueChange={([value]) => {
-          setOption({ option: 'reverb', value })
-        }}
+        onValueCommit={([value]) => setOption({ option: 'reverb', value })}
       />
     </ul>
   )
@@ -211,7 +207,7 @@ function StylePicker({ name, value, options, ...props }: ColorPickerProps) {
       className={clsx('block size-full rounded-full', options[value])}>
       <RadioGroup.Root
         defaultValue={value.toString()}
-        className='grid grid-cols-6 grid-rows-3 gap-2.5'
+        className='@container grid grid-cols-6 grid-rows-3 place-items-center gap-2.5'
         {...props}>
         {options.map((color, i) => (
           <RadioGroup.Item
@@ -237,7 +233,8 @@ function Token({
   return (
     <button
       className={clsx(
-        'size-17 group cursor-pointer rounded-full',
+        'group cursor-pointer rounded-full',
+        'size-[clamp(2rem,16cqw,4.25rem)]',
         'relative outline-none',
         'bg-white',
       )}
@@ -262,13 +259,24 @@ type RangeProps = Props<
   { value: number; name: string; formatValue?(value: number): number | string }
 >
 
-function Range({ name, value, formatValue = (v) => v, ...props }: RangeProps) {
+function Range({
+  name,
+  value,
+  formatValue = (v) => v,
+  onValueChange,
+  ...props
+}: RangeProps) {
+  const [innerValue, setInnerValue] = useState(value)
   return (
     <Control name={name} value={formatValue(value)}>
       <div className='flex items-center justify-center gap-x-4'>
         <Slider.Root
           className='group relative flex h-6 grow touch-none items-center justify-between'
           defaultValue={[value]}
+          onValueChange={([v]) => {
+            setInnerValue(v)
+            onValueChange?.([v])
+          }}
           {...props}>
           <Slider.Track className='h-6.5 relative grow rounded-full bg-white/30' />
           <Slider.Thumb
@@ -286,7 +294,7 @@ function Range({ name, value, formatValue = (v) => v, ...props }: RangeProps) {
         <output
           htmlFor={`slider-${name}`}
           className='mb-0.75 min-w-[4.5ch] text-right font-semibold tabular-nums'>
-          {formatValue(value)}
+          {formatValue(innerValue)}
         </output>
       </div>
     </Control>

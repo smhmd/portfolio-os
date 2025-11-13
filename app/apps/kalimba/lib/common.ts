@@ -17,11 +17,18 @@ export const ROTATION_Z = 0.2
 
 export const KALIMBA_SOUNDS = {
   samples: [
-    { src: '/kalimba/samples/kalimba262.ogg', freq: 262 }, // C4
-    { src: '/kalimba/samples/kalimba523.ogg', freq: 523 }, // C5
-    { src: '/kalimba/samples/kalimba1056.ogg', freq: 1056 }, // C6
+    { src: '/kalimba/samples/kalimba262.ogg', freq: 261.3 }, // C4
+    { src: '/kalimba/samples/kalimba523.ogg', freq: 523.1 }, // C5
+    { src: '/kalimba/samples/kalimba1056.ogg', freq: 1055.8 }, // C6
   ],
-  octaves: { min: 3, max: 6 },
+  octaves: { min: 3, max: 7 },
+}
+
+export type TineInfo = {
+  num: number
+  pips: number
+  octave: number
+  note: string
 }
 
 export const colors = [
@@ -47,7 +54,24 @@ export const colors = [
 
 export const labels = ['1', 'c', '1\nc']
 
-export const tunings = [
+export const scales = {
+  Ab: ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'],
+  A: ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
+  Bb: ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'],
+  B: ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
+  C: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+  Db: ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'],
+  D: ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
+  Eb: ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'],
+  E: ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'],
+  F: ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
+  Gb: ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'],
+  G: ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
+}
+
+export type NoteKey = keyof typeof scales
+
+export const tunings: NoteKey[] = [
   'Ab',
   'A',
   'Bb',
@@ -62,17 +86,41 @@ export const tunings = [
   'G',
 ]
 
-export const SMILE_IMAGE =
-  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NDAiIGhlaWdodD0iNTQwIiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgNTQwIDU0MCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTM4NS4xIDIzNC44Yy0xNS45IDAtMjYuNS0yNy4yLTE1LjQtMzkuNSA2LjgtNy41IDE1LTYuOSAyMy43IDEuOSAxMi43IDEyLjcgNy4zIDM3LjYtOC4zIDM3LjZNMTQzLjEgMjI3LjRjLTUuMi04LTMuOC0xNy42IDQtMjYuNCA5LjgtMTEuMSAyNy43LTIgMjcuNyAxNC4yIDAgMTguMS0yMi4yIDI2LjYtMzEuNyAxMi4yTTI2NS45IDM0OC41YzI5LjggMCA1Mi4zLTEwLjUgNzMuOC0zOCA2LjItNy43IDExLjktMTIuNiAxOC40LTYgNi44IDYuNyA3LjYgMTMuNi0yLjQgMjkuMy0xNS4zIDI0LjEtNTQuNCA0NS4zLTg5IDQ1LjZhNzQgNzQgMCAwIDEtNDAuNi0xMGMtMjEuMi0xMC42LTQ3LjMtMzUuNS01MS4zLTQ4LTIuMy03LjMgNC0xOCAxMS40LTE4IDIuMyAwIDE0IDkuNSAyMCAxNi4yIDE0LjQgMTYgNDIuNSAyOC45IDU5LjcgMjguOSIvPjwvc3ZnPg=='
+export const keyboardKeys = [
+  // low octave
+  'KeyB',
+  'KeyV',
+  'KeyN',
+  'KeyC',
+  'KeyM',
+  'KeyX',
+  'Comma',
 
-export const SMILE_TEXTURE = await new Promise<Texture | undefined>(
-  (resolve) => {
-    if (!isClient) resolve(undefined)
+  // middle octave
+  'KeyH',
+  'KeyG',
+  'KeyJ',
+  'KeyF',
+  'KeyK',
+  'KeyD',
+  'KeyL',
 
-    const image = new Image()
-    image.src = SMILE_IMAGE
-    const texture = new Texture(image)
-    texture.needsUpdate = true
-    resolve(texture)
-  },
-)
+  // high octave
+  'KeyY',
+  'KeyT',
+  'KeyU',
+  'KeyR',
+  'KeyI',
+  'KeyE',
+  'KeyO',
+]
+
+export let SMILE_TEXTURE: Texture | undefined = undefined
+
+if (isClient) {
+  const image = new Image()
+  image.src =
+    'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NDAiIGhlaWdodD0iNTQwIiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgNTQwIDU0MCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTM4NS4xIDIzNC44Yy0xNS45IDAtMjYuNS0yNy4yLTE1LjQtMzkuNSA2LjgtNy41IDE1LTYuOSAyMy43IDEuOSAxMi43IDEyLjcgNy4zIDM3LjYtOC4zIDM3LjZNMTQzLjEgMjI3LjRjLTUuMi04LTMuOC0xNy42IDQtMjYuNCA5LjgtMTEuMSAyNy43LTIgMjcuNyAxNC4yIDAgMTguMS0yMi4yIDI2LjYtMzEuNyAxMi4yTTI2NS45IDM0OC41YzI5LjggMCA1Mi4zLTEwLjUgNzMuOC0zOCA2LjItNy43IDExLjktMTIuNiAxOC40LTYgNi44IDYuNyA3LjYgMTMuNi0yLjQgMjkuMy0xNS4zIDI0LjEtNTQuNCA0NS4zLTg5IDQ1LjZhNzQgNzQgMCAwIDEtNDAuNi0xMGMtMjEuMi0xMC42LTQ3LjMtMzUuNS01MS4zLTQ4LTIuMy03LjMgNC0xOCAxMS40LTE4IDIuMyAwIDE0IDkuNSAyMCAxNi4yIDE0LjQgMTYgNDIuNSAyOC45IDU5LjcgMjguOSIvPjwvc3ZnPg=='
+  SMILE_TEXTURE = new Texture(image)
+  SMILE_TEXTURE.needsUpdate = true
+}
