@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
-
 import clsx from 'clsx'
-import { Dialog, RadioGroup, Slider } from 'radix-ui'
+import { Dialog } from 'radix-ui'
 
-import { ArrowDown, Close } from '~/assets'
-import type { Props } from '~/lib'
+import { ArrowDown } from '~/assets'
 
 import {
   colors,
@@ -16,6 +13,9 @@ import {
   useOptions,
 } from '../lib'
 import { Halo, MenuIcon } from './Icons'
+import { NumberPicker } from './NumberPicker'
+import { StylePicker } from './StylePicker'
+import { TextPicker } from './TextPicker'
 
 function Controls() {
   const { options, setOption } = useOptions()
@@ -39,14 +39,14 @@ function Controls() {
           setOption({ option: 'labelType', value: Number(value) })
         }}
       />
-      <Range
+      <NumberPicker
         name='tines'
         min={MIN_COUNT}
         max={MAX_COUNT}
         value={options.tines}
         onValueCommit={([value]) => setOption({ option: 'tines', value })}
       />
-      <Range
+      <NumberPicker
         name='tuning'
         min={0}
         max={11}
@@ -58,7 +58,7 @@ function Controls() {
         }}
         onValueCommit={([value]) => setOption({ option: 'tuning', value })}
       />
-      <Range
+      <NumberPicker
         name='reverb'
         min={0}
         max={100}
@@ -111,192 +111,5 @@ export function Settings() {
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  )
-}
-
-type ControlProps = Props<'span', { name: string; value?: string | number }>
-
-function Control({ name, value = '', children, ...props }: ControlProps) {
-  return (
-    <li className='w-full'>
-      <Dialog.Root>
-        <Dialog.Trigger
-          className={clsx(
-            'group flex w-full items-center justify-between',
-            'active:bg-white/3 hover:bg-white/2 cursor-pointer',
-            'focus-visible:bg-white/2 px-6 py-3 outline-none',
-          )}>
-          <span className='w-full text-left capitalize tracking-wider'>
-            {name}
-          </span>
-          <span className='flex size-12 shrink-0 items-center justify-center whitespace-pre font-semibold'>
-            <span {...props}>{value}</span>
-          </span>
-        </Dialog.Trigger>
-        <Dialog.Portal>
-          <Dialog.Overlay
-            className={clsx(
-              'fixed inset-0 z-20 bg-black/60',
-              'data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out',
-            )}
-          />
-          <Dialog.Content
-            className={clsx(
-              'rounded-4xl fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2',
-              'w-full max-w-[34rem] bg-neutral-900',
-              'font-quicksand text-2.5xl tracking-wider outline-none',
-              'data-[state=open]:animate-grow-in data-[state=closed]:animate-grow-out',
-            )}>
-            <section className='pt-5.5 relative flex flex-col gap-y-14 px-8 pb-10'>
-              <Dialog.Title className='text-center capitalize'>
-                {name}
-              </Dialog.Title>
-              <Dialog.Description className='sr-only'>
-                TODO: FILL THIS DEPENDING ON INPUT TYPE
-              </Dialog.Description>
-              {children}
-              <Dialog.Close
-                aria-label='Close'
-                className={clsx(
-                  'absolute right-4 top-4 cursor-pointer rounded-full p-2',
-                  'outline-none',
-                  'hover:rotate-90 hover:bg-white/20 focus-visible:rotate-90 focus-visible:bg-white/20',
-                  'transition-all duration-300',
-                )}>
-                <Close className='size-10 fill-current' aria-hidden />
-              </Dialog.Close>
-            </section>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
-    </li>
-  )
-}
-
-type PickerProps = Props<
-  typeof RadioGroup.Root,
-  { options: string[]; name: string; value: number }
->
-
-function TextPicker({ name, value, options, ...props }: PickerProps) {
-  return (
-    <Control name={name} value={options[value]}>
-      <RadioGroup.Root
-        defaultValue={value.toString()}
-        className='flex justify-center gap-2.5'
-        {...props}>
-        {options.map((text, i) => (
-          <RadioGroup.Item key={text} value={i.toString()} asChild>
-            <Token>{text}</Token>
-          </RadioGroup.Item>
-        ))}
-      </RadioGroup.Root>
-    </Control>
-  )
-}
-
-type ColorPickerProps = Props<
-  typeof RadioGroup.Root,
-  { options: string[]; name: string; value: number }
->
-
-function StylePicker({ name, value, options, ...props }: ColorPickerProps) {
-  return (
-    <Control
-      name={name}
-      className={clsx('block size-full rounded-full', options[value])}>
-      <RadioGroup.Root
-        defaultValue={value.toString()}
-        className='@container grid grid-cols-6 grid-rows-3 place-items-center gap-2.5'
-        {...props}>
-        {options.map((color, i) => (
-          <RadioGroup.Item
-            key={color}
-            value={i.toString()}
-            aria-label={color}
-            asChild>
-            <Token className={color} />
-          </RadioGroup.Item>
-        ))}
-      </RadioGroup.Root>
-    </Control>
-  )
-}
-
-type TokenProps = Props<'button'>
-
-function Token({
-  className = 'bg-neutral-800',
-  children,
-  ...props
-}: TokenProps) {
-  return (
-    <button
-      className={clsx(
-        'group cursor-pointer rounded-full',
-        'size-[clamp(2rem,16cqw,4.25rem)]',
-        'relative outline-none',
-        'bg-white',
-      )}
-      {...props}>
-      <span className='absolute -inset-1' />
-      <span
-        className={clsx(
-          'absolute -inset-px flex items-center justify-center whitespace-pre leading-7',
-          'block rounded-full capitalize',
-          'group-active:scale-70 transition-transform',
-          'group-data-[state=checked]:scale-80',
-          className,
-        )}>
-        {children}
-      </span>
-    </button>
-  )
-}
-
-type RangeProps = Props<
-  typeof Slider.Root,
-  { value: number; name: string; formatValue?(value: number): number | string }
->
-
-function Range({
-  name,
-  value,
-  formatValue = (v) => v,
-  onValueChange,
-  ...props
-}: RangeProps) {
-  const [innerValue, setInnerValue] = useState(value)
-  return (
-    <Control name={name} value={formatValue(value)}>
-      <div className='flex items-center justify-center gap-x-4'>
-        <Slider.Root
-          className='group relative flex h-6 grow touch-none items-center justify-between'
-          defaultValue={[value]}
-          onValueChange={([v]) => {
-            setInnerValue(v)
-            onValueChange?.([v])
-          }}
-          {...props}>
-          <Slider.Track className='h-6.5 relative grow rounded-full bg-white/30' />
-          <Slider.Thumb
-            autoFocus
-            id={`slider-${name}`}
-            className={clsx(
-              'size-13 relative block rounded-full bg-white',
-              'shadow-inner-xl shadow-neutral-400',
-              'cursor-grab active:cursor-grabbing',
-              'hover:shadow-none focus:outline-none group-focus-within:shadow-none',
-            )}
-            aria-label='Volume'
-          />
-        </Slider.Root>
-        <output
-          htmlFor={`slider-${name}`}
-          className='mb-0.75 min-w-[4.5ch] text-right font-semibold tabular-nums'>
-          {formatValue(innerValue)}
-        </output>
-      </div>
-    </Control>
   )
 }

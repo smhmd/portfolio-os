@@ -25,6 +25,10 @@ type TineProps = Props<
   } & TineInfo
 >
 
+/**
+ * To allow playing other notes while pressing mouse down without releasing.
+ * Shared. No point in making it a React ref.
+ */
 let isMouseDown = false
 
 export function Tine({
@@ -50,7 +54,7 @@ export function Tine({
   const outerRef = useRef<HTMLSpanElement>(null)
   const innerRef = useRef<HTMLSpanElement>(null)
 
-  function pluck() {
+  function pluckAndPlay() {
     if (!outerRef.current) return
     if (!innerRef.current) return
 
@@ -82,7 +86,7 @@ export function Tine({
   }
 
   function handleClick() {
-    pluck()
+    pluckAndPlay()
     isMouseDown = true
     document.addEventListener(
       'mouseup',
@@ -95,7 +99,7 @@ export function Tine({
 
   function handleEnter() {
     if (!isMouseDown) return
-    pluck()
+    pluckAndPlay()
   }
 
   useEffect(() => {
@@ -103,8 +107,19 @@ export function Tine({
     const controller = new AbortController()
 
     document.addEventListener(
-      'keydown',
-      (e) => !e.repeat && e.code == code && pluck(),
+      'keypress',
+      (e) => {
+        // if the user is entering a shortcut (i.e. ctrl+r to reload)
+        // don't fire
+        const modified = [
+          e.repeat,
+          e.metaKey,
+          e.ctrlKey,
+          e.shiftKey,
+          e.altKey,
+        ].some(Boolean)
+        return !modified && e.code == code && pluckAndPlay()
+      },
       { signal: controller.signal },
     )
 

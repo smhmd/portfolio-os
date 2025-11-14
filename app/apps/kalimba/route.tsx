@@ -25,7 +25,7 @@ export function meta() {
 }
 
 export function links() {
-  const favicon = iconToFavicon(<AppIcon padding={13} />)
+  const favicon = iconToFavicon(<AppIcon padding={8} />)
   return [
     favicon,
     {
