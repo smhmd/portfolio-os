@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useLoaderData } from 'react-router'
 
 import { animate } from 'motion/react'
@@ -6,33 +6,48 @@ import type * as THREE from 'three'
 
 import { useDebounced } from '~/hooks'
 import { gpuTier } from '~/lib'
-import { interpolate, isEven } from '~/utils'
+import { interpolate, isEven, setCookie } from '~/utils'
 
 import {
   Instrument,
+  InstrumentContext,
   type InstrumentContextType,
   KALIMBA_SOUNDS,
+  type Options,
+  OptionsContext,
   ROTATION_X,
   ROTATION_Y,
   ROTATION_Z,
   useOptions,
 } from '../lib'
-import { InstrumentContext, type Options, OptionsContext } from '../lib'
 
 const kalimba = new Instrument(KALIMBA_SOUNDS)
 
 type OptionsProviderProps = React.PropsWithChildren
 
 export function OptionsProvider({ children }: OptionsProviderProps) {
-  const hi = useLoaderData()
-  console.log(hi)
-  const [options, setOptions] = useState<Options>({
-    color: 10,
-    labelType: 0,
-    tines: 17,
-    tuning: 4,
-    reverb: 0,
+  const data = useLoaderData<string>()
+
+  const [options, setOptions] = useState<Options>(() => {
+    const [color, labelType, tines, tuning, reverb] = data
+      ? data.split(',').map(Number)
+      : [10, 0, 17, 4, 0]
+
+    return {
+      color,
+      labelType,
+      tines,
+      tuning,
+      reverb,
+    }
   })
+
+  useEffect(() => {
+    const { color, labelType, tines, tuning, reverb } = options
+    const value = `${color},${labelType},${tines},${tuning},${reverb}`
+
+    setCookie('kalimba.options', value)
+  }, [options])
 
   return (
     <OptionsContext.Provider

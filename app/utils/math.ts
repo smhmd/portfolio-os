@@ -6,6 +6,10 @@ export function isEven(n: number) {
   return n % 2 == 0
 }
 
+export function clamp(min: number, value: number, max: number) {
+  return Math.min(Math.max(min, value), max)
+}
+
 export function uuid(): string {
   const template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
   const randomBytes = crypto.getRandomValues(new Uint8Array(16))
@@ -65,10 +69,10 @@ export function interpolate(
   if (range === 0) throw new Error('Source range cannot have zero length')
 
   // Clamp and normalize to [0, 1]
-  const t = Math.min(Math.max((value - fromA) / range, 0), 1)
+  const normal = clamp(0, (value - fromA) / range, 1)
 
   // Resolve easing function
   const ease = typeof easing === 'function' ? easing : easings[easing]
 
-  return toA + (toB - toA) * ease(t)
+  return toA + (toB - toA) * ease(normal)
 }

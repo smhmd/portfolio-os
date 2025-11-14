@@ -32,7 +32,7 @@ export default function Mascot({ radius, onRender, ...props }: MascotProps) {
       {...props}
       ref={mascotRef}>
       <sphereGeometry args={[radius, 32, 32]} />
-      <meshStandardMaterial color='black' />
+      <meshBasicMaterial color='black' />
     </SpriteAnimator>
   )
 }

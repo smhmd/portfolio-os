@@ -1,8 +1,9 @@
 import clsx from 'clsx'
 import * as motion from 'motion/react-client'
+import type { LoaderFunction } from 'react-router'
 
 import { AppWrapper } from 'app/components'
-import { iconToFavicon } from 'app/utils'
+import { getCookie, iconToFavicon } from 'app/utils'
 
 import {
   Halo,
@@ -32,6 +33,13 @@ export function links() {
       href: 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap',
     },
   ]
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const cookie = request.headers.get('Cookie') ?? ''
+  const options = getCookie('kalimba.options', cookie)
+
+  return options
 }
 
 export default function App() {

@@ -5,7 +5,7 @@ import { lazy, Suspense, useMemo, useReducer } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import clsx from 'clsx'
 import * as motion from 'motion/react-client'
-import { DoubleSide, MathUtils } from 'three'
+import { MathUtils } from 'three'
 
 import { DISTANCE, FOV, SMILE_TEXTURE, useInstrument } from '../lib'
 
@@ -34,7 +34,6 @@ export function Scene({ className, ...props }: SceneProps) {
           'p:size-[min(50%,18rem)]',
         )}>
         <Canvas
-          className='bg-transparent'
           camera={{ fov: FOV, position: [0, 0, DISTANCE] }}
           gl={{ alpha: true, antialias: true }}>
           <Stage />
@@ -60,13 +59,10 @@ function Stage() {
   return (
     <>
       {isFallback && (
-        <>
-          <ambientLight intensity={Math.PI} />
-          <mesh position={[0, 0, 0]} scale={0.495}>
-            <circleGeometry args={[radius, 64]} />
-            <meshStandardMaterial map={SMILE_TEXTURE} side={DoubleSide} />
-          </mesh>
-        </>
+        <mesh scale={0.495}>
+          <circleGeometry args={[radius, 64]} />
+          <meshBasicMaterial map={SMILE_TEXTURE} />
+        </mesh>
       )}
       <Suspense>
         <Mascot radius={radius} onRender={hideFallback} />
