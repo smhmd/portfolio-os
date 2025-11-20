@@ -1,4 +1,5 @@
-export * from './Icons'
+export * from './Buttons'
+export * from './Panel'
 export * from './Providers'
 export * from './Settings'
 export * from './Tines'

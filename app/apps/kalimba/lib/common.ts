@@ -1,8 +1,16 @@
 import { Texture } from 'three'
 
-import { isClient } from '~/lib'
+import { clientOnly } from 'app/lib'
 
 export const APP_ID = 'kalimba'
+
+export type Options = {
+  color: number
+  labelType: number
+  tines: number
+  tuning: number
+  reverb: number
+}
 
 export const MIN_COUNT = 9
 export const MAX_COUNT = 21
@@ -115,12 +123,12 @@ export const keyboardKeys = [
   'KeyO',
 ]
 
-export let SMILE_TEXTURE: Texture | undefined = undefined
-
-if (isClient) {
+export const SMILE_TEXTURE = clientOnly(() => {
   const image = new Image()
   image.src =
     'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NDAiIGhlaWdodD0iNTQwIiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgNTQwIDU0MCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTM4NS4xIDIzNC44Yy0xNS45IDAtMjYuNS0yNy4yLTE1LjQtMzkuNSA2LjgtNy41IDE1LTYuOSAyMy43IDEuOSAxMi43IDEyLjcgNy4zIDM3LjYtOC4zIDM3LjZNMTQzLjEgMjI3LjRjLTUuMi04LTMuOC0xNy42IDQtMjYuNCA5LjgtMTEuMSAyNy43LTIgMjcuNyAxNC4yIDAgMTguMS0yMi4yIDI2LjYtMzEuNyAxMi4yTTI2NS45IDM0OC41YzI5LjggMCA1Mi4zLTEwLjUgNzMuOC0zOCA2LjItNy43IDExLjktMTIuNiAxOC40LTYgNi44IDYuNyA3LjYgMTMuNi0yLjQgMjkuMy0xNS4zIDI0LjEtNTQuNCA0NS4zLTg5IDQ1LjZhNzQgNzQgMCAwIDEtNDAuNi0xMGMtMjEuMi0xMC42LTQ3LjMtMzUuNS01MS4zLTQ4LTIuMy03LjMgNC0xOCAxMS40LTE4IDIuMyAwIDE0IDkuNSAyMCAxNi4yIDE0LjQgMTYgNDIuNSAyOC45IDU5LjcgMjguOSIvPjwvc3ZnPg=='
-  SMILE_TEXTURE = new Texture(image)
-  SMILE_TEXTURE.needsUpdate = true
-}
+  const texture = new Texture(image)
+  texture.needsUpdate = true
+
+  return texture
+})

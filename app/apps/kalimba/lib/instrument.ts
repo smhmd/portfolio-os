@@ -1,14 +1,4 @@
-import { isClient } from '~/lib'
-
-let ctx: AudioContext
-let globalGain: GainNode
-
-if (isClient) {
-  ctx = new AudioContext()
-  globalGain = ctx.createGain()
-  globalGain.gain.value = 0.3
-  globalGain.connect(ctx.destination)
-}
+import { audioContext, globalGain } from './audio'
 
 type Sample = { src: string; freq: number }
 type Octaves = { min: number; max: number }
@@ -23,6 +13,7 @@ const SHARP_TO_FLAT: Record<string, string> = {
   'F#': 'Gb',
   'G#': 'Ab',
   'A#': 'Bb',
+  B: 'Cb',
 }
 
 const getName = (index: number, octave: number) => {
@@ -46,7 +37,7 @@ export class Instrument {
 
   private async loadAndGenerate({ src, freq }: Sample) {
     const arrayBuffer = await (await fetch(src)).arrayBuffer()
-    const base = await ctx.decodeAudioData(arrayBuffer)
+    const base = await audioContext.decodeAudioData(arrayBuffer)
 
     const { min, max } = this.options.octaves
     for (let octave = min; octave <= max; octave++) {
@@ -66,7 +57,7 @@ export class Instrument {
 
   private resample(buffer: AudioBuffer, ratio: number) {
     const length = Math.floor(buffer.length / ratio)
-    const resampledBuffer = ctx.createBuffer(
+    const resampledBuffer = audioContext.createBuffer(
       buffer.numberOfChannels,
       length,
       buffer.sampleRate,
@@ -93,7 +84,7 @@ export class Instrument {
     const buffer = this.notes.get(note)
     if (!buffer) return
 
-    const src = ctx.createBufferSource()
+    const src = audioContext.createBufferSource()
     src.buffer = buffer
     src.connect(globalGain)
     src.start()

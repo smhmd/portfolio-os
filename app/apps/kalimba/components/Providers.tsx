@@ -15,13 +15,17 @@ import {
   KALIMBA_SOUNDS,
   type Options,
   OptionsContext,
+  Recorder,
+  RecorderContext,
   ROTATION_X,
   ROTATION_Y,
   ROTATION_Z,
   useOptions,
+  useRecorder,
 } from '../lib'
 
-const kalimba = new Instrument(KALIMBA_SOUNDS)
+const instrument = new Instrument(KALIMBA_SOUNDS)
+const recorder = new Recorder()
 
 type OptionsProviderProps = React.PropsWithChildren
 
@@ -62,9 +66,44 @@ export function OptionsProvider({ children }: OptionsProviderProps) {
   )
 }
 
+export function RecorderProvider({ children }: React.PropsWithChildren) {
+  const recordingRef = useRef(false)
+
+  function record() {
+    recordingRef.current = true
+    // recorder.start will be executed on the next playNote
+    // to avoid having silence at the start
+  }
+
+  async function play() {
+    recordingRef.current = false
+    return await recorder.play()
+  }
+
+  function reset() {
+    recordingRef.current = false
+    recorder.reset()
+  }
+
+  useEffect(() => reset, [])
+
+  return (
+    <RecorderContext.Provider
+      value={{
+        recordingRef,
+        record,
+        play,
+        reset,
+        recorder,
+      }}>
+      {children}
+    </RecorderContext.Provider>
+  )
+}
+
 export function InstrumentProvider({ children }: React.PropsWithChildren) {
   const { options } = useOptions()
-
+  const { recordingRef, recorder } = useRecorder()
   const [animation, setAnimation] = useState('1')
 
   const mascotRef = useRef<THREE.Mesh>(null)
@@ -87,7 +126,12 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
       if (!mascotRef.current) return
       if (!containerRef.current) return
 
-      kalimba.play(`${note}${octave}`)
+      if (recordingRef.current) {
+        recorder.record()
+        recordingRef.current = false
+      }
+
+      instrument.play(`${note}${octave}`)
 
       if (index < 0) return
 

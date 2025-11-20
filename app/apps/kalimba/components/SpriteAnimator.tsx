@@ -1,16 +1,11 @@
-import { forwardRef, useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
-import {
-  Decal,
-  type FrameData,
-  type MetaData,
-  type SpriteData,
-} from '@react-three/drei'
+import { Decal, type FrameData, type SpriteData } from '@react-three/drei'
 import { type ThreeElements, useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 
-type SphereSpriteAnimatorProps = {
-  spriteDataset: {
+type SpriteAnimatorProps = {
+  sprite: {
     spriteTexture: THREE.Texture
     spriteData: (SpriteData & { animations?: Record<string, number[]> }) | null
   }
@@ -19,95 +14,70 @@ type SphereSpriteAnimatorProps = {
   radius: number
 } & ThreeElements['mesh']
 
-export const SpriteAnimator = forwardRef<THREE.Mesh, SphereSpriteAnimatorProps>(
-  (
-    {
-      spriteDataset: { spriteData, spriteTexture },
-      animation = '',
-      fps = 30,
-      radius,
-      children,
-      ...props
-    },
+export function SpriteAnimator(props: SpriteAnimatorProps) {
+  const {
     ref,
-  ) => {
-    const currentFrame = useRef({ index: 0, time: 0 })
-    const fpsInterval = 1000 / fps
+    sprite: { spriteTexture, spriteData },
+    animation,
+    fps = 30,
+    radius,
+    children,
+    ...rest
+  } = props
 
-    function updateMap({
-      frame,
-      size,
-      texture,
-    }: {
-      frame: FrameData['frame']
-      size: MetaData['size']
-      texture: THREE.Texture
-    }) {
-      const { x, y, w, h } = frame
-      const map = texture
-      map.repeat.set(w / size.w, h / size.h)
-      map.offset.set(x / size.w, 1 - (y + h) / size.h)
-      map.needsUpdate = true
+  if (!spriteData) return null
+
+  const { frames, animations, meta } = spriteData
+  const size = meta.size
+
+  const timeRef = useRef(0)
+  const indexRef = useRef(0)
+
+  const interval = 1000 / fps
+
+  // normalize frames to array
+  const framesArray = useMemo(() => {
+    if (Array.isArray(frames)) return frames
+
+    return Object.values(frames).flat()
+  }, [frames])
+
+  // filter frames if animation is specified
+  const animFrames = useMemo(() => {
+    if (animation && animations?.[animation]) {
+      return animations[animation].map((i) => framesArray[i])
     }
 
-    const { frames, size } = useMemo(() => {
-      if (!spriteData || !Array.isArray(spriteData.frames)) {
-        return { frames: [], size: { w: 1, h: 1 } }
-      }
+    return framesArray
+  }, [animation, animations, framesArray])
 
-      let { frames } = spriteData
-      const { animations } = spriteData
+  const updateMap = (f: FrameData['frame']) => {
+    spriteTexture.repeat.set(f.w / size.w, f.h / size.h)
+    spriteTexture.offset.set(f.x / size.w, 1 - (f.y + f.h) / size.h)
+    spriteTexture.needsUpdate = true
+  }
 
-      if (animations && animation && animations[animation]) {
-        frames = frames.filter((_, i) => animations[animation].includes(i))
-      }
+  // initial frame
+  updateMap(animFrames[0].frame)
 
-      const { size } = spriteData.meta
+  useFrame((_, delta) => {
+    timeRef.current += delta * 1000
+    if (timeRef.current >= interval) {
+      timeRef.current = 0
+      indexRef.current = (indexRef.current + 1) % animFrames.length
+      updateMap(animFrames[indexRef.current].frame)
+    }
+  })
 
-      if (frames.length && spriteTexture) {
-        updateMap({
-          frame: frames[0].frame,
-          size,
-          texture: spriteTexture,
-        })
-      }
-
-      return { frames, size }
-    }, [spriteData, spriteTexture, animation])
-
-    useFrame((_, delta) => {
-      if (!frames.length) return
-
-      currentFrame.current.time += delta * 1000
-
-      if (currentFrame.current.time >= fpsInterval) {
-        currentFrame.current.index =
-          (currentFrame.current.index + 1) % frames.length
-        currentFrame.current.time = 0
-
-        const frame = frames?.[currentFrame.current.index].frame
-        if (!frame) return
-
-        updateMap({
-          frame,
-          size,
-          texture: spriteTexture,
-        })
-      }
-    })
-
-    return (
-      <mesh ref={ref} {...props}>
-        {children}
-        <Decal
-          position={[0, 0, radius]}
-          rotation={[0, 0, 0]}
-          scale={radius * 1.8}
-          map={spriteTexture}
-        />
-      </mesh>
-    )
-  },
-)
-
-SpriteAnimator.displayName = 'SpriteAnimator'
+  return (
+    <mesh ref={ref} {...rest}>
+      {children}
+      <Decal
+        position={[0, 0, radius]}
+        rotation={[0, 0, 0]}
+        scale={radius * 1.8}
+        map={spriteTexture}
+      />
+    </mesh>
+  )
+}

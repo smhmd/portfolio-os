@@ -12,7 +12,7 @@ import {
   useInstrument,
   useOptions,
 } from '../lib'
-import { Halo, MenuIcon } from './Icons'
+import { MenuButton } from './Buttons'
 import { NumberPicker } from './NumberPicker'
 import { StylePicker } from './StylePicker'
 import { TextPicker } from './TextPicker'
@@ -75,9 +75,8 @@ export function Settings() {
   const { options } = useOptions()
   return (
     <Dialog.Root>
-      <Dialog.Trigger className='group relative cursor-pointer outline-none'>
-        <Halo className='group-active:translate-y-[4px]' />
-        <MenuIcon className='size-12 xl:size-24' />
+      <Dialog.Trigger asChild>
+        <MenuButton />
       </Dialog.Trigger>
 
       <Dialog.Portal>

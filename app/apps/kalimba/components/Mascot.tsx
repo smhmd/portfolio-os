@@ -27,7 +27,7 @@ export default function Mascot({ radius, onRender, ...props }: MascotProps) {
       animation={animation}
       fps={12}
       radius={radius}
-      spriteDataset={spriteObj}
+      sprite={spriteObj}
       position={[0, 0, -PADDING * DISTANCE]}
       {...props}
       ref={mascotRef}>

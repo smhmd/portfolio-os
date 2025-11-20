@@ -160,7 +160,7 @@ export function Tine({
         <motion.span
           ref={innerRef}
           initial={{ opacity: 0 }}
-          className='absolute inset-0 bg-gradient-to-b from-white from-40% to-transparent'
+          className='absolute inset-0 bg-gradient-to-b from-white from-60% to-transparent'
         />
         <span className='font-roboto -mb-2 text-[clamp(.75rem,60cqw,2.75rem)] leading-[2vw]'>
           {'•\n'.repeat(pips)}
