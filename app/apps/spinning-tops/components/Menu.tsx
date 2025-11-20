@@ -3,7 +3,7 @@ import { memo } from 'react'
 import { useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
-import { actor, difficulties, type PlayerID, useGame } from '../lib'
+import { actor, difficulties, type PlayerID } from '../lib'
 import { Countdown } from '.'
 
 const playerTitle: Record<PlayerID, string> = {
@@ -12,7 +12,6 @@ const playerTitle: Record<PlayerID, string> = {
 }
 
 export const Menu = memo(() => {
-  const { spritesheet } = useGame()
   const { difficulty, winner, isGameOver, isMainMenu, isPlaying, isCountdown } =
     useSelector(actor, (state) => ({
       ...state.context,
@@ -51,13 +50,16 @@ export const Menu = memo(() => {
     },
   ]
 
-  if (!spritesheet) return null
   if (isPlaying) return null
 
   if (isCountdown) return <Countdown />
 
   return (
-    <div className='pointer-events-none'>
+    <div
+      className={clsx(
+        'init:opacity-0 pointer-events-none',
+        'animate-fade-in anim-duration-1000 anim-delay-1000',
+      )}>
       <section
         aria-hidden={!isGameOver}
         className={clsx(

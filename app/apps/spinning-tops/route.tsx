@@ -1,10 +1,11 @@
+import { useRef } from 'react'
+
 import { Application, extend } from '@pixi/react'
 import clsx from 'clsx'
 import { AnimatedSprite, Container, Graphics, Sprite } from 'pixi.js'
 
 import { AppWrapper } from 'app/components'
 import { MatterProvider } from 'app/contexts'
-import { isClient } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
 
 import { GameProvider, Menu, Scene } from './components'
@@ -32,12 +33,11 @@ export function links() {
 
 extend({ Sprite, Graphics, Container, AnimatedSprite })
 
-const initialWidth = isClient ? window.innerWidth : 0
-const initialHeight = isClient ? window.innerHeight : 0
-
 export default function App() {
+  const ref = useRef<HTMLDivElement>(null)
   return (
     <AppWrapper
+      ref={ref}
       isDark
       className={clsx(
         'bg-radial to-220% from-[#171519] from-10% to-black bg-cover bg-center bg-no-repeat',
@@ -54,9 +54,8 @@ export default function App() {
           <Application
             antialias
             autoDensity
-            width={initialWidth}
-            height={initialHeight}
-            resizeTo={isClient ? window : undefined}>
+            resizeTo={ref}
+            className='animate-fade-in anim-duration-5000'>
             <Scene />
           </Application>
         </MatterProvider>
