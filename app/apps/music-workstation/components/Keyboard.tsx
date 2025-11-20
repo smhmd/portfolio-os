@@ -5,8 +5,8 @@ import { initToneOnClick } from 'app/lib'
 import { Button } from './Button'
 
 type KeyboardProps = {
-  onAttackNote: (note: string) => void
-  onReleaseNote: () => void
+  onAttackNote(note: string): void
+  onReleaseNote(): void
 }
 
 export function Keyboard({ onAttackNote, onReleaseNote }: KeyboardProps) {

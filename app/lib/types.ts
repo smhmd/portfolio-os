@@ -6,9 +6,7 @@ export type AppMetadata = {
   id: string
   name: string
   description: string
-  Icon: (
-    props: React.ComponentProps<typeof AppIconWrapper>,
-  ) => React.JSX.Element
+  Icon(props: Props<typeof AppIconWrapper>): React.JSX.Element
 }
 
 export type Direction = 'up' | 'down' | 'left' | 'right'

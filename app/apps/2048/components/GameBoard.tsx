@@ -11,9 +11,9 @@ import { TileBlock } from './TileBlock'
 
 type GameBoardProps = {
   board: Board
-  onMove: (direction: Direction) => void
-  onContinue?: () => void
-  onReset: () => void
+  onMove(direction: Direction): void
+  onContinue(): void
+  onReset(): void
   isWon: boolean
   isLost: boolean
 } & React.ComponentProps<'section'>

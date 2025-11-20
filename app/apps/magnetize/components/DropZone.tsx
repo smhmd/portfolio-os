@@ -15,8 +15,8 @@ const dragClasses = {
 
 type DropZoneProps = {
   torrentObject?: TorrentObject
-  onUploadFile: (payload: ArrayBuffer) => void
-  onReset: () => void
+  onUploadFile(payload: ArrayBuffer): void
+  onReset(): void
 }
 
 export const DropZone = memo(

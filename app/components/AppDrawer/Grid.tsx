@@ -9,7 +9,7 @@ import { GridAppIcon, GridFolderIcon } from './GridIcon'
 
 type AppGridProps = {
   apps?: AppGridArray
-  onClick?: (e: React.MouseEvent) => void
+  onClick?(e: React.MouseEvent): void
 }
 
 export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {

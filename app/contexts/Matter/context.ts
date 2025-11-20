@@ -12,9 +12,9 @@ type EngineEventMap = {
 
 export interface MatterContextType {
   engine: TMatter.Engine
-  updateEngine: (delta: number) => void
-  addBody: (object: TMatter.Body) => void
-  removeBody: (object: TMatter.Body) => void
+  updateEngine(delta: number): void
+  addBody(object: TMatter.Body): void
+  removeBody(object: TMatter.Body): void
   addEngineEvent: <K extends keyof EngineEventMap>(
     name: K,
     callback: EngineEventMap[K],

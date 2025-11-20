@@ -114,7 +114,7 @@ export function GridAppIcon({
 type GridFolderIconProps = {
   name: string
   ids: AppID[]
-  onClick?: (e: React.MouseEvent) => void
+  onClick?(e: React.MouseEvent): void
   isExpanded: boolean
   disableAnimation?: boolean
   ref?: React.Ref<HTMLLIElement>

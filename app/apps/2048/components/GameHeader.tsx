@@ -7,7 +7,7 @@ import { Replay } from 'app/assets'
 import { Score } from './Score'
 
 type GameHeaderProps = {
-  onReset: () => void
+  onReset(): void
   score: number
   best: number
 } & React.ComponentProps<'header'>

@@ -13,8 +13,8 @@ import { Toggle } from './Toggle'
 interface AdvancedOptionsProps {
   torrentObject: TorrentObject
   options: Options
-  onSetOption: (payload: { option: keyof Options; value: boolean }) => void
-  onSelectFiles: (payload: Set<number>) => void
+  onSetOption(payload: { option: keyof Options; value: boolean }): void
+  onSelectFiles(payload: Set<number>): void
 }
 
 export const AdvancedOptions = memo(

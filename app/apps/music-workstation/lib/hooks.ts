@@ -4,7 +4,7 @@ type UseDialProps = {
   initialValue?: number
   min?: number
   max?: number
-  onChange?: (value: number) => void
+  onChange?(value: number): void
 }
 
 // Calculate angle from center to pointer position

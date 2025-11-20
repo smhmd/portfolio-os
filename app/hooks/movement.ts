@@ -4,7 +4,7 @@ import { useGlobals } from 'app/contexts'
 import type { Direction } from 'app/lib'
 
 type Props = {
-  handler: (direction: Direction) => void
+  handler(direction: Direction): void
   disabled?: boolean
 }
 

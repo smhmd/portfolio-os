@@ -8,7 +8,7 @@ type ParameterProps = {
   initialValue?: number
   min?: number
   max?: number
-  onChange?: (value: number) => void
+  onChange?(value: number): void
 }
 
 const variants = {

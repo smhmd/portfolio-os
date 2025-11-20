@@ -10,7 +10,7 @@ type AlertProps = {
   message?: string
   action?: {
     label: string
-    handler: () => void
+    handler(): void
   }
 }
 

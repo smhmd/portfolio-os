@@ -4,7 +4,7 @@ import { Label, Switch } from 'radix-ui'
 type ToggleProps = {
   label: string
   checked: boolean
-  onChange: (checked: boolean) => void
+  onChange(checked: boolean): void
   disabled?: boolean
   title?: string
   className?: string

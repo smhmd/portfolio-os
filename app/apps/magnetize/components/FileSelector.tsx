@@ -15,7 +15,7 @@ type File = {
 
 type FileSelectorProps = {
   files: File[]
-  onChange: (indexes: Set<number>) => void
+  onChange(indexes: Set<number>): void
 }
 
 export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
