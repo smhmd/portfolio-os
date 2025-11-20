@@ -1,8 +1,6 @@
-import { createContext, useContext } from 'react'
-
 import type TMatter from 'matter-js'
 
-import { ensureContext } from 'app/utils'
+import { createCtx } from 'app/utils'
 
 type EngineEventMap = {
   afterUpdate: TMatter.IEngineCallback
@@ -24,12 +22,4 @@ export interface MatterContextType {
   removeEngineEvent: <K extends keyof EngineEventMap>(name: K) => void
 }
 
-export const MatterContext = createContext<MatterContextType | undefined>(
-  undefined,
-)
-
-export const useMatter = () => {
-  const context = useContext(MatterContext)
-  ensureContext(context)
-  return context
-}
+export const [MatterContext, useMatter] = createCtx<MatterContextType>()

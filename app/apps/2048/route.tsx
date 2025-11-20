@@ -3,11 +3,10 @@ import { useEffect, useMemo } from 'react'
 import { useMachine, useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
+import { Info } from 'app/assets'
 import { AppWrapper } from 'app/components'
+import type { API } from 'app/lib'
 import { iconToFavicon } from 'app/utils'
-
-import { Info } from '~/assets'
-import type { API } from '~/lib'
 
 import { GameBoard, GameHeader } from './components'
 import { type Events, machine } from './lib'

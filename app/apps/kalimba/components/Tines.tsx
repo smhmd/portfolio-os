@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 
 import clsx from 'clsx'
 
-import { useGlobals } from '~/contexts'
-import type { Props } from '~/lib'
-import { interpolate } from '~/utils'
+import { useGlobals } from 'app/contexts'
+import type { Props } from 'app/lib'
+import { interpolate } from 'app/utils'
 
 import { getTines, MAX_COUNT, MIN_COUNT, tunings, useOptions } from '../lib'
 import { Tine } from './Tine'

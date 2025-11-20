@@ -1,6 +1,6 @@
 import { RadioGroup } from 'radix-ui'
 
-import type { Props } from '~/lib'
+import type { Props } from 'app/lib'
 
 import { Control } from './Control'
 import { Token } from './Token'

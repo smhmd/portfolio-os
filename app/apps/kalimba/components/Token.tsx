@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-import type { Props } from '~/lib'
+import type { Props } from 'app/lib'
 
 type TokenProps = Props<'button'>
 
@@ -12,7 +12,7 @@ export function Token({
   return (
     <button
       className={clsx(
-        'corner-shape-squircle group cursor-pointer rounded-full',
+        'corner-squircle group cursor-pointer rounded-full',
         'size-[clamp(2rem,16cqw,4.25rem)]',
         'relative outline-none',
         'bg-white',
@@ -22,7 +22,7 @@ export function Token({
       <span
         className={clsx(
           'absolute -inset-px flex items-center justify-center whitespace-pre leading-7',
-          'corner-shape-squircle block rounded-full capitalize',
+          'corner-squircle block rounded-full capitalize',
           'group-active:scale-70 transition-transform',
           'group-data-[state=checked]:scale-80',
           className,

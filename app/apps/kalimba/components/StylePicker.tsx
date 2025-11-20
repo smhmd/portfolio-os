@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { RadioGroup } from 'radix-ui'
 
-import type { Props } from '~/lib'
+import type { Props } from 'app/lib'
 
 import { Control } from './Control'
 import { Token } from './Token'
@@ -21,7 +21,7 @@ export function StylePicker({
     <Control
       name={name}
       className={clsx(
-        'corner-shape-squircle block size-full rounded-full',
+        'corner-squircle block size-full rounded-full',
         options[value],
       )}>
       <RadioGroup.Root

@@ -164,7 +164,7 @@ main::-webkit-scrollbar {
   }
 }
 
-@utility corner-shape-* {
+@utility corner-* {
   corner-shape: --value(
     'round',
     'scoop',
@@ -176,7 +176,7 @@ main::-webkit-scrollbar {
   corner-shape: superellipse(--value(number));
 }
 
-@utility -corner-shape-* {
+@utility -corner-* {
   corner-shape: superellipse(calc(--value(number) * -1));
 }
 

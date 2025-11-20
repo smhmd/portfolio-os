@@ -1,10 +1,9 @@
 import { useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
+import { Bolt, Play, Sparkles } from 'app/assets'
 import { AppWrapper } from 'app/components'
 import { iconToFavicon } from 'app/utils'
-
-import { Bolt, Play, Sparkles } from '~/assets'
 
 import { AdvancedOptions, Alert, DropZone, MagnetLink } from './components'
 import { actor, api, compareState, createDummyTorrent } from './lib'

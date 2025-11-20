@@ -1,13 +1,12 @@
 import { assign, createActor, fromPromise, setup } from 'xstate'
 
+import type { API } from 'app/lib'
 import {
   bencode,
   type MagnetObject,
   torrent,
   type TorrentObject,
 } from 'app/lib/torrent-tools'
-
-import type { API } from '~/lib'
 
 import { APP_ID, type Options } from './common'
 import { indexesToRange, magnetToMagnetURI } from './utils'

@@ -1,4 +1,3 @@
-import { forwardRef } from 'react'
 import { Link } from 'react-router'
 
 import clsx from 'clsx'
@@ -6,8 +5,7 @@ import { type HTMLMotionProps, type Transition } from 'motion/react'
 import * as motion from 'motion/react-client'
 
 import { type AppID, apps } from 'app/apps'
-
-import type { Props } from '~/lib'
+import type { Props } from 'app/lib'
 
 import { AppIconWrapper } from '../AppIcon'
 
@@ -44,65 +42,74 @@ type GridIconProps = {
 
 const exit = { opacity: 0, scale: 0.8, transition: { duration: 0.1 } }
 
-const GridIcon = forwardRef<HTMLLIElement, GridIconProps>(
-  ({ name, className, disableAnimation, children, ...props }, ref) => {
-    return (
-      <motion.li
-        ref={ref}
-        className={clsx(
-          'group/icon',
-          'relative flex cursor-pointer flex-col items-center justify-center gap-2',
-          className,
-        )}
-        layout
-        exit={disableAnimation ? undefined : exit}
-        whileHover={{ scale: 1.05 }}
-        transition={spring}
-        {...props}>
-        {children}
-        <span className='line-clamp-2 h-[2lh] text-center text-xs font-medium text-white sm:text-sm'>
-          {name}
-        </span>
-      </motion.li>
-    )
-  },
-)
-
-GridIcon.displayName = 'GridIcon'
-
-type GridAppIconProps = Props<
-  typeof Link,
-  { id: AppID; disableAnimation?: boolean; to?: undefined }
->
+function GridIcon({
+  name,
+  className,
+  disableAnimation,
+  children,
+  ref,
+  ...props
+}: GridIconProps) {
+  return (
+    <motion.li
+      ref={ref}
+      className={clsx(
+        'group/icon',
+        'relative flex cursor-pointer flex-col items-center justify-center gap-2',
+        className,
+      )}
+      layout
+      exit={disableAnimation ? undefined : exit}
+      whileHover={{ scale: 1.05 }}
+      transition={spring}
+      {...props}>
+      {children}
+      <span className='line-clamp-2 h-[2lh] text-center text-xs font-medium text-white sm:text-sm'>
+        {name}
+      </span>
+    </motion.li>
+  )
+}
 
 const iconClassName =
   'size-18 transition-transform group-active:scale-90 sm:size-28'
 
-export const GridAppIcon = forwardRef<HTMLLIElement, GridAppIconProps>(
-  ({ id, disableAnimation, ...props }, ref) => {
-    const { name, Icon, description } = apps[id]
-    return (
-      <GridIcon
-        name={name}
-        ref={ref}
-        disableAnimation={disableAnimation}
-        title={description}>
-        <Link
-          className='absolute inset-0 z-50 cursor-pointer'
-          tabIndex={0}
-          prefetch='intent'
-          to={`/${id}`}
-          {...props}
-        />
-        <span aria-hidden className={iconClassName}>
-          <Icon />
-        </span>
-      </GridIcon>
-    )
-  },
-)
+type GridAppIconProps = Props<
+  typeof Link,
+  {
+    id: AppID
+    disableAnimation?: boolean
+    to?: undefined
+    ref?: React.Ref<HTMLLIElement>
+  }
+>
 
-GridAppIcon.displayName = 'GridAppIcon'
+export function GridAppIcon({
+  id,
+  disableAnimation,
+  ref,
+  ...props
+}: GridAppIconProps) {
+  const { name, Icon, description } = apps[id]
+  return (
+    <GridIcon
+      name={name}
+      ref={ref}
+      disableAnimation={disableAnimation}
+      title={description}>
+      <Link
+        className='absolute inset-0 z-50 cursor-pointer'
+        tabIndex={0}
+        prefetch='intent'
+        to={`/${id}`}
+        {...props}
+      />
+      <span aria-hidden className={iconClassName}>
+        <Icon />
+      </span>
+    </GridIcon>
+  )
+}
 
 type GridFolderIconProps = {
   name: string
@@ -110,47 +117,51 @@ type GridFolderIconProps = {
   onClick?: (e: React.MouseEvent) => void
   isExpanded: boolean
   disableAnimation?: boolean
+  ref?: React.Ref<HTMLLIElement>
 }
 
-export const GridFolderIcon = forwardRef<HTMLLIElement, GridFolderIconProps>(
-  ({ name, ids, isExpanded, onClick, disableAnimation }, ref) => {
-    return (
-      <GridIcon
-        name={name}
-        ref={ref}
-        className={clsx(
-          'transition-opacity',
-          isExpanded ? 'opacity-50!' : 'opacity-100',
-        )}
-        disableAnimation={disableAnimation}>
-        <button
-          className='absolute inset-0 z-50 cursor-pointer'
-          tabIndex={0}
-          onClick={onClick}
-          aria-expanded={isExpanded}
-          aria-label={`${name} folder, ${ids.length} apps`}
-        />
-        <span aria-hidden className={iconClassName}>
-          <AppIconWrapper fill='#ffffff33'>
-            {ids.slice(0, 9).map((id, index) => {
-              const { x, y } = getPosition(index)
+export function GridFolderIcon({
+  name,
+  ids,
+  isExpanded,
+  onClick,
+  disableAnimation,
+  ref,
+}: GridFolderIconProps) {
+  return (
+    <GridIcon
+      name={name}
+      ref={ref}
+      className={clsx(
+        'transition-opacity',
+        isExpanded ? 'opacity-50!' : 'opacity-100',
+      )}
+      disableAnimation={disableAnimation}>
+      <button
+        className='absolute inset-0 z-50 cursor-pointer'
+        tabIndex={0}
+        onClick={onClick}
+        aria-expanded={isExpanded}
+        aria-label={`${name} folder, ${ids.length} apps`}
+      />
+      <span aria-hidden className={iconClassName}>
+        <AppIconWrapper fill='#ffffff33'>
+          {ids.slice(0, 9).map((id, index) => {
+            const { x, y } = getPosition(index)
 
-              const Icon = apps[id].Icon
-              return (
-                <Icon
-                  x={x}
-                  y={y}
-                  width={SVG_SIZE}
-                  height={SVG_SIZE}
-                  key={`folder-${name}-app-${id}`}
-                />
-              )
-            })}
-          </AppIconWrapper>
-        </span>
-      </GridIcon>
-    )
-  },
-)
-
-GridFolderIcon.displayName = 'GridFolderIcon'
+            const Icon = apps[id].Icon
+            return (
+              <Icon
+                x={x}
+                y={y}
+                width={SVG_SIZE}
+                height={SVG_SIZE}
+                key={`folder-${name}-app-${id}`}
+              />
+            )
+          })}
+        </AppIconWrapper>
+      </span>
+    </GridIcon>
+  )
+}

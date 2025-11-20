@@ -1,6 +1,4 @@
-import { createContext, useContext } from 'react'
-
-import { ensureContext } from 'app/utils'
+import { createCtx } from 'app/utils'
 
 export interface Globals {
   isAppDrawerOpen: React.RefObject<boolean>
@@ -8,10 +6,4 @@ export interface Globals {
   height: number
 }
 
-export const GlobalsContext = createContext<Globals | null>(null)
-
-export const useGlobals = (): Globals => {
-  const context = useContext(GlobalsContext)
-  ensureContext(context)
-  return context
-}
+export const [GlobalsContext, useGlobals] = createCtx<Globals>()

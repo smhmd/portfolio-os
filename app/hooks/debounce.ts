@@ -17,7 +17,9 @@ export function useDebounced(callback: () => void, delay = 1000) {
 
   useEffect(
     () => () => {
-      if (timeout.current) clearTimeout(timeout.current)
+      if (timeout.current) {
+        clearTimeout(timeout.current)
+      }
     },
     [],
   )

@@ -4,9 +4,9 @@ import { useLoaderData } from 'react-router'
 import { animate } from 'motion/react'
 import type * as THREE from 'three'
 
-import { useDebounced } from '~/hooks'
-import { gpuTier } from '~/lib'
-import { interpolate, isEven, setCookie } from '~/utils'
+import { useDebounced } from 'app/hooks'
+import { gpuTier } from 'app/lib'
+import { interpolate, isEven, setCookie } from 'app/utils'
 
 import {
   Instrument,

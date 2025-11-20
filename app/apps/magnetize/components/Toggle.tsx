@@ -1,5 +1,3 @@
-import React from 'react'
-
 import clsx from 'clsx'
 import { Label, Switch } from 'radix-ui'
 

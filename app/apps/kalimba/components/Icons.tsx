@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-import type { Props } from '~/lib'
+import type { Props } from 'app/lib'
 
 type IconProps = Props<'svg'>
 

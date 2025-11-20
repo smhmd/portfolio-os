@@ -4,9 +4,9 @@ import clsx from 'clsx'
 import { animate } from 'motion/react'
 import * as motion from 'motion/react-client'
 
-import { useGlobals } from '~/contexts'
-import { gpuTier, type Props } from '~/lib'
-import { interpolate } from '~/utils'
+import { useGlobals } from 'app/contexts'
+import { gpuTier, type Props } from 'app/lib'
+import { interpolate } from 'app/utils'
 
 import {
   getTineOrder,
@@ -149,7 +149,7 @@ export function Tine({
         ref={outerRef}
         className={clsx(
           'relative flex flex-col justify-end gap-y-2.5 overflow-hidden',
-          'corner-shape-1.5 size-full rounded-b-full',
+          'corner-1.5 size-full rounded-b-full',
           'bg-gradient-to-b from-5%',
           'from-white/94 to-white/86',
           'font-quicksand tabular-nums',

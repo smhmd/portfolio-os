@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { Dialog } from 'radix-ui'
 
-import { ArrowDown } from '~/assets'
+import { ArrowDown } from 'app/assets'
 
 import {
   colors,

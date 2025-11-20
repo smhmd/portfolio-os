@@ -13,7 +13,9 @@ export const AppWrapper = memo(
         className={clsx(
           'h-dvh',
           'init:text-balance text-pretty',
-          isDark ? 'scheme-dark' : 'scheme-light',
+          isDark
+            ? 'scheme-dark init:text-black'
+            : 'scheme-light init:text-white',
           className,
         )}
         {...props}
