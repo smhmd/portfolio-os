@@ -12,7 +12,7 @@ import {
   Instrument,
   InstrumentContext,
   type InstrumentContextType,
-  KALIMBA_SOUNDS,
+  KALIMBA_SAMPLE,
   type Options,
   OptionsContext,
   Recorder,
@@ -24,7 +24,7 @@ import {
   useRecorder,
 } from '../lib'
 
-const instrument = new Instrument(KALIMBA_SOUNDS)
+const instrument = new Instrument(KALIMBA_SAMPLE)
 const recorder = new Recorder()
 
 type OptionsProviderProps = React.PropsWithChildren

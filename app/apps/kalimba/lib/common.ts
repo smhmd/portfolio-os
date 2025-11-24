@@ -23,13 +23,11 @@ export const ROTATION_X = 0.6
 export const ROTATION_Y = 0.3
 export const ROTATION_Z = 0.2
 
-export const KALIMBA_SOUNDS = {
-  samples: [
-    { src: '/kalimba/samples/kalimba262.ogg', freq: 261.3 }, // C4
-    { src: '/kalimba/samples/kalimba523.ogg', freq: 523.1 }, // C5
-    { src: '/kalimba/samples/kalimba1056.ogg', freq: 1055.8 }, // C6
-  ],
-  octaves: { min: 3, max: 7 },
+export const KALIMBA_SAMPLE = {
+  sample: '/kalimba/samples/kalimba262.ogg',
+  freq: 261.3,
+  min: 3,
+  max: 7,
 }
 
 export type TineInfo = {

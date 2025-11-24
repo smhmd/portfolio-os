@@ -1,92 +1,161 @@
+import { isServer } from 'app/lib'
+
 import { audioContext, globalGain } from './audio'
 
-type Sample = { src: string; freq: number }
-type Octaves = { min: number; max: number }
-type Options = { samples: Sample[]; octaves: Octaves }
+type Options = { sample: string; freq: number; min: number; max: number }
+type Pitch = (typeof CHROMATIC_SCALE)[number]
 
 const C4 = 261.6255653005986
-const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+const SEMITONE_RATIO = Math.pow(2, 1 / 12)
+const CHROMATIC_SCALE = [
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
+] as const
 
-const SHARP_TO_FLAT: Record<string, string> = {
+const ENHARMONIC = {
   'C#': 'Db',
   'D#': 'Eb',
   'F#': 'Gb',
   'G#': 'Ab',
   'A#': 'Bb',
   B: 'Cb',
-}
+} as Record<Pitch, string>
 
-const getName = (index: number, octave: number) => {
-  return `${NOTES[index]}${octave}`
-}
-
-const getFrequency = (index: number, octave: number) => {
-  return C4 * Math.pow(2, (index + (octave - 4) * 12) / 12)
-}
-
+/**
+ * Generates playable note sounds from a single audio sample.
+ * Loads the sample, resamples it to different pitches,
+ * and stores the results for quick playback.
+ */
 export class Instrument {
   private notes = new Map<string, AudioBuffer>()
 
   constructor(private options: Options) {
-    this.main()
+    if (isServer) return
+    this.load()
   }
 
-  private async main() {
-    await Promise.all(this.options.samples.map((s) => this.loadAndGenerate(s)))
+  /**
+   * Fetches the sample and kicks off resampling.
+   */
+  private async load() {
+    const response = await fetch(this.options.sample)
+    const arrayBuffer = await response.arrayBuffer()
+    const data = await audioContext.decodeAudioData(arrayBuffer)
+    this.generate(data)
   }
 
-  private async loadAndGenerate({ src, freq }: Sample) {
-    const arrayBuffer = await (await fetch(src)).arrayBuffer()
-    const base = await audioContext.decodeAudioData(arrayBuffer)
+  /**
+   * Generates resampled buffers for each chromatic note
+   * across the configured octave range.
+   */
+  private generate(data: AudioBuffer) {
+    const { freq: base, min, max } = this.options
+    const { numberOfChannels, sampleRate, length } = data
 
-    const { min, max } = this.options.octaves
+    const channels = Array.from({ length: numberOfChannels }, (_, c) =>
+      data.getChannelData(c),
+    )
+
     for (let octave = min; octave <= max; octave++) {
-      for (let noteIndex = 0; noteIndex < 12; noteIndex++) {
-        const name = getName(noteIndex, octave)
-        const ratio = getFrequency(noteIndex, octave) / freq
-        const buffer = this.resample(base, ratio)
+      const semitone = (octave - 4) * 12
+
+      for (let i = 0; i < CHROMATIC_SCALE.length; i++) {
+        const pitch = CHROMATIC_SCALE[i]
+        const name = pitch + octave
+
+        // Frequency of the target note relative to C4
+        const freq = C4 * Math.pow(SEMITONE_RATIO, semitone + i)
+        const ratio = freq / base
+
+        const buffer = this.resample(
+          channels,
+          length,
+          ratio,
+          numberOfChannels,
+          sampleRate,
+        )
+
         this.notes.set(name, buffer)
 
-        const flat = SHARP_TO_FLAT[name.slice(0, -1)]
-        if (flat) {
-          this.notes.set(`${flat}${octave}`, buffer)
+        // Also store enharmonic equivalents (e.g., C# -> Db)
+        const flat = ENHARMONIC[pitch]
+        if (flat) this.notes.set(flat + octave, buffer)
+      }
+    }
+  }
+
+  /**
+   * Resamples the original audio buffer to a new playback speed.
+   * Uses linear interpolation to avoid artifacts.
+   */
+  private resample(
+    channels: Float32Array[],
+    length: number,
+    ratio: number,
+    numberOfChannels: number,
+    sampleRate: number,
+  ) {
+    const targetLength = Math.floor(length / ratio)
+
+    /**
+     * Avoid invalid or near-zero-length buffers
+     * for extremely high playback ratios.
+     */
+    if (targetLength <= 1) {
+      return audioContext.createBuffer(numberOfChannels, 1, sampleRate)
+    }
+
+    const output = audioContext.createBuffer(
+      numberOfChannels,
+      targetLength,
+      sampleRate,
+    )
+
+    const last = length - 1
+
+    for (let ch = 0; ch < numberOfChannels; ch++) {
+      const source = channels[ch]
+      const destination = output.getChannelData(ch)
+
+      for (let i = 0; i < targetLength; i++) {
+        const pos = i * ratio
+        const left = pos | 0 // same as Math.floor, but faster
+
+        if (left >= last) {
+          destination[i] = source[last]
+        } else {
+          const mix = pos - left
+          const right = left + 1
+
+          // Linear interpolation between samples
+          destination[i] = source[left] + (source[right] - source[left]) * mix
         }
       }
     }
+
+    return output
   }
 
-  private resample(buffer: AudioBuffer, ratio: number) {
-    const length = Math.floor(buffer.length / ratio)
-    const resampledBuffer = audioContext.createBuffer(
-      buffer.numberOfChannels,
-      length,
-      buffer.sampleRate,
-    )
-
-    for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
-      const source = buffer.getChannelData(channel)
-      const target = resampledBuffer.getChannelData(channel)
-
-      for (let sample = 0; sample < length; sample++) {
-        const position = sample * ratio
-        const left = position | 0
-        const right = Math.min(left + 1, source.length - 1)
-        const factor = position - left
-
-        target[sample] = source[left] + (source[right] - source[left]) * factor
-      }
-    }
-
-    return resampledBuffer
-  }
-
+  /**
+   * Plays a note (e.g., play("C#4"))
+   */
   play(note: string) {
     const buffer = this.notes.get(note)
     if (!buffer) return
 
-    const src = audioContext.createBufferSource()
-    src.buffer = buffer
-    src.connect(globalGain)
-    src.start()
+    const source = audioContext.createBufferSource()
+    source.buffer = buffer
+    source.connect(globalGain)
+    source.start()
   }
 }
