@@ -2,17 +2,59 @@
   "explorer.excludeGitIgnore": true,
   "material-icon-theme.folders.customClones": [
     {
-      "name": "applications",
-      "base": "project",
-      "color": "blue-400",
-      "folderNames": [
-        "2048",
-        "music-workstation",
-        "magnetize",
-        "spinning-tops",
-        "typing-test",
-        "dice-roll"
-      ],
+      "name": "2048",
+      "base": "folder",
+      "color": "#E9C54C",
+      "folderNames": ["2048"],
+      "rootFolderNames": ["apps"]
+    },
+    {
+      "name": "dice-roll",
+      "base": "folder",
+      "color": "#3BB371",
+      "folderNames": ["dice-roll"],
+      "rootFolderNames": ["apps"]
+    },
+    {
+      "name": "kalimba",
+      "base": "folder",
+      "color": "#ea5659",
+      "folderNames": ["kalimba"],
+      "rootFolderNames": ["apps"]
+    },
+    {
+      "name": "magnetize",
+      "base": "folder",
+      "color": "#801843",
+      "folderNames": ["magnetize"],
+      "rootFolderNames": ["apps"]
+    },
+    {
+      "name": "monument-valley",
+      "base": "folder",
+      "color": "#00bbbb",
+      "folderNames": ["monument-valley"],
+      "rootFolderNames": ["apps"]
+    },
+    {
+      "name": "music-workstation",
+      "base": "folder",
+      "color": "#EF3E24",
+      "folderNames": ["music-workstation"],
+      "rootFolderNames": ["apps"]
+    },
+    {
+      "name": "spinning-tops",
+      "base": "folder",
+      "color": "#FE2C55",
+      "folderNames": ["spinning-tops"],
+      "rootFolderNames": ["apps"]
+    },
+    {
+      "name": "typing-test",
+      "base": "folder",
+      "color": "#FFEB3A",
+      "folderNames": ["typing-test"],
       "rootFolderNames": ["apps"]
     },
     {

@@ -64,7 +64,7 @@ function GridIcon({
       transition={spring}
       {...props}>
       {children}
-      <span className='line-clamp-2 h-[2lh] text-center text-xs font-medium text-white sm:text-sm'>
+      <span className='line-clamp-2 h-[2lh] text-pretty text-center text-xs font-medium text-white sm:text-sm'>
         {name}
       </span>
     </motion.li>
@@ -104,9 +104,7 @@ export function GridAppIcon({
         to={`/${id}`}
         {...props}
       />
-      <span aria-hidden className={iconClassName}>
-        <Icon />
-      </span>
+      <Icon aria-hidden className={iconClassName} />
     </GridIcon>
   )
 }
@@ -144,24 +142,22 @@ export function GridFolderIcon({
         aria-expanded={isExpanded}
         aria-label={`${name} folder, ${ids.length} apps`}
       />
-      <span aria-hidden className={iconClassName}>
-        <AppIconWrapper fill='#ffffff33'>
-          {ids.slice(0, 9).map((id, index) => {
-            const { x, y } = getPosition(index)
+      <AppIconWrapper aria-hidden fill='#ffffff33' className={iconClassName}>
+        {ids.slice(0, 9).map((id, index) => {
+          const { x, y } = getPosition(index)
 
-            const Icon = apps[id].Icon
-            return (
-              <Icon
-                x={x}
-                y={y}
-                width={SVG_SIZE}
-                height={SVG_SIZE}
-                key={`folder-${name}-app-${id}`}
-              />
-            )
-          })}
-        </AppIconWrapper>
-      </span>
+          const Icon = apps[id].Icon
+          return (
+            <Icon
+              x={x}
+              y={y}
+              width={SVG_SIZE}
+              height={SVG_SIZE}
+              key={`folder-${name}-app-${id}`}
+            />
+          )
+        })}
+      </AppIconWrapper>
     </GridIcon>
   )
 }
