@@ -3,9 +3,8 @@ import { memo, useRef, useState } from 'react'
 import clsx from 'clsx'
 
 import { Close, FilePresent, Upload } from 'app/assets'
-import type { TorrentObject } from 'app/lib/torrent-tools'
 
-import { fileToArrayBuffer } from '../lib'
+import { fileToArrayBuffer, type TorrentObject } from '../lib'
 
 const dragClasses = {
   idle: 'border-orange-100/40 hover:border-orange-300/60',

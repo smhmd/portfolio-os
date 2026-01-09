@@ -4,9 +4,8 @@ import clsx from 'clsx'
 import { Accordion } from 'radix-ui'
 
 import { ArrowDown, Settings } from 'app/assets'
-import type { TorrentObject } from 'app/lib/torrent-tools'
 
-import { type Options } from '../lib'
+import { type Options, type TorrentObject } from '../lib'
 import { FileSelector } from './FileSelector'
 import { Toggle } from './Toggle'
 

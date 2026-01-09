@@ -1,5 +1,4 @@
-import { magnet, type MagnetObject } from 'app/lib/torrent-tools'
-
+import { magnet, type MagnetObject } from './bencode'
 import { DUMMY_TORRENT, type Options } from './common'
 
 // List of size units

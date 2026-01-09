@@ -1,4 +1,4 @@
-export * from './bencode'
+export * from './core'
 export * from './magnet'
 export * from './torrent'
 export * from './types'

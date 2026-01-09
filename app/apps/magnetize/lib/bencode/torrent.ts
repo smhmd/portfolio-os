@@ -1,4 +1,4 @@
-import { bencode } from './bencode'
+import { bencode } from './core'
 import { magnet } from './magnet'
 import type { MagnetObject, TorrentObject } from './types'
 import { binaryEncode, bytesToHex } from './utils'
