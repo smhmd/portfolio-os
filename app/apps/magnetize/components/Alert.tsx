@@ -18,8 +18,8 @@ const variants = {
   error: {
     Icon: AlertOctagon,
     styles: {
-      wrapper: 'bg-red-500/10 border-red-500/30 text-red-300',
-      button: 'bg-red-500/20 hover:bg-red-500/30 focus-visible:ring-red-500',
+      wrapper: 'bg-red-500/10 border-red-500 text-red-300',
+      button: 'bg-red-500/30 hover:bg-red-500/60 focus-visible:ring-red-500',
     },
     role: 'alert',
     'aria-live': 'assertive',

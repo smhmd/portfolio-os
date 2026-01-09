@@ -10,7 +10,7 @@ export const metadata: AppMetadata = {
 
 export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
   return (
-    <AppIconWrapper fill='#62348B' {...props}>
+    <AppIconWrapper fill='#801843' {...props}>
       <path
         fill='#BE1931'
         d='m66.68 60.17-9-7.42s-3.46 4.52-7.23 8.88c-2.87 3.32-8.8 3.2-12.14-.14-3.34-3.34-3.46-9.27-.14-12.14 4.36-3.77 8.88-7.23 8.88-7.23l-7.42-9s-7.4 5.68-9.55 7.85a20.38 20.38 0 0 0 0 28.75 20.38 20.38 0 0 0 28.76 0c2.17-2.15 7.84-9.55 7.84-9.55Z'

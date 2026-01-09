@@ -63,9 +63,9 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
       )}>
       <div className='flex items-center justify-between gap-y-1'>
         <legend>
-          <h3 className='inline text-xs font-medium text-purple-200'>Files </h3>
+          <h3 className='inline text-xs font-medium text-orange-100'>Files </h3>
           <p
-            className='text-xxs inline text-purple-300'
+            className='text-xxs inline text-orange-200'
             aria-label={`${filesCount} files`}>
             ({filesCount} files)
           </p>
@@ -74,7 +74,7 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
           <button
             onClick={toggleAll}
             className={clsx(
-              'cursor-pointer text-xs text-purple-300 transition-colors hover:text-purple-200',
+              'cursor-pointer text-xs text-orange-200 transition-colors hover:text-orange-100',
               '-mr-2 rounded-xl px-2 py-1 outline-none focus-visible:ring',
             )}>
             {isFullySelected ? 'Deselect All' : 'Select All'}
@@ -109,8 +109,8 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
                     'cursor-pointer rounded border px-2 py-1.5',
                     'transition-all duration-300',
                     isSelected
-                      ? 'border-purple-500/30 bg-purple-500/10 text-purple-100'
-                      : 'border-transparent text-purple-300 hover:bg-white/5',
+                      ? 'border-orange-300/30 bg-orange-300/10 text-orange-50'
+                      : 'border-transparent text-orange-200 hover:bg-white/5',
                   )}
                   aria-label={`${filePath} of ${bytes} in size`}>
                   {isSelected && (
@@ -125,13 +125,13 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
                       'flex size-3.5 items-center justify-center',
                       'rounded border',
                       'transition-all duration-300',
-                      'outline-none focus-visible:ring focus-visible:ring-offset-1 focus-visible:ring-offset-purple-800',
+                      'outline-none focus-visible:ring focus-visible:ring-offset-1 focus-visible:ring-offset-orange-800',
                       isSelected
-                        ? 'rotate-0 border-purple-500 bg-purple-500'
-                        : 'rotate-90 border-purple-400',
+                        ? 'rotate-0 border-orange-300 bg-orange-300'
+                        : 'rotate-90 border-orange-200',
                     )}>
                     <Checkbox.Indicator>
-                      <Check aria-hidden className='size-2.5 fill-white' />
+                      <Check aria-hidden className='size-2.5 fill-orange-800' />
                     </Checkbox.Indicator>
                   </Checkbox.Root>
                   <div className='w-0 flex-1 text-left' aria-hidden>

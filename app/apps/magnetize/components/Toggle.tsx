@@ -31,11 +31,11 @@ export function Toggle({
         className={clsx(
           'relative rounded-full transition-colors',
           'h-4 w-7',
-          disabled ? 'cursor-not-allowed' : 'cursor-pointer',
-          checked
-            ? 'bg-purple-500 data-[disabled]:bg-purple-500/50'
-            : 'bg-gray-600 data-[disabled]:bg-gray-600/50',
-          'outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-900/60',
+          disabled
+            ? 'cursor-not-allowed bg-gray-600/50'
+            : 'cursor-pointer bg-gray-600',
+          checked && 'bg-orange-300',
+          'outline-none focus-visible:ring focus-visible:ring-orange-300 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-900/60',
         )}>
         <Switch.Thumb
           className={clsx(
@@ -49,7 +49,7 @@ export function Toggle({
       <span
         className={clsx(
           'text-xs',
-          disabled ? 'text-gray-400' : 'text-purple-200',
+          disabled ? 'text-gray-400' : 'text-orange-200',
         )}>
         {label}
       </span>

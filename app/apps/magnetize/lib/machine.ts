@@ -170,7 +170,7 @@ const machine = setup({
       actions: assign(({ event }) => {
         try {
           const torrentObject = bencode.decode(event.payload) as TorrentObject
-          return { torrentObject, selectedFiles: undefined }
+          return { torrentObject, selectedFiles: undefined, error: undefined }
         } catch (e) {
           console.error(e)
         }

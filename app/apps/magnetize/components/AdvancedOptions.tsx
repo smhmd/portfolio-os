@@ -51,13 +51,13 @@ export const AdvancedOptions = memo(
               <Accordion.Trigger
                 className={clsx(
                   'group flex w-full items-center justify-between py-1.5 transition-all duration-75',
-                  'text-purple-300 hover:text-purple-100',
+                  'text-orange-200 hover:text-orange-50',
                   'cursor-pointer outline-none',
                 )}>
                 <div className='flex items-center gap-1.5'>
                   <Settings
                     aria-hidden
-                    className='size-3.5 fill-purple-300 transition duration-300 group-hover:rotate-180 group-hover:fill-purple-100'
+                    className='size-3.5 fill-orange-200 transition duration-300 group-hover:rotate-180 group-hover:fill-orange-50'
                   />
                   <span
                     id='advanced-options-heading'
@@ -82,7 +82,7 @@ export const AdvancedOptions = memo(
                   'flex flex-col gap-2',
                 )}>
                 <fieldset className='space-y-2'>
-                  <legend className='text-xs font-medium text-purple-200'>
+                  <legend className='text-xs font-medium text-orange-100'>
                     <span className='sr-only'>
                       Components to include in the magnet URL
                     </span>

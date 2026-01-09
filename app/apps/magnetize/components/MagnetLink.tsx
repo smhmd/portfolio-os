@@ -16,15 +16,15 @@ function HighlightedMagnetLink({ link }: MagnetLinkProps) {
   return (
     <code className='whitespace-nowrap break-all font-mono text-xs leading-relaxed sm:whitespace-normal'>
       <span className='text-pink-400'>{protocol}</span>
-      <span className='text-purple-400'>?</span>
+      <span className='text-orange-400'>?</span>
       {params.map((param, index) => {
         const [key, value] = param.split('=')
         return (
           <React.Fragment key={index}>
-            {index > 0 && <span className='text-purple-400'>&</span>}
-            <span className='text-violet-300'>{key}</span>
-            <span className='text-purple-400'>=</span>
-            <span className='text-fuchsia-300'>{value}</span>
+            {index > 0 && <span className='text-yellow-400'>&</span>}
+            <span className='text-pink-300'>{key}</span>
+            <span className='text-amber-400'>=</span>
+            <span className='text-pink-300'>{value}</span>
           </React.Fragment>
         )
       })}
@@ -46,19 +46,19 @@ export function MagnetLink({ link }: MagnetLinkProps) {
       aria-labelledby='magnet-link-title'
       className='animate-fade-in flex select-text flex-col gap-y-2'>
       <div className='flex items-center gap-1.5'>
-        <Link aria-hidden className='size-3.5 fill-purple-300' />
+        <Link aria-hidden className='size-3.5 fill-orange-200' />
         <h3
           id='magnet-link-title'
-          className='text-sm font-medium text-purple-100'>
+          className='text-sm font-medium text-orange-50'>
           Magnet Link
         </h3>
       </div>
-      <div className='relative rounded-lg border border-white/10 bg-white/5 transition-all duration-300 hover:border-purple-500/30'>
+      <div className='relative rounded-lg border border-white/10 bg-white/5 transition-all duration-300 hover:border-orange-400/30'>
         <div
           className={clsx(
-            'absolute transform rounded-lg bg-[#6f4090] backdrop-blur-xl sm:bg-transparent',
+            'absolute transform rounded-lg bg-[#CB584B] backdrop-blur-xl sm:bg-transparent',
             'right-2 top-1/2 -translate-y-1/2',
-            'sm:bottom-full sm:top-auto sm:mb-px sm:-translate-y-0',
+            'sm:bottom-full sm:top-auto sm:mb-px sm:translate-y-0',
           )}>
           <button
             onClick={handleCopy}
@@ -70,7 +70,7 @@ export function MagnetLink({ link }: MagnetLinkProps) {
               'border-white/10',
               copied
                 ? 'bg-green-500/10 fill-green-300 focus-visible:ring-green-500'
-                : 'bg-purple-500/10 fill-purple-200 hover:bg-purple-500/30 focus-visible:ring-purple-500',
+                : 'bg-orange-400/10 fill-orange-100 hover:bg-orange-400/30 focus-visible:ring-orange-400',
               'outline-none focus-visible:ring-2',
             )}>
             {copied ? (

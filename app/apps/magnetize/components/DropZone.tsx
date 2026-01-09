@@ -8,8 +8,8 @@ import type { TorrentObject } from 'app/lib/torrent-tools'
 import { fileToArrayBuffer } from '../lib'
 
 const dragClasses = {
-  idle: 'border-purple-100/40 hover:border-purple-400',
-  dragging: 'scale-102 animate-pulse-glow border-purple-400 bg-purple-400/10',
+  idle: 'border-orange-100/40 hover:border-orange-300/60',
+  dragging: 'scale-102 animate-pulse-glow border-orange-300 bg-orange-300/10',
   error: 'scale-102 animate-pulse-glow border-red-400 bg-red-400/10 ',
 }
 
@@ -66,9 +66,9 @@ export const DropZone = memo(
         aria-describedby='dropzone-instructions'
         className={clsx(
           'group relative rounded-xl border-2 border-dashed transition duration-500',
-          'focus-within:border-purple-400',
+          'focus-within:border-orange-300/40',
           dragClasses[dragStatus],
-          torrentObject && 'bg-purple-900/20',
+          torrentObject && 'bg-orange-900/10',
         )}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -88,11 +88,13 @@ export const DropZone = memo(
 
         <div
           className={clsx(
-            'pointer-events-none text-center text-purple-300',
+            'pointer-events-none text-center',
             torrentObject ? 'p-8' : 'px-8 py-14',
           )}>
           {!torrentObject ? (
-            <div id='dropzone-instructions' className='animate-fade-in'>
+            <div
+              id='dropzone-instructions'
+              className='animate-fade-in text-orange-300'>
               <Upload
                 aria-hidden
                 className={clsx(
@@ -112,9 +114,9 @@ export const DropZone = memo(
                 className='flex min-w-0 flex-1 items-center gap-x-3'>
                 <FilePresent
                   aria-hidden
-                  className='size-8 flex-shrink-0 fill-current'
+                  className='size-8 shrink-0 fill-orange-300'
                 />
-                <span className='truncate text-purple-100'>
+                <span className='truncate text-orange-100'>
                   {torrentObject.info.name}
                 </span>
               </div>
@@ -123,10 +125,10 @@ export const DropZone = memo(
                 className={clsx(
                   'pointer-events-auto cursor-pointer outline-none',
                   'hover:rotate-90 hover:bg-white/10 focus-visible:rotate-90 focus-visible:bg-white/10',
-                  'flex-shrink-0 rounded-full p-2 transition-all duration-300',
+                  'shrink-0 rounded-full p-2 transition-all duration-300',
                 )}
                 aria-label='Clear selected file'>
-                <Close aria-hidden className='size-5 fill-current' />
+                <Close aria-hidden className='size-5 fill-orange-200' />
               </button>
             </div>
           )}
