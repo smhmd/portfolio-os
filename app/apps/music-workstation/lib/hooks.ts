@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { PI } from 'app/lib'
+
 type UseDialProps = {
   initialValue?: number
   min?: number
@@ -31,7 +33,7 @@ const calculateAngle = (
   const x = clientX - centerX
   const y = clientY - centerY
 
-  return (Math.atan2(y, x) * (180 / Math.PI) + 360) % 360
+  return (Math.atan2(y, x) * (180 / PI) + 360) % 360
 }
 
 export function useDial({

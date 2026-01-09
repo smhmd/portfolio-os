@@ -4,6 +4,8 @@ import { type PixiReactElementProps, useTick } from '@pixi/react'
 import Matter from 'matter-js'
 import type { AnimatedSprite } from 'pixi.js'
 
+import { PI } from 'app/lib'
+
 import { type CollisionPoint, FREQUENCY, useGame } from '../lib'
 
 const { Vector } = Matter
@@ -21,7 +23,7 @@ const variants = {
   big: {
     velocityScale: 0.2,
     anchor: { x: 0.5, y: 0.6 },
-    rotation: Math.PI,
+    rotation: PI,
     animationSpeed: 1,
   },
 } as const

@@ -1,6 +1,6 @@
 import { use, useMemo, useRef } from 'react'
 
-import { PerspectiveCamera } from '@react-three/drei'
+import { OrthographicCamera } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import {
   InstancedRigidBodies,
@@ -21,7 +21,7 @@ import {
   Vector3,
 } from 'three'
 
-import { createClientPromise } from 'app/lib'
+import { createClientPromise, HALF_PI, PI, QUARTER_PI, TAU } from 'app/lib'
 
 import { colorLog, DICE_FONT_NAME, getFace } from '../lib'
 
@@ -40,10 +40,10 @@ export default function Experience() {
 
   return (
     <>
-      <PerspectiveCamera
+      <OrthographicCamera
         makeDefault
-        position={[0, 18, 20]}
-        fov={zoom}
+        position={[0, 40, 0]}
+        zoom={zoom}
         near={0.1}
         far={1000}
         onUpdate={(self) => self.lookAt(0, 6, 0)}
@@ -62,16 +62,16 @@ export default function Experience() {
         shadow-camera-near={0.1}
         shadow-camera-far={200}
       />
-      <ambientLight intensity={Math.PI / 2} />
+      <ambientLight intensity={HALF_PI} />
       <spotLight
         position={[0, 10, 0]}
-        angle={Math.PI / 4}
+        angle={QUARTER_PI}
         penumbra={1.9}
         decay={0.1}
-        intensity={Math.PI}
+        intensity={PI}
       />
 
-      <pointLight position={[0, 10, 0]} decay={0} intensity={Math.PI / 2} />
+      <pointLight position={[0, 10, 0]} decay={0} intensity={HALF_PI} />
 
       <fog attach='fog' args={['black', 0, 80]} />
       <Physics gravity={[0, -9.81, 0]}>
@@ -80,7 +80,7 @@ export default function Experience() {
         <RigidBody type='fixed' colliders='cuboid'>
           <mesh
             position={[0, -0.1, 0]}
-            rotation={[-Math.PI / 2, 0, 0]}
+            rotation={[-HALF_PI, 0, 0]}
             receiveShadow>
             <boxGeometry args={[width, height, 1]} />
             <meshStandardMaterial color='black' />
@@ -95,7 +95,7 @@ function createGeometry({
   vertices,
   indices,
   size = 0,
-  angleOffset = Math.PI / 2,
+  angleOffset = HALF_PI,
   radius = 1,
   verticalOffset = 0,
   normalLength,
@@ -123,7 +123,7 @@ function createGeometry({
 
   indices.forEach((face, index) => {
     const vertexCount = face.length // Last item is material index
-    const angleStep = (2 * Math.PI) / vertexCount
+    const angleStep = TAU / vertexCount
     const materialIndex = index + 1 // Material ID (+1 because group 0 is reserved)
 
     const faceIndices: number[] = []
@@ -211,7 +211,7 @@ function createD4Geometry() {
     vertices,
     indices,
     size: -0.1,
-    angleOffset: (Math.PI * 7) / 6,
+    angleOffset: PI * (7 / 6),
   })
 }
 
@@ -238,7 +238,7 @@ function createD6Geometry() {
   return createGeometry({
     vertices,
     indices,
-    angleOffset: -Math.PI / 4,
+    angleOffset: -QUARTER_PI,
     verticalOffset: 0.02,
   })
 }
@@ -270,7 +270,7 @@ function createD8Geometry() {
 }
 
 function createD10Geometry() {
-  const a = (Math.PI * 2) / 10
+  const a = TAU / 10
   const h = 0.105
   const vertices = []
   for (let i = 0, b = 0; i < 10; ++i, b += a) {
@@ -404,7 +404,7 @@ function createD20Geometry() {
     vertices,
     indices,
     size: -0.1,
-    angleOffset: -Math.PI / 6,
+    angleOffset: -PI / 6,
   })
 }
 
@@ -477,8 +477,8 @@ function createTextTexture(text: string | string[]) {
     }
   } else {
     const radius = TEXTURE_SIZE * 0.5
-    const start = -Math.PI / 2
-    const step = (Math.PI * 2) / 3
+    const start = -HALF_PI
+    const step = TAU / 3
 
     text.forEach((t, i) => {
       const angle = start + i * step
@@ -487,7 +487,7 @@ function createTextTexture(text: string | string[]) {
 
       context.save()
       context.translate(x, y)
-      context.rotate(angle + Math.PI / 2)
+      context.rotate(angle + HALF_PI)
       context.strokeText(t, 0, 0)
       context.fillText(t, 0, 0)
       context.restore()
@@ -548,7 +548,7 @@ function Die({ variant, position, count, ...props }: DieProps) {
       (_, i) => ({
         key: `d${variant}-${i}`,
         position: [-i * 2.3, i * 2, 0],
-        rotation: [Math.PI * 0.5, Math.PI * 0.6, Math.PI * 1.3],
+        rotation: [PI * 0.5, PI * 0.6, PI * 1.3],
         linearVelocity: [-12, 1, -19],
       }),
     )

@@ -4,6 +4,8 @@ import { Application, extend } from '@pixi/react'
 import clsx from 'clsx'
 import { AnimatedSprite, Container, Graphics, Sprite } from 'pixi.js'
 
+import { HALF_PI, THIRD_PI } from 'app/lib'
+
 extend({ Sprite, Graphics, Container, AnimatedSprite })
 
 export function Screen(props: React.ComponentProps<'div'>) {
@@ -35,7 +37,7 @@ function Scene({ wrapperRef }: { wrapperRef: HTMLDivElement }) {
 
   return (
     <Application
-      className='rounded-[3px]'
+      className='rounded-ms'
       antialias
       autoDensity
       resizeTo={wrapperRef}
@@ -55,7 +57,7 @@ const outerStroke = { width: 2, color: 0xccd0c3 }
  * Hexagon vertices
  */
 const HEXAGON_POINTS = Array.from({ length: 6 }, (_, i) => {
-  const angle = (Math.PI / 3) * i - Math.PI / 2
+  const angle = THIRD_PI * i - HALF_PI
   return [
     Math.cos(angle) * BARRIER_RADIUS,
     Math.sin(angle) * BARRIER_RADIUS,

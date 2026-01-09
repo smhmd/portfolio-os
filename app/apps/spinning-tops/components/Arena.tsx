@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import Matter from 'matter-js'
 
 import { useMatter } from 'app/contexts'
+import { HALF_PI, PI, TAU } from 'app/lib'
 
 import {
   BARRIER_ANGLE,
@@ -28,7 +29,7 @@ const INNER_CIRCLE_RADIUS = OUTER_CIRCLE_RADIUS * 0.5
  * Decorative lines inside the arena.
  */
 const INNER_ARENA_LINES = Array.from({ length: BARRIER_COUNT }, (_, i) => {
-  const angle = ((Math.PI * 2) / BARRIER_COUNT) * i + Math.PI / 2
+  const angle = (TAU / BARRIER_COUNT) * i + HALF_PI
   const x = Math.cos(angle) * OUTER_CIRCLE_RADIUS
   const y = Math.sin(angle) * OUTER_CIRCLE_RADIUS
   return { x, y }
@@ -62,7 +63,7 @@ const BOUNDARY_COLORS = [0xff00ff, 0x00ffff, 0xffff00, 0xff0000, 0x00ff00]
 
 const BOUNDARY_PER_BARRIER = 10
 const BOUNDARY_COUNT = BOUNDARY_PER_BARRIER * BARRIER_COUNT
-const BOUNDARY_ANGLE = Math.PI / BOUNDARY_COUNT
+const BOUNDARY_ANGLE = PI / BOUNDARY_COUNT
 const BOUNDARY_SIZE = OUTER_CIRCLE_RADIUS * BOUNDARY_ANGLE
 const BOUNDARY_RADIUS = OUTER_CIRCLE_RADIUS + BOUNDARY_SIZE / 2
 

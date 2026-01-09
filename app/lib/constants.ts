@@ -37,3 +37,12 @@ export const gpuTier = await new Promise<Tier>((resolve) => {
 
   requestAnimationFrame(loop)
 })
+
+// Geometry
+export const PI = Math.PI
+export const TAU = Math.PI * 2
+
+export const HALF_PI = Math.PI / 2
+export const THIRD_PI = Math.PI / 3
+export const QUARTER_PI = Math.PI / 4
+export const THREE_QUARTER_PI = (3 * Math.PI) / 4

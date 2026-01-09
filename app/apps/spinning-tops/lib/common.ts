@@ -1,5 +1,7 @@
 import type TMatter from 'matter-js'
 
+import { PI } from 'app/lib'
+
 export const APP_ID = 'spinning-tops'
 
 export const FREQUENCY = 1000 / 60
@@ -11,7 +13,7 @@ export const OUTER_CIRCLE_RADIUS = 490
 
 export const BARRIER_COUNT = 3
 export const BARRIER_RADIUS = OUTER_CIRCLE_RADIUS + 14
-export const BARRIER_ANGLE = Math.PI / BARRIER_COUNT
+export const BARRIER_ANGLE = PI / BARRIER_COUNT
 
 export const MOVEMENT_FORCE_SCALE = 14 / 10000
 export const ADDED_FORCE_SCALE = 6 / 1000
