@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800">
+  <path fill="#ff9d00" d="M0 0h1600v800H0z"/>
+  <g stroke="#000" stroke-opacity=".05" stroke-width="100">
+    <circle r="1800" fill="#ff9d00"/>
+    <circle r="1700" fill="#fb8d17"/>
+    <circle r="1600" fill="#f47d24"/>
+    <circle r="1500" fill="#ed6e2d"/>
+    <circle r="1400" fill="#e35f34"/>
+    <circle r="1300" fill="#d85239"/>
+    <circle r="1200" fill="#cc453e"/>
+    <circle r="1100" fill="#be3941"/>
+    <circle r="1000" fill="#b02f43"/>
+    <circle r="900" fill="#a02644"/>
+    <circle r="800" fill="#901e44"/>
+    <circle r="700" fill="#801843"/>
+    <circle r="600" fill="#6f1341"/>
+    <circle r="500" fill="#5e0f3d"/>
+    <circle r="400" fill="#4e0c38"/>
+    <circle r="300" fill="#3e0933"/>
+    <circle r="200" fill="#2e062c"/>
+    <circle r="100" fill="#210024"/>
+  </g>
+</svg>

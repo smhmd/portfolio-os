@@ -60,12 +60,13 @@ function Content() {
       isDark
       className={clsx(
         'font-quicksand scrollbar-white font-bold',
-        colors[options.color],
+        colors[options.color].img,
+        'init:bg-cover',
       )}>
       <div
         className={clsx(
           'relative flex h-full flex-col items-center justify-between',
-          'mx-auto max-w-[110rem]',
+          'max-w-440 mx-auto',
           'overflow-hidden',
         )}>
         <Tines className='h-3/5' />

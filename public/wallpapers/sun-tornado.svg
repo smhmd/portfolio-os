@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1500">
+  <path fill="#e52" d="M0 0h2000v1500H0z"/>
+  <defs>
+    <radialGradient id="d" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fb3"/>
+      <stop offset="1" stop-color="#e52"/>
+    </radialGradient>
+    <linearGradient id="a" x1="0" x2="1550" y1="750" y2="750" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7882b"/>
+      <stop offset="1" stop-color="#e52"/>
+    </linearGradient>
+    <path id="c" fill="url(#a)" d="M1549 52a1562 1562 0 0 1-143 572 1537 1537 0 0 1-839 778 1504 1504 0 0 1-567 98 1502 1502 0 0 0 808-258 1477 1477 0 0 0 612-916q27-138 29-278c0-27 23-48 51-48s49 22 49 50z"/>
+    <g id="e">
+      <use href="#c" transform="rotate(60)scale(.12)"/>
+      <use href="#c" transform="rotate(10)scale(.2)"/>
+      <use href="#c" transform="rotate(40)scale(.25)"/>
+      <use href="#c" transform="rotate(-20)scale(.3)"/>
+      <use href="#c" transform="rotate(-30)scale(.4)"/>
+      <use href="#c" transform="rotate(20)scale(.5)"/>
+      <use href="#c" transform="rotate(60)scale(.6)"/>
+      <use href="#c" transform="rotate(10)scale(.7)"/>
+      <use href="#c" transform="rotate(-40)scale(.835)"/>
+      <use href="#c" transform="rotate(40)scale(.9)"/>
+      <use href="#c" transform="rotate(25)scale(1.05)"/>
+      <use href="#c" transform="rotate(8)scale(1.2)"/>
+      <use href="#c" transform="rotate(-60)scale(1.333)"/>
+      <use href="#c" transform="rotate(-30)scale(1.45)"/>
+      <use href="#c" transform="rotate(10)scale(1.6)"/>
+    </g>
+  </defs>
+  <g>
+    <circle r="3000" fill="url(#d)"/>
+    <g fill="url(#d)" opacity=".5">
+      <circle r="2000"/>
+      <circle r="1800"/>
+      <circle r="1700"/>
+      <circle r="1651"/>
+      <circle r="1450"/>
+      <circle r="1250"/>
+      <circle r="1175"/>
+      <circle r="900"/>
+      <circle r="750"/>
+      <circle r="500"/>
+      <circle r="380"/>
+      <circle r="250"/>
+    </g>
+    <g>
+      <use href="#e" transform="rotate(10)"/>
+      <use href="#e" transform="rotate(120)"/>
+      <use href="#e" transform="rotate(240)"/>
+    </g>
+    <circle r="3000" fill="url(#d)" fill-opacity=".1"/>
+  </g>
+</svg>

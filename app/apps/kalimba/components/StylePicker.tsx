@@ -3,12 +3,13 @@ import { RadioGroup } from 'radix-ui'
 
 import type { Props } from 'app/lib'
 
+import type { colors } from '../lib'
 import { Control } from './Control'
 import { Token } from './Token'
 
 type ColorPickerProps = Props<
   typeof RadioGroup.Root,
-  { options: string[]; name: string; value: number }
+  { options: typeof colors; name: string; value: number }
 >
 
 export function StylePicker({
@@ -22,7 +23,8 @@ export function StylePicker({
       name={name}
       className={clsx(
         'corner-squircle block size-full rounded-full',
-        options[value],
+        options[value].img,
+        'init:bg-cover init:bg-[#111]',
       )}>
       <RadioGroup.Root
         defaultValue={value.toString()}
@@ -30,11 +32,13 @@ export function StylePicker({
         {...props}>
         {options.map((color, i) => (
           <RadioGroup.Item
-            key={color}
+            key={color.img}
             value={i.toString()}
-            aria-label={color}
+            aria-label={color.bg}
             asChild>
-            <Token className={color} />
+            <Token
+              className={clsx(color.img, 'init:bg-cover init:bg-[#111]')}
+            />
           </RadioGroup.Item>
         ))}
       </RadioGroup.Root>

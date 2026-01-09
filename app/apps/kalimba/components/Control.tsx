@@ -38,7 +38,7 @@ export function Control({
           <Dialog.Content
             className={clsx(
               'rounded-4xl fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2',
-              'w-full max-w-[34rem] bg-neutral-900 text-white',
+              'max-w-136 w-full bg-neutral-900 text-white',
               'font-quicksand text-2.5xl tracking-wider outline-none',
               'data-[state=open]:animate-grow-in data-[state=closed]:animate-grow-out',
             )}>

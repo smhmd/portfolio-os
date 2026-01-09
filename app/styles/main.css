@@ -52,6 +52,8 @@ main::-webkit-scrollbar {
   --radius-1\.5xl: 0.875rem;
   --radius-2\.5xl: 1.25rem;
   --radius-3\.5xl: 1.75rem;
+  --radius-4\.5xl: 2.5rem;
+  --radius-5xl: 3rem;
 
   --spacing-0\.75: calc(var(--spacing) * 0.75);
   --spacing-1\.25: calc(var(--spacing) * 1.25);
@@ -83,11 +85,6 @@ main::-webkit-scrollbar {
     @slot;
   }
 }
-
-/* @custom-variant html (html:has(&)); */
-@custom-variant html-dark (html:has(.app-is-dark-themed) &);
-@custom-variant thumb [&::-webkit-slider-thumb, &::-moz-range-thumb];
-@custom-variant track [&::-webkit-slider-runnable-track, &::-moz-range-track];
 
 @custom-variant l {
   @media (orientation: landscape) {
@@ -159,6 +156,10 @@ main::-webkit-scrollbar {
   }
 }
 
+@utility wp-* {
+  background-image: url(/wallpapers/--value([\*]));
+}
+
 @custom-variant supports-squircle {
   @supports (corner-shape: squircle) {
     @slot;
@@ -172,7 +173,8 @@ main::-webkit-scrollbar {
     'bevel',
     'notch',
     'square',
-    'squircle'
+    'squircle',
+    [\*]
   );
   corner-shape: superellipse(--value(number));
 }

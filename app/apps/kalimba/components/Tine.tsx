@@ -9,6 +9,7 @@ import { gpuTier, type Props } from 'app/lib'
 import { interpolate } from 'app/utils'
 
 import {
+  colors,
   getTineOrder,
   keyboardKeys,
   type TineInfo,
@@ -150,8 +151,10 @@ export function Tine({
         className={clsx(
           'relative flex flex-col justify-end gap-y-2.5 overflow-hidden',
           'corner-1.5 size-full rounded-b-full',
-          'bg-gradient-to-b from-5%',
-          'from-white/94 to-white/86',
+          'bg-linear-to-b from-5%',
+          'from-white',
+          colors[options.color].bg,
+          colors[options.color].text,
           'font-quicksand tabular-nums',
           'shadow-[0_3px] shadow-black/25 sm:shadow-[0_4px]',
           'text-shadow-[0_1.5px] text-shadow-white/60',
@@ -160,7 +163,7 @@ export function Tine({
         <motion.span
           ref={innerRef}
           initial={{ opacity: 0 }}
-          className='absolute inset-0 bg-gradient-to-b from-white from-60% to-transparent'
+          className='bg-linear-to-b absolute inset-0 from-white from-60% to-transparent'
         />
         <span className='font-roboto -mb-2 text-[clamp(.75rem,60cqw,2.75rem)] leading-[2vw]'>
           {'•\n'.repeat(pips)}
@@ -177,7 +180,7 @@ export function Tine({
         <span
           style={{ height: `${tipHeight}vh` }}
           className={clsx(
-            'w-full shrink-0 bg-gradient-to-b from-40%',
+            'bg-linear-to-b w-full shrink-0 from-40%',
             'from-white/50 to-transparent',
           )}
         />

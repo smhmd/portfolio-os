@@ -24,7 +24,7 @@ function Controls() {
   return (
     <ul className='flex grid-cols-[1fr_auto] flex-col'>
       <StylePicker
-        name='color'
+        name='Background'
         options={colors}
         value={options.color}
         onValueChange={(value) => {
@@ -83,11 +83,13 @@ export function Settings() {
         <Dialog.Content
           className={clsx(
             'fixed inset-0 z-10 flex flex-col outline-none',
-            'font-quicksand text-white!',
+            'font-quicksand',
             'data-[state=open]:animate-slide-up data-[state=closed]:animate-slide-down',
-            colors[options.color],
+            colors[options.color].bg,
+            colors[options.color].img,
+            'init:bg-cover',
           )}>
-          <header className='relative flex items-center bg-[#111]/95'>
+          <header className='relative flex items-center bg-[#111]/90'>
             <Dialog.Close
               className='absolute inset-0 cursor-pointer outline-none'
               aria-label='Close settings'

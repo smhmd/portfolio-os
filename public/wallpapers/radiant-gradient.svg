@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60">
+  <rect width="100" height="60" fill="#7dcf00"/>
+  <rect width="11" height="11" fill="#7dcf00"/>
+  <rect width="11" height="11" x="10" fill="#7fd008"/>
+  <rect width="11" height="11" y="10" fill="#81d00f"/>
+  <rect width="11" height="11" x="20" fill="#82d115"/>
+  <rect width="11" height="11" x="10" y="10" fill="#84d21a"/>
+  <rect width="11" height="11" y="20" fill="#86d31e"/>
+  <rect width="11" height="11" x="30" fill="#88d322"/>
+  <rect width="11" height="11" x="20" y="10" fill="#89d425"/>
+  <rect width="11" height="11" x="10" y="20" fill="#8bd529"/>
+  <rect width="11" height="11" y="30" fill="#8dd62c"/>
+  <rect width="11" height="11" x="40" fill="#8ed62f"/>
+  <rect width="11" height="11" x="30" y="10" fill="#90d732"/>
+  <rect width="11" height="11" x="20" y="20" fill="#92d834"/>
+  <rect width="11" height="11" x="10" y="30" fill="#93d837"/>
+  <rect width="11" height="11" y="40" fill="#95d93a"/>
+  <rect width="11" height="11" x="50" fill="#97da3c"/>
+  <rect width="11" height="11" x="40" y="10" fill="#98db3f"/>
+  <rect width="11" height="11" x="30" y="20" fill="#9adb41"/>
+  <rect width="11" height="11" x="20" y="30" fill="#9cdc43"/>
+  <rect width="11" height="11" x="10" y="40" fill="#9ddd46"/>
+  <rect width="11" height="11" y="50" fill="#9fde48"/>
+  <rect width="11" height="11" x="60" fill="#a0de4a"/>
+  <rect width="11" height="11" x="50" y="10" fill="#a2df4d"/>
+  <rect width="11" height="11" x="40" y="20" fill="#a3e04f"/>
+  <rect width="11" height="11" x="30" y="30" fill="#a5e051"/>
+  <rect width="11" height="11" x="20" y="40" fill="#a7e153"/>
+  <rect width="11" height="11" x="10" y="50" fill="#a8e256"/>
+  <rect width="11" height="11" x="70" fill="#aae358"/>
+  <rect width="11" height="11" x="60" y="10" fill="#abe35a"/>
+  <rect width="11" height="11" x="50" y="20" fill="#ade45c"/>
+  <rect width="11" height="11" x="40" y="30" fill="#aee55e"/>
+  <rect width="11" height="11" x="30" y="40" fill="#b0e660"/>
+  <rect width="11" height="11" x="20" y="50" fill="#b1e662"/>
+  <rect width="11" height="11" x="80" fill="#b3e764"/>
+  <rect width="11" height="11" x="70" y="10" fill="#b4e867"/>
+  <rect width="11" height="11" x="60" y="20" fill="#b6e869"/>
+  <rect width="11" height="11" x="50" y="30" fill="#b7e96b"/>
+  <rect width="11" height="11" x="40" y="40" fill="#b9ea6d"/>
+  <rect width="11" height="11" x="30" y="50" fill="#baeb6f"/>
+  <rect width="11" height="11" x="90" fill="#bceb71"/>
+  <rect width="11" height="11" x="80" y="10" fill="#bdec73"/>
+  <rect width="11" height="11" x="70" y="20" fill="#bfed75"/>
+  <rect width="11" height="11" x="60" y="30" fill="#c0ee77"/>
+  <rect width="11" height="11" x="50" y="40" fill="#c2ee79"/>
+  <rect width="11" height="11" x="40" y="50" fill="#c3ef7b"/>
+  <rect width="11" height="11" x="90" y="10" fill="#c4f07d"/>
+  <rect width="11" height="11" x="80" y="20" fill="#c6f07f"/>
+  <rect width="11" height="11" x="70" y="30" fill="#c7f181"/>
+  <rect width="11" height="11" x="60" y="40" fill="#c9f283"/>
+  <rect width="11" height="11" x="50" y="50" fill="#caf385"/>
+  <rect width="11" height="11" x="90" y="20" fill="#ccf387"/>
+  <rect width="11" height="11" x="80" y="30" fill="#cdf489"/>
+  <rect width="11" height="11" x="70" y="40" fill="#cef58b"/>
+  <rect width="11" height="11" x="60" y="50" fill="#d0f68d"/>
+  <rect width="11" height="11" x="90" y="30" fill="#d1f68f"/>
+  <rect width="11" height="11" x="80" y="40" fill="#d2f791"/>
+  <rect width="11" height="11" x="70" y="50" fill="#d4f893"/>
+  <rect width="11" height="11" x="90" y="40" fill="#d5f995"/>
+  <rect width="11" height="11" x="80" y="50" fill="#d7f997"/>
+  <rect width="11" height="11" x="90" y="50" fill="#d8fa99"/>
+</svg>

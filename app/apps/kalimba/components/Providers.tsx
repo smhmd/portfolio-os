@@ -35,7 +35,7 @@ export function OptionsProvider({ children }: OptionsProviderProps) {
   const [options, setOptions] = useState<Options>(() => {
     const [color, labelType, tines, tuning, reverb] = data
       ? data.split(',').map(Number)
-      : [10, 0, 17, 4, 0]
+      : [5, 0, 17, 4, 0]
 
     return {
       color,

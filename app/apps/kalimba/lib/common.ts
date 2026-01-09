@@ -38,24 +38,98 @@ export type TineInfo = {
 }
 
 export const colors = [
-  'bg-red-500 text-red-900/50',
-  'bg-orange-400 text-orange-800/50',
-  'bg-emerald-500 text-emerald-900/50',
-  'bg-teal-500 text-teal-900/50',
-  'bg-blue-500 text-blue-900/50',
-  'bg-purple-500 text-purple-900/50',
-  'bg-rose-500 text-rose-900/50',
-  'bg-amber-500 text-amber-900/50',
-  'bg-green-500 text-green-900/50',
-  'bg-cyan-500 text-cyan-900/50',
-  'bg-indigo-500 text-indigo-900/50',
-  'bg-fuchsia-500 text-fuchsia-900/50',
-  'bg-pink-500 text-pink-800/50',
-  'bg-yellow-400 text-yellow-800/50',
-  'bg-lime-400 text-lime-900/50',
-  'bg-sky-500 text-sky-900/50',
-  'bg-violet-500 text-violet-900/50',
-  'bg-zinc-300 text-neutral-900/50',
+  {
+    img: 'wp-[slanted-gradient.svg] bg-top',
+    text: 'text-red-900/50',
+    bg: 'to-red-100',
+  },
+  {
+    img: 'wp-[geometric-intersection.svg] bg-center',
+    text: 'text-amber-900/50',
+    bg: 'to-amber-100',
+  },
+  {
+    img: 'wp-[liquid-cheese.svg] bg-bottom',
+    text: 'text-yellow-800/50',
+    bg: 'to-yellow-100',
+  },
+  {
+    img: 'wp-[abstract-envelope.svg] bg-bottom',
+    text: 'text-emerald-900/50',
+    bg: 'to-emerald-100',
+  },
+  {
+    img: 'wp-[ocean-waves.svg] bg-center',
+    text: 'text-blue-900/50',
+    bg: 'to-blue-100',
+  },
+  {
+    img: 'wp-[dragon-scales.svg] bg-contain',
+    text: 'text-purple-900/50',
+    bg: 'to-purple-100',
+  },
+  {
+    img: 'wp-[rose-petals.svg] bg-bottom',
+    text: 'text-rose-900/50',
+    bg: 'to-rose-100',
+  },
+
+  {
+    img: 'wp-[sun-tornado.svg] bg-bottom',
+    text: 'text-orange-800/50',
+    bg: 'to-orange-100',
+  },
+
+  {
+    img: 'wp-[radiant-gradient.svg] bg-center',
+    text: 'text-lime-900/50',
+    bg: 'to-lime-100',
+  },
+  {
+    img: 'wp-[subtle-prism.svg] bg-bottom bg-contain',
+    text: 'text-cyan-900/50',
+    bg: 'to-cyan-100',
+  },
+  {
+    img: 'wp-[endless-constellation.svg] bg-auto',
+    text: 'text-indigo-900/50',
+    bg: 'to-indigo-100',
+  },
+  {
+    img: 'wp-[diamond-sunset.svg] bg-center',
+    text: 'text-fuchsia-900/50',
+    bg: 'to-fuchsia-100',
+  },
+  {
+    img: 'wp-[quantum-gradient.svg] bg-center',
+    text: 'text-pink-800/50',
+    bg: 'to-pink-100',
+  },
+  {
+    img: 'wp-[parabolic-ellipse.svg] bg-center',
+    text: 'text-red-900/50',
+    bg: 'to-red-100',
+  },
+  {
+    img: 'wp-[tortoise-shell.svg] bg-auto',
+    text: 'text-emerald-900/50',
+    bg: 'to-emerald-100',
+  },
+  {
+    img: 'wp-[flat-mountains.svg] bg-bottom',
+    text: 'text-teal-900/50',
+    bg: 'to-teal-100',
+  },
+  {
+    img: 'wp-[bullseye-gradient.svg] bg-center',
+    text: 'text-violet-900/50',
+    bg: 'to-violet-100',
+  },
+  {
+    img: 'wp-[cornered-stairs.svg] bg-center',
+    text: 'text-neutral-900/50',
+    bg: 'to-neutral-100',
+  },
 ]
 
 export const labels = ['1', 'c', '1\nc']
