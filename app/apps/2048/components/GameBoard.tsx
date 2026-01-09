@@ -50,46 +50,48 @@ export const GameBoard = memo(
               // That means we need a square that's perfectly splittable by 4 (25%) to be able to say, shift this tile 50% or 75%, etc.
               // The outer div (the relative one) needs some padding, but that messes up the percentages. So, we use inset instead.
               'absolute -inset-1',
-              'grid',
-              'gap-2 rounded-2xl p-2',
-              'p:sm:-inset-2 p:sm:gap-3.5 p:sm:rounded-3xl p:sm:p-3.5',
-              'l:vsm:-inset-2 l:vsm:gap-3.5 l:vsm:rounded-3xl l:vsm:p-3.5',
+              'grid gap-2 overflow-hidden rounded-2xl p-2',
+              'p:sm:-inset-2 p:sm:rounded-3xl p:sm:gap-3.5 p:sm:p-3.5',
+              'l:vsm:-inset-2 l:vsm:rounded-3xl l:vsm:gap-3.5 l:vsm:p-3.5',
+              'corner-squircle supports-squircle:rounded-4.5xl supports-squircle:p:sm:rounded-5xl supports-squircle:l:vsm:rounded-5xl',
             )}
             style={{
               gridTemplateRows: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,
               gridTemplateColumns: `repeat(${TILE_SIZE}, minmax(0, 1fr))`,
             }}>
             {Array.from({ length: TILE_SIZE ** 2 }).map((_, i) => (
-              <div key={i} className='tile-empty rounded-lx size-full' />
+              <div
+                key={i}
+                className={clsx(
+                  'tile-empty rounded-lx size-full',
+                  'corner-squircle supports-squircle:rounded-3xl',
+                )}
+              />
             ))}
+
+            <AnimatePresence>
+              {isWon ? (
+                <Overlay
+                  title='You Win!'
+                  className='bg-[#edc02e]/50 text-white'>
+                  <button className='pl-5' onClick={onContinue}>
+                    Continue
+                  </button>
+                  |<button onClick={onReset}>New Game</button>
+                </Overlay>
+              ) : isLost ? (
+                <Overlay
+                  title='Game Over!'
+                  className='bg-[#eee4da]/50 text-[#756452]'>
+                  <button onClick={onReset}>Try Again</button>
+                </Overlay>
+              ) : null}
+            </AnimatePresence>
           </div>
+
           {board
             ?.sort((a, b) => a.id.localeCompare(b.id))
             ?.map((tile) => <TileBlock key={tile.id} {...tile} />)}
-          <AnimatePresence>
-            {isWon ? (
-              <Overlay title='You Win!' className='bg-[#edc02e]/50 text-white'>
-                <button
-                  className='pl-5.5 cursor-pointer px-2'
-                  onClick={onContinue}>
-                  Continue
-                </button>
-                |
-                <button className='cursor-pointer px-2' onClick={onReset}>
-                  New Game
-                </button>
-              </Overlay>
-            ) : null}
-            {isLost ? (
-              <Overlay
-                title='Game Over!'
-                className='bg-[#eee4da]/50 text-[#756452]'>
-                <button className='cursor-pointer px-2' onClick={onReset}>
-                  Try Again
-                </button>
-              </Overlay>
-            ) : null}
-          </AnimatePresence>
         </div>
       </section>
     )

@@ -20,7 +20,7 @@ export const TileBlock = memo(({ x, y, value }: TileBlockProps) => {
   return (
     <div
       className={clsx(
-        '@container duration-(--anim-duration) absolute transform-gpu',
+        '@container duration-(--anim-duration) absolute',
         'p:sm:p-1 l:vsm:p-1 p-0.5',
       )}
       style={{
@@ -39,9 +39,10 @@ export const TileBlock = memo(({ x, y, value }: TileBlockProps) => {
         }
         className={clsx(
           isNew ? 'animate-spawn' : isUpdated ? 'animate-pop' : undefined,
-          `tile-generic tile-${value} transform-gpu`,
+          `tile-generic tile-${value}`,
           'flex items-center justify-center',
           'rounded-1.5xl size-full font-black',
+          'corner-squircle supports-squircle:rounded-4xl',
         )}>
         {value}
       </div>

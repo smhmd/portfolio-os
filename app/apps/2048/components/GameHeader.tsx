@@ -16,7 +16,7 @@ export const GameHeader = memo(
   ({ score, best, onReset, className, ...rest }: GameHeaderProps) => (
     <header
       className={clsx(
-        'w-full max-w-[110rem]',
+        'max-w-440 w-full',
         'l:grid-rows-1 grid grid-cols-3 grid-rows-2 items-center',
         'vlg:px-8 l:lg:pt-4 gap-y-2 px-2 py-2 lg:xl:p-10',
         className,

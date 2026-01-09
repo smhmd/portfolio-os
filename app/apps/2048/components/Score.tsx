@@ -69,7 +69,7 @@ function ScoreDisplay({
   return (
     <p
       className={clsx(
-        'vlg:flex-col flex items-center justify-between',
+        'vlg:flex-col flex items-center justify-between gap-x-2',
         'w-full lg:max-w-32',
         'rounded-xl border-2 border-[#eae7d9] sm:rounded-2xl',
         'px-4 py-2 sm:py-1',

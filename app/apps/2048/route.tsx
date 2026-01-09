@@ -85,7 +85,14 @@ export default function App() {
             className='mb-0.75 mr-1 inline size-4 fill-current'
           />
           <b>Swipe</b> or use <b>arrow keys</b> to merge tiles and make{' '}
-          <b className='bg-yellow-500 text-white'>2048</b>
+          <b
+            className={clsx(
+              'inline-grid aspect-square place-items-center',
+              'corner-squircle supports-squircle:rounded-full rounded-lg p-0.5',
+              'bg-yellow-500 text-white',
+            )}>
+            2048
+          </b>
         </p>
       </footer>
     </AppWrapper>
