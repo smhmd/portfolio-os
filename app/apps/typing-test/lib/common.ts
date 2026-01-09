@@ -1,1 +1,1 @@
-export const sentences = `I've always loved you, and when you love someone, you love the whole person, just as he or she is, and not as you would like them to be.`
+export const sentences = `Give a man a fire and he's warm for a day, but set fire to him and he's warm for the rest of his life.`

@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 
+import clsx from 'clsx'
+
 import { AppWrapper } from 'app/components'
 import { WavyText } from 'app/components'
 import { iconToFavicon } from 'app/utils'
@@ -62,7 +64,12 @@ export default function App() {
       : { accuracy: 0, wpm: 0, errors: 0 }
 
   return (
-    <AppWrapper className='flex flex-col items-center justify-center gap-6 bg-[whitesmoke] p-4 font-mono text-black'>
+    <AppWrapper
+      className={clsx(
+        'flex flex-col items-center justify-center gap-6 p-4',
+        'text-shadow-2xs text-shadow-current/20 font-mono',
+        'bg-[whitesmoke] text-[#1A1A1A]',
+      )}>
       <h1 className='text-3xl font-black'>Typing Test</h1>
       {endTimeRef.current ? (
         <div className='flex flex-col items-center justify-center gap-y-4'>
@@ -78,8 +85,24 @@ export default function App() {
           </button>
         </div>
       ) : (
-        <>
-          <div className='relative flex w-full max-w-3xl cursor-text items-start rounded bg-white p-2.5 sm:p-4'>
+        <section className='contents'>
+          <div
+            className={clsx(
+              'relative flex items-start',
+              'aspect-square w-full max-w-sm',
+              'p-2.5 sm:p-4',
+              'cursor-text',
+              'corner-[squircle_squircle_bevel_squircle] rounded-1.5xl rounded-br-5xl',
+              'text-shadow-none bg-[#FFEB3B] text-[#1A1A1A]',
+              'shadow-yellow-500/34 shadow',
+              'rotate-2 transition-transform focus-within:rotate-0',
+            )}>
+            <span
+              className={clsx(
+                'corner-bevel rounded-br-full',
+                'absolute bottom-0 right-0 size-12 bg-yellow-300',
+              )}
+            />
             <p className=''>
               {sentences.split('').map((char, index) => {
                 let className = ''
@@ -99,7 +122,12 @@ export default function App() {
             </p>
             <p
               role='textbox'
-              className='absolute inset-0 z-10 select-none p-2.5 text-transparent caret-black outline-none sm:p-4'
+              className={clsx(
+                'absolute inset-0 z-10',
+                'select-none outline-none',
+                'p-2.5 sm:p-4',
+                'text-transparent caret-transparent empty:caret-black',
+              )}
               contentEditable={!endTimeRef.current}
               autoFocus
               spellCheck={false}
@@ -126,7 +154,7 @@ export default function App() {
           ) : (
             <WavyText value='Start typing to begin!' />
           )}
-        </>
+        </section>
       )}
     </AppWrapper>
   )
