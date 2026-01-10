@@ -11,7 +11,7 @@ export const CurrentAppProvider = (props: React.PropsWithChildren) => {
     const currentAppId = location.pathname.match(/[^/]+/)?.[0] as
       | AppID
       | undefined
-    return currentAppId ? apps[currentAppId] : null
+    return currentAppId ? apps[currentAppId] : undefined
   }, [location.pathname])
 
   return <CurrentAppContext.Provider value={currentApp} {...props} />

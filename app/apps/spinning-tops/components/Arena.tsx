@@ -22,6 +22,7 @@ const { Bodies } = Matter
 
 const VISIBLE_CIRCLES = true
 const VISIBLE_BOUNDARY = false
+const BOUNDARY_COLORS = [0xff00ff, 0x00ffff, 0xffff00, 0xff0000, 0x00ff00]
 
 const INNER_CIRCLE_RADIUS = OUTER_CIRCLE_RADIUS * 0.5
 
@@ -58,8 +59,6 @@ const BARRIER_CORNER_LINES = Array.from({ length: BARRIER_COUNT }, (_, i) => ({
   start: BARRIER_CORNERS[2 * i],
   end: BARRIER_CORNERS[2 * i + 1],
 }))
-
-const BOUNDARY_COLORS = [0xff00ff, 0x00ffff, 0xffff00, 0xff0000, 0x00ff00]
 
 const BOUNDARY_PER_BARRIER = 10
 const BOUNDARY_COUNT = BOUNDARY_PER_BARRIER * BARRIER_COUNT

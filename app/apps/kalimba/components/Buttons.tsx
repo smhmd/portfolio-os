@@ -17,7 +17,7 @@ export function BaseButton({
     <button
       className={clsx('group relative cursor-pointer outline-none', className)}
       {...props}>
-      <Halo className='group-active:translate-y-[4px]' />
+      <Halo className='group-active:translate-y-1' />
       <span className='block size-12 *:size-full xl:size-24'>{children}</span>
       {animation && (
         <ProgressIcon
@@ -37,7 +37,7 @@ export function BaseLink({ children, className, ...props }: BaseLinkProps) {
     <a
       className={clsx('group relative cursor-pointer outline-none', className)}
       {...props}>
-      <Halo className='group-active:translate-y-[4px]' />
+      <Halo className='group-active:translate-y-1' />
       <span className='block size-12 *:size-full xl:size-24'>{children}</span>
     </a>
   )

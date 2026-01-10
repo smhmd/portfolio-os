@@ -69,7 +69,7 @@ export const AppDrawer = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 type='search'
                 placeholder='Search...'
-                className='h-6 w-full px-2 py-1 text-[10px] capitalize text-white placeholder-white/50 focus:outline-none'
+                className='text-xxs h-6 w-full px-2 py-1 capitalize text-white placeholder-white/50 focus:outline-none'
               />
               <span className='mr-1 mt-px flex items-center justify-center'>
                 <Search aria-hidden className='size-4 fill-white/50' />

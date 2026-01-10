@@ -16,7 +16,7 @@ export const BARRIER_RADIUS = OUTER_CIRCLE_RADIUS + 14
 export const BARRIER_ANGLE = PI / BARRIER_COUNT
 
 export const MOVEMENT_FORCE_SCALE = 14 / 10000
-export const ADDED_FORCE_SCALE = 6 / 1000
+export const ADDED_FORCE_SCALE = 8 / 1000
 
 export const PLAYER_RADIUS = 40
 
