@@ -5,9 +5,8 @@ import { lazy, Suspense, useMemo, useReducer } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import clsx from 'clsx'
 import * as motion from 'motion/react-client'
-import { MathUtils } from 'three'
 
-import { DISTANCE, FOV, SMILE_TEXTURE, useInstrument } from '../lib'
+import { PADDING, SMILE_TEXTURE, useInstrument, ZOOM } from '../lib'
 
 const Mascot = lazy(() => import('./Mascot'))
 
@@ -34,7 +33,8 @@ export function Scene({ className, ...props }: SceneProps) {
           'p:size-[min(50%,18rem)]',
         )}>
         <Canvas
-          camera={{ fov: FOV, position: [0, 0, DISTANCE] }}
+          orthographic
+          camera={{ zoom: ZOOM, position: [0, 0, ZOOM] }}
           gl={{ alpha: true, antialias: true }}>
           <Stage />
         </Canvas>
@@ -46,20 +46,19 @@ export function Scene({ className, ...props }: SceneProps) {
 function Stage() {
   const [isFallback, hideFallback] = useReducer(() => false, true)
 
-  const { size } = useThree()
+  const {
+    viewport: { width, height },
+  } = useThree()
 
-  const radius = useMemo(() => {
-    const vFov = MathUtils.degToRad(FOV)
-    const visibleHeight = 2 * Math.tan(vFov / 2) * DISTANCE
-    const visibleWidth = visibleHeight * (size.width / size.height)
-
-    return Math.min(visibleHeight, visibleWidth) * 0.99
-  }, [size])
+  const radius = useMemo(
+    () => Math.min(width, height) / 2 - PADDING,
+    [width, height],
+  )
 
   return (
     <>
       {isFallback && (
-        <mesh scale={0.495}>
+        <mesh>
           <circleGeometry args={[radius, 64]} />
           <meshBasicMaterial map={SMILE_TEXTURE} />
         </mesh>

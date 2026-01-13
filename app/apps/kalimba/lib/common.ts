@@ -15,16 +15,15 @@ export type Options = {
 export const MIN_COUNT = 9
 export const MAX_COUNT = 21
 
-export const FOV = 20
-export const DISTANCE = 10
-export const PADDING = 1.05
+export const ZOOM = 100
+export const PADDING = 0.015
 
 export const ROTATION_X = 0.6
 export const ROTATION_Y = 0.3
 export const ROTATION_Z = 0.2
 
 export const KALIMBA_SAMPLE = {
-  sample: '/kalimba/samples/kalimba262.ogg',
+  sample: '/kalimba/samples/kalimba.ogg',
   freq: 261.3,
   min: 3,
   max: 7,

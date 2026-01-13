@@ -6,7 +6,7 @@ import { Close, FilePresent, Upload } from 'app/assets'
 
 import { fileToArrayBuffer, type TorrentObject } from '../lib'
 
-const dragClasses = {
+const variants = {
   idle: 'border-orange-100/40 hover:border-orange-300/60',
   dragging: 'scale-102 animate-pulse-glow border-orange-300 bg-orange-300/10',
   error: 'scale-102 animate-pulse-glow border-red-400 bg-red-400/10 ',
@@ -21,8 +21,7 @@ type DropZoneProps = {
 export const DropZone = memo(
   ({ torrentObject, onUploadFile, onReset }: DropZoneProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const [dragStatus, setDragStatus] =
-      useState<keyof typeof dragClasses>('idle')
+    const [dragStatus, setDragStatus] = useState<keyof typeof variants>('idle')
 
     async function handleUploadFile(e: React.ChangeEvent<HTMLInputElement>) {
       const file = e.target.files?.[0]
@@ -66,7 +65,7 @@ export const DropZone = memo(
         className={clsx(
           'group relative rounded-xl border-2 border-dashed transition duration-500',
           'focus-within:border-orange-300/40',
-          dragClasses[dragStatus],
+          variants[dragStatus],
           torrentObject && 'bg-orange-900/10',
         )}
         onDragEnter={handleDragEnter}

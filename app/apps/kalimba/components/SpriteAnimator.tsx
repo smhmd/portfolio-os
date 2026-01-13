@@ -75,7 +75,7 @@ export function SpriteAnimator(props: SpriteAnimatorProps) {
       <Decal
         position={[0, 0, radius]}
         rotation={[0, 0, 0]}
-        scale={radius * 1.8}
+        scale={radius * 2.1}
         map={spriteTexture}
       />
     </mesh>

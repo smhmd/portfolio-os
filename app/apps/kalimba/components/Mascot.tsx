@@ -3,7 +3,7 @@ import { useLayoutEffect } from 'react'
 import { useSpriteLoader } from '@react-three/drei'
 import { type ThreeElements } from '@react-three/fiber'
 
-import { DISTANCE, PADDING, useInstrument } from '../lib'
+import { useInstrument } from '../lib'
 import { SpriteAnimator } from './SpriteAnimator'
 
 type MascotProps = ThreeElements['mesh'] & { radius: number; onRender(): void }
@@ -28,7 +28,6 @@ export default function Mascot({ radius, onRender, ...props }: MascotProps) {
       fps={12}
       radius={radius}
       sprite={spriteObj}
-      position={[0, 0, -PADDING * DISTANCE]}
       {...props}
       ref={mascotRef}>
       <sphereGeometry args={[radius, 32, 32]} />
