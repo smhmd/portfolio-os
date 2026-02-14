@@ -9,6 +9,7 @@ import { gpuTier } from 'app/lib'
 import { interpolate, isEven, setCookie } from 'app/utils'
 
 import {
+  initOptions,
   Instrument,
   InstrumentContext,
   type InstrumentContextType,
@@ -33,16 +34,22 @@ export function OptionsProvider({ children }: OptionsProviderProps) {
   const data = useLoaderData<string>()
 
   const [options, setOptions] = useState<Options>(() => {
-    const [color, labelType, tines, tuning, reverb] = data
-      .split(',')
-      .map(Number)
+    if (!data) return initOptions
+    try {
+      const [color, labelType, tines, tuning, reverb] = data
+        .split(',')
+        .map(Number)
 
-    return {
-      color: color ?? 5,
-      labelType: labelType ?? 0,
-      tines: tines ?? 17,
-      tuning: tuning ?? 4,
-      reverb: reverb ?? 0,
+      return {
+        ...initOptions,
+        color: color,
+        labelType: labelType,
+        tines: tines,
+        tuning: tuning,
+        reverb: reverb,
+      }
+    } catch (_) {
+      return initOptions
     }
   })
 
@@ -112,13 +119,7 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
   const resetAnim = useDebounced(() => setAnimation('1'), 1000)
   const resetRotation = useDebounced(() => {
     if (!mascotRef.current) return
-    const reset = animate(
-      mascotRef.current.rotation,
-      { x: 0, y: 0, z: 0 },
-      { duration: 0.4 },
-    )
-
-    if (gpuTier < 0) reset.complete()
+    animate(mascotRef.current.rotation, { x: 0, y: 0, z: 0 }, { duration: 0.4 })
   }, 1400)
 
   const playNote = useCallback<InstrumentContextType['playNote']>(
@@ -138,30 +139,27 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
       let rotation = interpolate(index, [0, options.tines - 1], [0, 1])
       rotation = isEven(index) ? rotation : -rotation
 
-      if (gpuTier > 0) {
-        const rotate = animate(
-          mascotRef.current.rotation,
-          {
-            x: -Math.abs(rotation * ROTATION_X),
-            y: rotation * ROTATION_Y,
-            z: rotation * ROTATION_Z,
-          },
-          { duration: 0.4 },
-        )
-        if (gpuTier < 1) rotate.complete()
+      animate(
+        mascotRef.current.rotation,
+        {
+          x: -Math.abs(rotation * ROTATION_X),
+          y: rotation * ROTATION_Y,
+          z: rotation * ROTATION_Z,
+        },
+        { duration: 0.4 },
+      )
 
-        const bounce = animate(
-          containerRef.current,
-          { scaleY: [0.9, 1], scaleX: [1.1, 1] },
-          {
-            type: 'spring',
-            stiffness: 200,
-            damping: 4,
-            mass: 0.4,
-          },
-        )
-        if (gpuTier < 1) bounce.complete()
-      }
+      const bounce = animate(
+        containerRef.current,
+        { scaleY: [0.9, 1], scaleX: [1.1, 1] },
+        {
+          type: 'spring',
+          stiffness: 200,
+          damping: 4,
+          mass: 0.4,
+        },
+      )
+      if (gpuTier < 1) bounce.complete()
 
       const newAnim = Math.min(
         6,

@@ -4,13 +4,13 @@ import Matter from 'matter-js'
 import { Assets, Spritesheet } from 'pixi.js'
 
 import { useGlobals } from 'app/contexts'
-import { createClientPromise } from 'app/lib'
+import { clientOnlyPromise } from 'app/lib'
 
 import { GameContext } from '../lib'
 
 const { Vector } = Matter
 
-const spritesheetPromise = createClientPromise(
+const spritesheetPromise = clientOnlyPromise(() =>
   Assets.load<Spritesheet>('/spinning-tops/sprite.json'),
 )
 

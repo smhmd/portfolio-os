@@ -38,7 +38,6 @@ export const gpuTier = await new Promise<Tier>((resolve) => {
   requestAnimationFrame(loop)
 })
 
-// Geometry
 export const PI = Math.PI
 export const TAU = Math.PI * 2
 

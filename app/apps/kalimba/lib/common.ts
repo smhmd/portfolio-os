@@ -12,6 +12,14 @@ export type Options = {
   reverb: number
 }
 
+export const initOptions: Options = {
+  color: 5,
+  labelType: 0,
+  tines: 17,
+  tuning: 4,
+  reverb: 0,
+}
+
 export const MIN_COUNT = 9
 export const MAX_COUNT = 21
 
