@@ -31,7 +31,7 @@ export const ROTATION_Y = 0.3
 export const ROTATION_Z = 0.2
 
 export const KALIMBA_SAMPLE = {
-  sample: '/kalimba/samples/kalimba.ogg',
+  sample: '/sounds/kalimba.ogg',
   freq: 261.3,
   min: 3,
   max: 7,

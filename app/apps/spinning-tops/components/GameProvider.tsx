@@ -11,7 +11,7 @@ import { GameContext } from '../lib'
 const { Vector } = Matter
 
 const spritesheetPromise = clientOnlyPromise(() =>
-  Assets.load<Spritesheet>('/spinning-tops/sprite.json'),
+  Assets.load<Spritesheet>('/sprites/spinning-tops.json'),
 )
 
 export const GameProvider = ({ children }: React.PropsWithChildren) => {

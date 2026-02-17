@@ -12,8 +12,8 @@ export default function Mascot({ radius, onRender, ...props }: MascotProps) {
   const { mascotRef, animation } = useInstrument()
 
   const { spriteObj } = useSpriteLoader(
-    '/kalimba/sprite.png',
-    '/kalimba/sprite.json',
+    '/sprites/kalimba.png',
+    '/sprites/kalimba.json',
   )
 
   useLayoutEffect(() => {
