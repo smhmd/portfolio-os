@@ -10,6 +10,10 @@ export function clamp(min: number, value: number, max: number) {
   return Math.min(Math.max(min, value), max)
 }
 
+export function magnitude(v: { x: number; y: number; z: number }) {
+  return Math.sqrt(v.x ** 2 + v.y ** 2 + v.z ** 2)
+}
+
 export function uuid(): string {
   const template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
   const randomBytes = crypto.getRandomValues(new Uint8Array(16))
