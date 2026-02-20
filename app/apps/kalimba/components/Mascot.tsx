@@ -20,14 +20,15 @@ export default function Mascot({ radius, onRender, ...props }: MascotProps) {
     setTimeout(onRender, 50)
   }, [])
 
-  if (!spriteObj) return null
+  if (!spriteObj?.spriteData) return null
 
   return (
     <SpriteAnimator
       animation={animation}
       fps={12}
       radius={radius}
-      sprite={spriteObj}
+      texture={spriteObj.spriteTexture}
+      data={spriteObj.spriteData}
       {...props}
       ref={mascotRef}>
       <sphereGeometry args={[radius, 32, 32]} />

@@ -10,23 +10,24 @@ export const metadata: AppMetadata = {
 
 export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
   return (
-    <AppIconWrapper fill='tomato' {...props} wip>
+    <AppIconWrapper fill='teal' {...props}>
       <g clipPath='url(#a)'>
+        {/* <g fill='#A2F4FD'>
+          <path fill='#6de5f2' d='m68.5 31 36.8 75.75H31.7z' />
+          <path fill='#6de5f2' d='m31.5 31 36.8 75.75H-5.3z' />
+          <path fill='#00b8cf' d='m19.5 21 36.8 75.75h-73.6z' />
+          <path fill='#00b8cf' d='m80.5 21 36.8 75.75H43.7z' />
+        </g> */}
+
+        <path fill='#ff9b52' d='M80 75 50 92 20 75l30-17z' />
+        <path fill='#ff5c18' d='M20 109V75l30 17v17z' />
+        <path fill='#ff3d2a' d='M80 109V75L50 92v17z' />
+
         <path
-          fill='#e54d57'
-          d='M72.715 77.247v7.184L56.78 96.404h-9.56L31.285 84.431v-7.184L47.22 65.274h9.56z'
-        />
-        <path
-          fill='#ffb3b2'
-          d='M72.715 70.208v7.183L56.781 89.366H47.22L31.285 77.39v-7.183L47.22 58.234h9.56z'
-        />
-        <path
-          fill='#8b897e'
-          d='M67.086 71.01v5.388l-11.952 8.98h-7.17l-11.95-8.98-.001-5.388 11.95-8.98h7.171z'
-        />
-        <path
-          fill='#f6e9d7'
-          d='M58.726 72.363v2.49L53.206 79h-3.313l-5.52-4.148v-2.49l5.52-4.147h3.313z'
+          stroke='#fdfbf9'
+          strokeLinecap='round'
+          strokeWidth='2.832'
+          d='M49.297 59.738c.054 7.255-1.411 14.913 1.768 14.659m2.929-17.401c.053 7.254-1.411 14.912 1.768 14.658'
         />
         <g filter='url(#b)' opacity='.4'>
           <path
@@ -34,12 +35,6 @@ export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
             d='M52.014 77.84c5.568 0 10.082-1.952 10.082-4.36s-4.514-4.36-10.082-4.36-10.082 1.951-10.082 4.36c0 2.408 4.514 4.36 10.082 4.36'
           />
         </g>
-        <path
-          stroke='#fdfbf9'
-          strokeLinecap='round'
-          strokeWidth='2.832'
-          d='M49.297 59.738c.054 7.255-1.411 14.913 1.768 14.659m2.929-17.401c.053 7.254-1.411 14.912 1.768 14.658'
-        />
         <g filter='url(#c)'>
           <path
             fill='#fdfbf9'
@@ -62,7 +57,6 @@ export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
           fill='#fdfbf9'
           d='M55.464 24.337C53.922 23.697 37.79 23.327 31 23c0 0 9.413 9.37 16.787 13.448.182-8.034 4.599-12.242 7.677-12.111'
         />
-        <path fill='#f96478' d='M47.221 89.363h9.553v7.047h-9.553z' />
       </g>
       <defs>
         <filter

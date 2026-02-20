@@ -5,10 +5,8 @@ import { type ThreeElements, useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 
 type SpriteAnimatorProps = {
-  sprite: {
-    spriteTexture: THREE.Texture
-    spriteData: (SpriteData & { animations?: Record<string, number[]> }) | null
-  }
+  data: SpriteData & { animations?: Record<string, number[]> }
+  texture: THREE.Texture
   animation?: string
   fps?: number
   radius: number
@@ -17,7 +15,8 @@ type SpriteAnimatorProps = {
 export function SpriteAnimator(props: SpriteAnimatorProps) {
   const {
     ref,
-    sprite: { spriteTexture, spriteData },
+    data: { frames, animations, meta },
+    texture,
     animation,
     fps = 30,
     radius,
@@ -25,9 +24,6 @@ export function SpriteAnimator(props: SpriteAnimatorProps) {
     ...rest
   } = props
 
-  if (!spriteData) return null
-
-  const { frames, animations, meta } = spriteData
   const size = meta.size
 
   const timeRef = useRef(0)
@@ -52,9 +48,9 @@ export function SpriteAnimator(props: SpriteAnimatorProps) {
   }, [animation, animations, framesArray])
 
   const updateMap = (f: FrameData['frame']) => {
-    spriteTexture.repeat.set(f.w / size.w, f.h / size.h)
-    spriteTexture.offset.set(f.x / size.w, 1 - (f.y + f.h) / size.h)
-    spriteTexture.needsUpdate = true
+    texture.repeat.set(f.w / size.w, f.h / size.h)
+    texture.offset.set(f.x / size.w, 1 - (f.y + f.h) / size.h)
+    texture.needsUpdate = true
   }
 
   // initial frame
@@ -76,7 +72,7 @@ export function SpriteAnimator(props: SpriteAnimatorProps) {
         position={[0, 0, radius]}
         rotation={[0, 0, 0]}
         scale={radius * 2.1}
-        map={spriteTexture}
+        map={texture}
       />
     </mesh>
   )

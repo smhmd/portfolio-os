@@ -6,6 +6,7 @@ export function Volume() {
   return (
     <Base className='col-span-4 row-span-2 *:grid-cols-2'>
       <div
+        role='slider'
         data-name='volume-knob'
         className='relative aspect-square cursor-grab active:cursor-grabbing'
         ref={ref}

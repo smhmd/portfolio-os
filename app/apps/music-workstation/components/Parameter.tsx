@@ -36,6 +36,7 @@ export function Parameter({
   const { ref, drag, rotation } = useDial({ initialValue, min, max, onChange })
   return (
     <Base
+      role='slider'
       className='**:aspect-square col-span-4 row-span-4 aspect-square cursor-grab active:cursor-grabbing'
       ref={ref}
       onMouseDown={drag}

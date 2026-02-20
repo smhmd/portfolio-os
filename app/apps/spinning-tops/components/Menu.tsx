@@ -70,6 +70,7 @@ export const Menu = memo(() => {
         <img
           className='l:vsm:size-28 l:vmd:size-44 l:size-20 size-28 sm:size-44'
           src='/images/winner.png'
+          alt='Winner'
         />
         <span className='text-shadow-cyan-glow l:vsm:text-3xl l:vmd:text-5xl l:text-xl text-3xl sm:text-5xl'>
           {winner && playerTitle[winner]} Won

@@ -25,7 +25,7 @@
     {
       "name": "magnetize",
       "base": "folder",
-      "color": "#801843",
+      "color": "#8D062C",
       "folderNames": ["magnetize"],
       "rootFolderNames": ["apps"]
     },
