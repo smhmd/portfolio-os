@@ -1,1 +1,2 @@
-export * from './Dice'
+export * from './Stage'
+export * from './UI'

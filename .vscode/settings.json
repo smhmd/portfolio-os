@@ -96,16 +96,46 @@
   ],
   "material-icon-theme.files.customClones": [
     {
+      "name": "root",
+      "base": "drawio",
+      "color": "blue-400",
+      "fileNames": ["root.tsx"]
+    },
+    {
       "name": "index-ts",
-      "base": "typescript-def",
-      "color": "white",
+      "base": "parcel",
+      "color": "gray-200",
       "fileNames": ["index.ts"]
     },
     {
-      "name": "tailwindcss",
-      "base": "tailwindcss",
-      "color": "teal-300",
-      "fileNames": ["main.css", "tailwind.css"]
+      "name": "app",
+      "base": "exe",
+      "color": "blue-400",
+      "fileNames": ["apps/apps.ts"]
+    },
+    {
+      "name": "server-component",
+      "base": "react_ts",
+      "color": "blue-gray-400",
+      "fileExtensions": ["server.tsx"]
+    },
+    {
+      "name": "stage",
+      "base": "playwright",
+      "color": "cyan-600",
+      "fileNames": ["Stage.tsx"]
+    },
+    {
+      "name": "scene",
+      "base": "3d",
+      "color": "cyan-600",
+      "fileNames": ["Scene.tsx"]
+    },
+    {
+      "name": "lights",
+      "base": "blender",
+      "color": "cyan-600",
+      "fileNames": ["Lights.tsx"]
     },
     {
       "name": "metadata",
@@ -114,46 +144,46 @@
       "fileNames": ["metadata.tsx"]
     },
     {
-      "name": "contexts",
-      "base": "typescript",
-      "color": "teal-600",
-      "fileNames": ["context.ts", "contexts.ts"]
-    },
-    {
       "name": "provider",
-      "base": "react_ts",
+      "base": "redux-store",
       "color": "teal-600",
       "fileNames": ["Provider.tsx", "Providers.tsx"]
     },
     {
-      "name": "hooks",
-      "base": "typescript",
-      "color": "deep-purple-400",
-      "fileNames": ["hook.ts", "hooks.ts"]
-    },
-    {
-      "name": "constants",
-      "base": "typescript",
-      "color": "blue-gray-100",
-      "fileNames": ["constants.ts", "common.ts"]
-    },
-    {
-      "name": "utils",
-      "base": "typescript",
-      "color": "green-400",
-      "fileNames": ["utils.ts", "helpers.ts", "lib.ts", "shared.ts"]
+      "name": "contexts",
+      "base": "tsdoc",
+      "color": "teal-600",
+      "fileNames": ["context.ts", "contexts.ts"]
     },
     {
       "name": "state-machines",
-      "base": "typescript",
+      "base": "android",
       "color": "cyan-600",
       "fileNames": ["machine.ts"]
+    },
+    {
+      "name": "hooks",
+      "base": "h",
+      "color": "deep-purple-400",
+      "fileNames": ["hook.ts", "hooks.ts"]
     },
     {
       "name": "types",
       "base": "typescript-def",
       "color": "blue-500",
       "fileNames": ["types.ts"]
+    },
+    {
+      "name": "constants",
+      "base": "disc",
+      "color": "blue-gray-200",
+      "fileNames": ["constants.ts", "common.ts"]
+    },
+    {
+      "name": "utils",
+      "base": "architecture",
+      "color": "green-400",
+      "fileNames": ["utils.ts", "helpers.ts", "lib.ts", "shared.ts"]
     },
     {
       "name": "react-router-config",
@@ -172,6 +202,18 @@
       "base": "typescript-def",
       "color": "orange-500",
       "fileNames": ["worker-configuration.d.ts"]
+    },
+    {
+      "name": "tailwindcss",
+      "base": "tailwindcss",
+      "color": "teal-300",
+      "fileNames": ["main.css", "tailwind.css"]
+    },
+    {
+      "name": "readme",
+      "base": "bbx",
+      "color": "#C62828",
+      "fileNames": ["README.md"]
     }
   ]
 }

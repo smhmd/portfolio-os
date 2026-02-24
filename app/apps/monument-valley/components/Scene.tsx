@@ -1,25 +1,13 @@
 import { useRef } from 'react'
 
-import { Canvas, type ThreeElements } from '@react-three/fiber'
+import { type ThreeElements } from '@react-three/fiber'
 import type * as THREE from 'three'
-import {
-  AxesHelper,
-  BoxGeometry,
-  MeshStandardMaterial,
-  PlaneGeometry,
-} from 'three'
+import { BoxGeometry, MeshStandardMaterial, PlaneGeometry } from 'three'
 
 import { HALF_PI, PI } from 'app/lib'
 
 import { useThreeDial } from '../lib'
 
-const lights = {
-  cool: [0xa7c4e1, 0xdcf7ff, 0x72a4c5],
-  warm: [0xcfbc9b, 0xd9dfc6, 0xa9957c],
-  pink: [0xf6a0a2, 0xffbed4, 0xc77e84],
-} as const
-
-const lighting = lights['pink']
 const flatShading = true
 const base = new MeshStandardMaterial({ color: 'whitesmoke', flatShading })
 const accent = new MeshStandardMaterial({ color: 'silver', flatShading })
@@ -30,35 +18,6 @@ const yellow = new MeshStandardMaterial({
 })
 
 type Position = [number, number, number]
-
-export default function Scene() {
-  return (
-    <Canvas
-      orthographic
-      camera={{
-        position: [10, 10, 10],
-        zoom: 50,
-        near: 0.01,
-        far: 5000,
-      }}>
-      {lighting.map((light, i) => {
-        const position: Position = [0, 0, 0]
-        position[i] = 10
-        return (
-          <directionalLight
-            key={light}
-            color={light}
-            intensity={PI / 1.6}
-            position={position}
-          />
-        )
-      })}
-
-      <Stage />
-      <primitive object={new AxesHelper(10)} />
-    </Canvas>
-  )
-}
 
 const playerPosition = 2
 
@@ -84,10 +43,11 @@ const graph = [
   { position: [-5, 7, 0], neighbors: [17, 19] },
   { position: [-6, 7, 0], neighbors: [18, 20] },
   { position: [-7, 7, 0], neighbors: [19, 21] },
-  { position: [-7, 7.5, -1], neighbors: [20, 22] },
-  { position: [-7, 8.5, -2], neighbors: [21, 23] },
-  { position: [-7, 9.5, -3], neighbors: [22, 24] },
-  { position: [-7, 10, -4], neighbors: [23] },
+  { position: [-7, 7, -1], neighbors: [20, 22] },
+  { position: [-7, 7, -2], neighbors: [21, 23] },
+  { position: [-7, 7, -3], neighbors: [22, 24] },
+  { position: [-7, 7, -4], neighbors: [23, 25] },
+  { position: [-7, 7, -5], neighbors: [24] },
 ] satisfies { position: Position; neighbors: number[] }[]
 
 function findPath(start: number, goal: number): number[] {
@@ -111,7 +71,7 @@ function findPath(start: number, goal: number): number[] {
   return []
 }
 
-function Stage() {
+export default function Scene() {
   const playerRef = useRef<THREE.Mesh>(null)
   const playerPosRef = useRef(2)
 

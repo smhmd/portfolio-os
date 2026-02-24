@@ -9,9 +9,9 @@ import {
   OptionsProvider,
   Panel,
   RecorderProvider,
+  Stage,
   Tines,
 } from './components'
-import { Scene } from './components/Scene'
 import { colors, useOptions } from './lib'
 import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
@@ -70,7 +70,7 @@ function Content() {
           'overflow-hidden',
         )}>
         <Tines className='h-3/5' />
-        <Scene className='h-2/5 grow' />
+        <Stage className='h-2/5 grow' />
         <Panel className='absolute bottom-0' />
       </div>
     </AppWrapper>

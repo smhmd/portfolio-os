@@ -1,14 +1,11 @@
 import { useRef } from 'react'
 
-import { Application, extend } from '@pixi/react'
 import clsx from 'clsx'
-import { AnimatedSprite, Container, Graphics, Sprite } from 'pixi.js'
 
 import { AppWrapper } from 'app/components'
-import { MatterProvider } from 'app/contexts'
 import { iconToFavicon } from 'app/utils'
 
-import { GameProvider, Menu, Scene } from './components'
+import { GameProvider, Menu, Stage } from './components'
 import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
@@ -31,8 +28,6 @@ export function links() {
   ]
 }
 
-extend({ Sprite, Graphics, Container, AnimatedSprite })
-
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   return (
@@ -45,20 +40,7 @@ export default function App() {
         'font-orbitron text-cyan-200/70',
       )}>
       <GameProvider>
-        <MatterProvider
-          options={{
-            gravity: { x: 0, y: 0 },
-            enableSleeping: false,
-            positionIterations: 10,
-          }}>
-          <Application
-            antialias
-            autoDensity
-            resizeTo={ref}
-            className='animate-fade-in anim-duration-5000'>
-            <Scene />
-          </Application>
-        </MatterProvider>
+        <Stage resizeTo={ref} />
         <Menu />
       </GameProvider>
     </AppWrapper>

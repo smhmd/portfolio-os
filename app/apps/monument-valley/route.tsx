@@ -1,8 +1,7 @@
-import { lazy, Suspense } from 'react'
-
 import { AppWrapper } from 'app/components'
 import { iconToFavicon } from 'app/utils'
 
+import { Stage } from './components'
 import { AppIcon, metadata } from './metadata'
 
 export function meta() {
@@ -17,14 +16,10 @@ export function links() {
   return [favicon]
 }
 
-const Scene = lazy(() => import('./components/Scene'))
-
 export default function App() {
   return (
     <AppWrapper>
-      <Suspense fallback={null}>
-        <Scene />
-      </Suspense>
+      <Stage />
     </AppWrapper>
   )
 }
