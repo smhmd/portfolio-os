@@ -5,6 +5,6 @@ export default {
   bracketSameLine: true,
 
   plugins: ['prettier-plugin-tailwindcss'],
-  tailwindStylesheet: './app/main.css',
+  tailwindStylesheet: './src/main.css',
   tailwindFunctions: ['clsx'],
 }

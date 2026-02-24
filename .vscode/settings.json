@@ -3,73 +3,79 @@
   "material-icon-theme.folders.customClones": [
     {
       "name": "2048",
-      "base": "folder",
-      "color": "#E9C54C",
+      "base": "element",
+      "color": "blue-gray-700",
       "folderNames": ["2048"],
       "rootFolderNames": ["apps"]
     },
     {
+      "name": "about-me",
+      "base": "admin",
+      "color": "blue-gray-700",
+      "folderNames": ["about-me"],
+      "rootFolderNames": ["about-me"]
+    },
+    {
       "name": "dice-roll",
-      "base": "folder",
-      "color": "#3BB371",
+      "base": "sandbox",
+      "color": "blue-gray-700",
       "folderNames": ["dice-roll"],
       "rootFolderNames": ["apps"]
     },
     {
       "name": "kalimba",
-      "base": "folder",
-      "color": "#ea5659",
+      "base": "constant",
+      "color": "blue-gray-700",
       "folderNames": ["kalimba"],
       "rootFolderNames": ["apps"]
     },
     {
       "name": "magnetize",
-      "base": "folder",
-      "color": "#8D062C",
+      "base": "pipe",
+      "color": "blue-gray-700",
       "folderNames": ["magnetize"],
       "rootFolderNames": ["apps"]
     },
     {
       "name": "monument-valley",
-      "base": "folder",
-      "color": "#00bbbb",
+      "base": "environment",
+      "color": "blue-gray-700",
       "folderNames": ["monument-valley"],
       "rootFolderNames": ["apps"]
     },
     {
       "name": "music-workstation",
-      "base": "folder",
-      "color": "#EF3E24",
+      "base": "audio",
+      "color": "blue-gray-700",
       "folderNames": ["music-workstation"],
       "rootFolderNames": ["apps"]
     },
     {
       "name": "spinning-tops",
-      "base": "folder",
-      "color": "#FE2C55",
+      "base": "filter",
+      "color": "blue-gray-700",
       "folderNames": ["spinning-tops"],
       "rootFolderNames": ["apps"]
     },
     {
       "name": "typing-test",
-      "base": "folder",
-      "color": "#FFEB3A",
+      "base": "font",
+      "color": "blue-gray-700",
       "folderNames": ["typing-test"],
       "rootFolderNames": ["apps"]
     },
     {
       "name": "home-application",
       "base": "home",
-      "color": "light-green-700",
+      "color": "blue-gray-700",
       "folderNames": ["launcher"],
       "rootFolderNames": ["apps"]
     },
     {
       "name": "apps",
-      "base": "project",
-      "color": "blue-400",
+      "base": "apps",
       "folderNames": ["apps"],
-      "rootFolderNames": ["app"]
+      "rootFolderNames": ["src"]
     },
     {
       "name": "sprites",
@@ -108,10 +114,10 @@
       "fileNames": ["index.ts"]
     },
     {
-      "name": "app",
+      "name": "app-index",
       "base": "exe",
-      "color": "blue-400",
-      "fileNames": ["apps/apps.ts"]
+      "color": "red-400",
+      "fileNames": ["apps/index.ts"]
     },
     {
       "name": "server-component",

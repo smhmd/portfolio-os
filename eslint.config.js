@@ -40,8 +40,8 @@ const config = [
             ],
             // Node modules
             ['^@?\\w'],
-            // App imports
-            ['^app/'],
+            // Source code imports
+            ['^src/'],
             // Aliased imports
             ['^'],
             // Relative imports

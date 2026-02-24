@@ -7,7 +7,7 @@
     "cf-typegen": "wrangler types",
     "deploy": "pnpm build && wrangler deploy",
     "dev": "react-router dev",
-    "lint": "eslint app",
+    "lint": "eslint src",
     "postinstall": "pnpm cf-typegen",
     "preview": "pnpm build && vite preview",
     "typecheck": "pnpm cf-typegen && react-router typegen && tsc -b"
