@@ -2,18 +2,14 @@ import { useRef } from 'react'
 
 import clsx from 'clsx'
 
-import { AppWrapper } from 'src/components'
-import { iconToFavicon } from 'src/utils'
+import { Container } from 'src/components'
+import { generateMeta, iconToFavicon } from 'src/lib/server'
 
 import { GameProvider, Menu, Stage } from './components'
 import { AppIcon, metadata } from './metadata'
-import styles from './styles.css?url'
 
 export function meta() {
-  return [
-    { title: metadata.name },
-    { name: 'description', content: metadata.description },
-  ]
+  return generateMeta(metadata)
 }
 
 export function links() {
@@ -24,16 +20,16 @@ export function links() {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Orbitron&display=swap',
     },
-    { rel: 'stylesheet', href: styles },
   ]
 }
 
 export default function App() {
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLElement>(null)
+
   return (
-    <AppWrapper
+    <Container
+      id={metadata.id}
       ref={ref}
-      isDark
       className={clsx(
         'bg-radial to-220% from-[#171519] from-10% to-black bg-cover bg-center bg-no-repeat',
         'cursor-none! flex flex-col items-center justify-center overscroll-none',
@@ -43,6 +39,6 @@ export default function App() {
         <Stage resizeTo={ref} />
         <Menu />
       </GameProvider>
-    </AppWrapper>
+    </Container>
   )
 }

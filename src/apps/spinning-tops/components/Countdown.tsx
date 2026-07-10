@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { actor } from '../lib'
 
+// Per WCAG spec, exactly 3 flashes in a second is permitted. We respect that.
 const steps = [
-  { text: '1', duration: 800 },
-  { text: '2', duration: 800 },
   { text: '3', duration: 800 },
+  { text: '2', duration: 800 },
+  { text: '1', duration: 800 },
   { text: 'Let It Rip!!', duration: 50 },
   { text: '', duration: 50 },
   { text: 'Let It Rip!!', duration: 50 },
@@ -19,10 +20,13 @@ export function Countdown() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setStep((prev) => prev + 1)
-
+      // Never advance past the last step: rendering with
+      // step === steps.length would throw. Previously this only worked
+      // because the `game.start` unmount happened to batch with setStep.
       if (step === steps.length - 1) {
         actor.send({ type: 'game.start' })
+      } else {
+        setStep(step + 1)
       }
     }, steps[step].duration)
 

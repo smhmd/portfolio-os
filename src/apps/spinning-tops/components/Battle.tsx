@@ -1,157 +1,111 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
+import { type PixiReactElementProps } from '@pixi/react'
 import { useSelector } from '@xstate/react'
 import type TMatter from 'matter-js'
 import Matter from 'matter-js'
 
-import { useMatter } from 'src/contexts'
-import { uuid } from 'src/utils'
+import { rand } from 'src/lib/math'
 
 import {
   actor,
+  addImpact,
+  aiStrategies,
   applyAddedForce,
   applyMovementForce,
-  type CollisionPoint,
-  OUTER_CIRCLE_RADIUS,
+  eliminatedToWinner,
+  findEliminated,
+  MAX_MOVEMENT,
+  PLAYER_BODY_DEF,
   PLAYER_RADIUS,
+  type PlayerID,
+  SELF_TINT,
   useGame,
+  useMatter,
 } from '../lib'
-import { Spark, Top } from '.'
+import { SparksPool } from './SparksPool'
+import { Top } from './Top'
 
 const { Bodies, Vector } = Matter
 
-const AI_ENABLED = true
+type Props = PixiReactElementProps
 
-const PLAYER_BODY_DEF = {
-  restitution: 1,
-  mass: 5,
-  friction: 0,
-  frictionAir: 0.05,
-} satisfies TMatter.IBodyDefinition
+const INTRO_DURATION = 3000
 
-const SPARK_BOUNDARY_SCALAR = 9 / 100
-const SPARK_PLAYER_SCALAR = 5 / 10
+/** Default p1 spawn when the pointer has never entered the arena. */
+const DEFAULT_SPAWN = { x: 0, y: 200 }
 
-const RED_ZONE = OUTER_CIRCLE_RADIUS - PLAYER_RADIUS
-const YELLOW_ZONE = OUTER_CIRCLE_RADIUS - PLAYER_RADIUS * 1
-const GREEN_ZONE = OUTER_CIRCLE_RADIUS - PLAYER_RADIUS * 2
-
-const computerAI: Record<
-  number,
-  (cpuBody: TMatter.Body, playerPosition: TMatter.Vector) => void
-> = {
-  0: (cpuBody, playerPosition) => {
-    applyMovementForce(cpuBody, playerPosition)
-  },
-  1: (cpuBody, playerPosition) => {
-    const playerMag = Vector.magnitude(playerPosition)
-    const cpuMag = Vector.magnitude(cpuBody.position)
-
-    let target = playerPosition
-
-    if (cpuMag >= YELLOW_ZONE) target = Vector.neg(playerPosition)
-    if (playerMag >= RED_ZONE) target = playerPosition
-
-    applyMovementForce(cpuBody, target)
-  },
-  2: (cpuBody, playerPosition) => {
-    const playerMag = Vector.magnitude(playerPosition)
-    const cpuMag = Vector.magnitude(cpuBody.position)
-
-    let target = playerPosition
-
-    if (cpuMag >= GREEN_ZONE) target = Vector.neg(playerPosition)
-    if (playerMag >= RED_ZONE) target = playerPosition
-
-    applyMovementForce(cpuBody, target)
-  },
-}
-
-export function Battle() {
-  const { centerX, centerY, scaleFactor, crosshair } = useGame()
-  const { addBody, addEngineEvent, removeEngineEvent } = useMatter()
+export function Battle(props: Props) {
+  const { crosshair } = useGame()
+  const { addEngineEvent } = useMatter()
+  // Note: the default comparator (Object.is) is correct here. Passing
+  // `(a, b) => a !== b` inverted the equality check and would have frozen
+  // the selected value on the first change.
   const difficulty = useSelector(actor, (state) => state.context.difficulty)
 
-  const me = useRef(
-    Bodies.circle(crosshair.x, crosshair.y, PLAYER_RADIUS, PLAYER_BODY_DEF),
-  )
-  const cpu = useRef(Bodies.circle(0, 0, PLAYER_RADIUS, PLAYER_BODY_DEF))
+  // The crosshair starts at a far off-screen sentinel and is only clamped
+  // inside `pointermove`. If the game is started via keyboard or touch
+  // without the pointer ever moving, p1 would spawn (and be dragged)
+  // outside the arena and instantly lose. Clamp it before creating bodies.
+  if (Vector.magnitude(crosshair) > MAX_MOVEMENT) {
+    crosshair.x = DEFAULT_SPAWN.x
+    crosshair.y = DEFAULT_SPAWN.y
+  }
 
-  useEffect(() => {
-    addBody(me.current)
-    addBody(cpu.current)
-  }, [])
+  const players = useRef({
+    p1: Bodies.circle(crosshair.x, crosshair.y, PLAYER_RADIUS, PLAYER_BODY_DEF),
+    cpu: Bodies.circle(0, 0, PLAYER_RADIUS, PLAYER_BODY_DEF),
+  })
 
+  const startTime = useRef<number | null>(null)
+  const eliminated = useRef<PlayerID | null>(null)
   const addedForceQueue = useRef<TMatter.Pair[]>([])
+  const randomTarget = useRef(Vector.create(0, 0))
 
-  const [sparks, setSparks] = useState<CollisionPoint[]>([])
+  const moveCPU = aiStrategies[difficulty]
 
-  function addSpark({
-    delta,
-    position,
-  }: Pick<CollisionPoint, 'position' | 'delta'>) {
-    const small = Array.from({ length: 4 }, () => ({
-      id: uuid(),
-      type: 'small' as const,
-      delta,
-      position,
-    }))
-
-    const big = Array.from({ length: 2 }, () => ({
-      id: uuid(),
-      type: 'big' as const,
-      delta,
-      position,
-    }))
-
-    setSparks((s) => [...s, ...small, ...big])
+  function moveRandomly(body: TMatter.Body) {
+    randomTarget.current.x = rand(150)
+    randomTarget.current.y = rand(150)
+    applyMovementForce(body, randomTarget.current)
   }
-
-  function removeSpark(id: string) {
-    setSparks((s) => s.filter((spark) => spark.id !== id))
-  }
-
-  const moveComputer = useCallback(computerAI[difficulty], [])
 
   useEffect(() => {
-    addEngineEvent('collisionStart', (event) => {
+    const offCollision = addEngineEvent('collisionStart', (event) => {
       for (const pair of event.pairs) {
-        const { bodyA, bodyB, collision } = pair
+        const { bodyA, bodyB } = pair
+        const isWall = bodyA.isStatic || bodyB.isStatic
 
-        if (bodyA.isStatic || bodyB.isStatic) {
-          const player = bodyA.isStatic ? bodyB : bodyA
-
-          const delta = Vector.mult(player.position, SPARK_BOUNDARY_SCALAR)
-
-          collision.supports.forEach((position) => {
-            if (position) {
-              addSpark({ delta, position })
-            }
-          })
-        } else {
-          const delta = Vector.mult(
-            Vector.sub(bodyB.position, bodyA.position),
-            SPARK_PLAYER_SCALAR,
-          )
-
-          collision.supports.forEach((position) => {
-            if (position) {
-              addSpark({ delta, position })
-              addSpark({ delta: Vector.neg(delta), position })
-            }
-          })
-
+        if (!isWall) {
           addedForceQueue.current.push(pair)
+
+          // juice: hit-stop + screen shake, scaled by impact energy
+          const relativeSpeed = Vector.magnitude(
+            Vector.sub(bodyB.velocity, bodyA.velocity),
+          )
+          addImpact(relativeSpeed / 12)
         }
       }
     })
 
-    addEngineEvent('beforeUpdate', () => {
-      applyMovementForce(me.current, crosshair)
+    const offUpdate = addEngineEvent('beforeUpdate', (event) => {
+      // The battle decides eliminations; <Top> just presents them.
+      eliminated.current ??= findEliminated(players.current)
 
-      if (AI_ENABLED) {
-        moveComputer(cpu.current, me.current.position)
+      if (eliminated.current) {
+        const winner = eliminatedToWinner[eliminated.current]
+        return moveRandomly(players.current[winner])
       }
+
+      const { p1, cpu } = players.current
+
+      applyMovementForce(p1, crosshair)
+
+      if (startTime.current === null) startTime.current = event.timestamp
+
+      if (event.timestamp - startTime.current < INTRO_DURATION) {
+        moveRandomly(cpu)
+      } else moveCPU(cpu, p1.position)
 
       while (addedForceQueue.current.length > 0) {
         const pair = addedForceQueue.current.shift()!
@@ -160,23 +114,24 @@ export function Battle() {
     })
 
     return () => {
-      removeEngineEvent('beforeUpdate')
-      removeEngineEvent('collisionStart')
+      offUpdate()
+      offCollision()
     }
-  }, [centerX, centerY, scaleFactor])
+    // Handlers only reference stable refs and the (mount-constant)
+    // difficulty strategy. Re-registering on resize previously risked
+    // clobbering other components' handlers and restarting the intro.
+  }, [])
 
   return (
-    <>
-      <Top id='me' body={me.current} tint={0xffd87b} />
-      <Top id='cpu' body={cpu.current} />
-
-      {sparks.map((spark) => (
-        <Spark
-          key={spark.id}
-          onComplete={() => removeSpark(spark.id)}
-          {...spark}
-        />
-      ))}
-    </>
+    <pixiContainer label='Battle' {...props}>
+      <Top
+        id='p1'
+        body={players.current.p1}
+        tint={SELF_TINT}
+        eliminated={eliminated}
+      />
+      <Top id='cpu' body={players.current.cpu} eliminated={eliminated} />
+      <SparksPool />
+    </pixiContainer>
   )
 }

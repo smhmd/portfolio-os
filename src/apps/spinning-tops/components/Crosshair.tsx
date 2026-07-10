@@ -44,10 +44,9 @@ export function Crosshair() {
       signal: controller.signal,
     })
 
-    return () => {
-      controller.abort()
-    }
-  })
+    return () => controller.abort()
+    // Missing deps array previously re-subscribed on every render.
+  }, [centerX, centerY, scaleFactor, crosshair])
 
   if (!spritesheet) return null
 

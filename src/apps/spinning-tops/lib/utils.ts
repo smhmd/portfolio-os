@@ -2,7 +2,12 @@ import type TMatter from 'matter-js'
 import Matter from 'matter-js'
 import type { AnimatedSprite, Container, Sprite } from 'pixi.js'
 
-import { ADDED_FORCE_SCALE, MOVEMENT_FORCE_SCALE } from './common'
+import {
+  ADDED_FORCE_SCALE,
+  MOVEMENT_FORCE_SCALE,
+  OUTER_CIRCLE_RADIUS,
+  type PlayerID,
+} from './common'
 
 const { Vector, Body } = Matter
 
@@ -40,4 +45,20 @@ export function applyAddedForce({ bodyA, bodyB, collision }: TMatter.Pair) {
     Body.applyForce(bodyA, point, force)
     Body.applyForce(bodyB, point, Vector.neg(force))
   })
+}
+
+/**
+ * Game rule: a top is eliminated the moment it leaves the arena.
+ * Returns the first body found outside it, or null. Deciding WHO is
+ * eliminated is the battle layer's job (the host's alone, online) —
+ * <Top> merely presents the outcome.
+ */
+export function findEliminated(
+  bodies: Record<PlayerID, TMatter.Body>,
+): PlayerID | null {
+  for (const id of Object.keys(bodies) as PlayerID[]) {
+    if (Vector.magnitude(bodies[id].position) >= OUTER_CIRCLE_RADIUS) return id
+  }
+
+  return null
 }

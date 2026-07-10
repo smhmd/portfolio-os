@@ -1,15 +1,16 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
+import type TMatter from 'matter-js'
 import Matter from 'matter-js'
 
-import { useMatter } from 'src/contexts'
-import { HALF_PI, PI, TAU } from 'src/lib'
+import { HALF_PI, PI, TAU } from 'src/lib/math'
 
 import {
   BARRIER_ANGLE,
   BARRIER_COUNT,
   BARRIER_RADIUS,
   OUTER_CIRCLE_RADIUS,
+  useMatter,
 } from '../lib'
 
 /**
@@ -85,24 +86,32 @@ const boundaries = Array.from({ length: BOUNDARY_COUNT }, (_, index) => {
   }
 })
 
-const boundaryBodies = boundaries.map(({ x, y, angle }) => {
-  return Bodies.rectangle(x, y, BOUNDARY_SIZE, BOUNDARY_SIZE, {
-    restitution: 0,
-    angle,
-    isStatic: true,
-  })
-})
+function createBoundaryBodies() {
+  return boundaries.map(({ x, y, angle }) =>
+    Bodies.rectangle(x, y, BOUNDARY_SIZE, BOUNDARY_SIZE, {
+      restitution: 0,
+      angle,
+      isStatic: true,
+    }),
+  )
+}
 
 const outerStroke = { width: 2, color: 0x314344 }
 const innerStroke = { width: 1, color: 0x1d2627 }
 
 export function Arena() {
-  const { addBody } = useMatter()
+  const { addBody, removeBody } = useMatter()
+
+  // Bodies used to be created at module scope and were never removed, so a
+  // route unmount/remount added the same (state-carrying) bodies twice.
+  // Create per component instance and remove on unmount.
+  const bodiesRef = useRef<TMatter.Body[] | null>(null)
+  bodiesRef.current ??= createBoundaryBodies()
 
   useEffect(() => {
-    boundaryBodies.forEach((body) => {
-      addBody(body)
-    })
+    const bodies = bodiesRef.current!
+    bodies.forEach(addBody)
+    return () => bodies.forEach(removeBody)
   }, [])
 
   return (
@@ -110,6 +119,7 @@ export function Arena() {
       <pixiGraphics
         label='Arcs'
         draw={(g) => {
+          g.clear()
           BARRIER_ARC.forEach(({ start, end }) => {
             g.arc(0, 0, BARRIER_RADIUS, start, end)
           })
@@ -120,6 +130,7 @@ export function Arena() {
       <pixiGraphics
         label='Lines'
         draw={(g) => {
+          g.clear()
           BARRIER_CORNER_LINES.forEach(({ start, end }) => {
             g.moveTo(start.x, start.y).lineTo(end.x, end.y)
           })
@@ -131,13 +142,18 @@ export function Arena() {
         visible={VISIBLE_CIRCLES}
         label='Circle (outer)'
         draw={(g) => {
-          g.fill(0x0e0d0f).circle(0, 0, OUTER_CIRCLE_RADIUS).stroke(outerStroke)
+          // Pixi v8: fill()/stroke() apply to the path built *before* them.
+          // The previous `g.fill(...).circle(...).stroke(...)` filled an
+          // empty path, so the circle never got its fill.
+          g.clear()
+          g.circle(0, 0, OUTER_CIRCLE_RADIUS).fill(0x0e0d0f).stroke(outerStroke)
         }}
       />
 
       <pixiGraphics
         label='Inner Lines'
         draw={(g) => {
+          g.clear()
           INNER_ARENA_LINES.forEach(({ x, y }) => {
             g.moveTo(0, 0).lineTo(x, y)
           })
@@ -149,7 +165,8 @@ export function Arena() {
         visible={VISIBLE_CIRCLES}
         label='Circle (inner)'
         draw={(g) => {
-          g.fill(0x0e0d0f).circle(0, 0, INNER_CIRCLE_RADIUS).stroke(innerStroke)
+          g.clear()
+          g.circle(0, 0, INNER_CIRCLE_RADIUS).fill(0x0e0d0f).stroke(innerStroke)
         }}
       />
 

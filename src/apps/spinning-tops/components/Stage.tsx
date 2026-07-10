@@ -1,8 +1,7 @@
 import { Application, extend } from '@pixi/react'
 import { AnimatedSprite, Container, Graphics, Sprite } from 'pixi.js'
 
-import { MatterProvider } from 'src/contexts'
-
+import { MatterProvider } from './Providers'
 import { Scene } from './Scene'
 
 extend({ Sprite, Graphics, Container, AnimatedSprite })
@@ -20,7 +19,7 @@ export function Stage(props: StageProps) {
       <Application
         antialias
         autoDensity
-        className='animate-fade-in anim-duration-5000'
+        className='animate-fade-in anim-duration-5000 cursor-none!'
         {...props}>
         <Scene />
       </Application>

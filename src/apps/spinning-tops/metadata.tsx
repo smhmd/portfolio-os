@@ -1,16 +1,18 @@
-import { AppIconWrapper } from 'src/components'
-import type { AppMetadata } from 'src/lib'
+import { IconFrame } from 'src/components'
+import type { AppMetadata } from 'src/lib/types'
 
 export const metadata: AppMetadata = {
   id: 'spinning-tops',
   name: 'Spinning Tops',
-  description: 'Spin your top and be the last one standing in the arena',
+  description: 'Battle spinning tops and be the last',
+  type: 'game',
   Icon: AppIcon,
+  dark: true,
 }
 
-export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
+export function AppIcon(props: React.ComponentProps<typeof IconFrame>) {
   return (
-    <AppIconWrapper fill='black' {...props}>
+    <IconFrame fill='black' {...props}>
       <defs>
         <path
           id='spinning-tops-icon'
@@ -38,6 +40,6 @@ export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
           />
         </g>
       </g>
-    </AppIconWrapper>
+    </IconFrame>
   )
 }
