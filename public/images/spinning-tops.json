@@ -415,7 +415,6 @@
     "image": "spinning-tops.png",
     "format": "RGBA8888",
     "size": { "w": 1060, "h": 1198 },
-    "scale": "1",
-    "smartupdate": "$TexturePacker:SmartUpdate:059a3a62272fc522e0e95c41c92a8787:d04bc7b9de60f3d8806063fdca3b0e36:4abc6ec4a463439f6813ca5983ba5876$"
+    "scale": "1"
   }
 }
