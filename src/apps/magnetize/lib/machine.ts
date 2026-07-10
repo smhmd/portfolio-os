@@ -1,6 +1,6 @@
 import { assign, createActor, fromPromise, setup } from 'xstate'
 
-import type { API } from 'src/lib'
+import type { API } from 'src/lib/types'
 
 import {
   bencode,

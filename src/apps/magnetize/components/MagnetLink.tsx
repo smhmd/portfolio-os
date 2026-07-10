@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useId, useState } from 'react'
 
 import clsx from 'clsx'
 
@@ -33,6 +33,8 @@ function HighlightedMagnetLink({ link }: MagnetLinkProps) {
 }
 
 export function MagnetLink({ link }: MagnetLinkProps) {
+  const id = useId()
+
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -43,13 +45,11 @@ export function MagnetLink({ link }: MagnetLinkProps) {
 
   return (
     <section
-      aria-labelledby='magnet-link-title'
+      aria-labelledby={id}
       className='animate-fade-in flex select-text flex-col gap-y-2'>
       <div className='flex items-center gap-1.5'>
         <Link aria-hidden className='size-3.5 fill-orange-200' />
-        <h3
-          id='magnet-link-title'
-          className='text-sm font-medium text-orange-50'>
+        <h3 id={id} className='text-sm font-medium text-orange-50'>
           Magnet Link
         </h3>
       </div>

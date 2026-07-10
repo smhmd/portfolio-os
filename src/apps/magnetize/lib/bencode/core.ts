@@ -17,8 +17,8 @@ const ASCII_E = 0x65 // 'e'
  * Bencode supports four data types:
  * 1. Integers: Represented as i<integer>e. Example: i42e
  * 2. Strings: Represented as <length>:<string>. Example: 4:spam
- * 3. Lists: Represented as l<item1><item2>...e. Example: l4:spam4:eggse
- * 4. Dictionaries: Represented as d<key1><value1><key2><value2>...e. Example: d3:cow3:moo4:spam4:eggse
+ * 3. Lists: Represented as l<item1><item2>e. Example: l4:spam4:eggse
+ * 4. Dictionaries: Represented as d<key1><value1><key2><value2>e. Example: d3:cow3:moo4:spam4:eggse
  *
  * @param {Uint8Array | ArrayBuffer | string} input - The Bencoded data as a Uint8Array.
  * @returns {BencodeType} - The decoded JavaScript object, which can be a string, number, array, or object.

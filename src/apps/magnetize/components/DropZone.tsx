@@ -122,7 +122,7 @@ export const DropZone = memo(
                 onClick={handleReset}
                 className={clsx(
                   'pointer-events-auto cursor-pointer outline-none',
-                  'hover:rotate-90 hover:bg-white/10 focus-visible:rotate-90 focus-visible:bg-white/10',
+                  'hocus:rotate-90 hocus:bg-white/10',
                   'shrink-0 rounded-full p-2 transition-all duration-300',
                 )}
                 aria-label='Clear selected file'>

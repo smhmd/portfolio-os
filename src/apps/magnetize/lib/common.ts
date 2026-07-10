@@ -20,8 +20,7 @@ export type Options = {
 export const DUMMY_TORRENT = `
 d 8:announce 18:http://tracker.org
 4:info
-  d 6:length i 0 e
-  4:name 14:Sample.torrent
+  d 4:name 14:Sample.torrent
   12:piece_length i 0 e
   6:pieces 20:____________________
   5:files l

@@ -2,8 +2,8 @@ import { useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
 import { Bolt, Play, Sparkles } from 'src/assets'
-import { AppWrapper } from 'src/components'
-import { iconToFavicon } from 'src/utils'
+import { Container } from 'src/components'
+import { generateMeta, iconToFavicon } from 'src/lib/server'
 
 import { AdvancedOptions, Alert, DropZone, MagnetLink } from './components'
 import { actor, api, compareState, createDummyTorrent } from './lib'
@@ -11,10 +11,7 @@ import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
 export function meta() {
-  return [
-    { title: metadata.name },
-    { name: 'description', content: metadata.description },
-  ]
+  return generateMeta(metadata)
 }
 
 export function links() {
@@ -24,11 +21,11 @@ export function links() {
 
 export default function App() {
   return (
-    <AppWrapper
-      isDark
+    <Container
+      id={metadata.id}
       className={clsx(
         'flex items-center justify-center px-4',
-        'text-white selection:bg-purple-950/40',
+        'text-white selection:bg-orange-950/40',
         'scrollbar-amber-400',
         'wp-[rainbow-vortex.svg] bg-cover bg-fixed bg-center',
       )}>
@@ -37,14 +34,14 @@ export default function App() {
           <h1
             aria-label='Torrent Magnetizer'
             className='text-4xl font-bold tracking-tight md:text-5xl'>
-            Torr
+            Torrent{' '}
             <AppIcon
               aria-hidden
-              viewBox='24 24 52 52'
+              padding={24}
               fill='transparent'
-              className='inline size-5 md:size-7'
-            />
-            nt Magnetizer
+              className='inline size-8 rotate-45 md:size-7'
+            />{' '}
+            Magnetizer
           </h1>
           <p className='vmd:not-sr-only sr-only block text-lg text-orange-50'>
             <span>
@@ -66,7 +63,7 @@ export default function App() {
           </p>
         </footer>
       </div>
-    </AppWrapper>
+    </Container>
   )
 }
 
@@ -115,14 +112,14 @@ function Panel() {
         )}
       </div>
       <button
-        onClick={async () => {
-          const torrentFile = await createDummyTorrent()
+        onClick={() => {
+          const torrentFile = createDummyTorrent()
           api.uploadFile(torrentFile)
         }}
         className={clsx(
           'cursor-pointer px-2 py-1 text-xs text-white',
           'opacity-70 transition-opacity hover:opacity-85',
-          'outline-none focus-visible:ring-2 focus-visible:ring-purple-500',
+          'outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
           'bg-white/8 rounded-b-lg border border-t-0 border-white/30',
         )}>
         View Demo

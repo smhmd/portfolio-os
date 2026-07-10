@@ -1,7 +1,8 @@
 import { memo, useEffect, useReducer, useState } from 'react'
 
+import { Checkbox } from '@base-ui/react/checkbox'
+import { CheckboxGroup } from '@base-ui/react/checkbox-group'
 import clsx from 'clsx'
-import { Checkbox } from 'radix-ui'
 
 import { Check } from 'src/assets'
 
@@ -63,7 +64,7 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
       )}>
       <div className='flex items-center justify-between gap-y-1'>
         <legend>
-          <h3 className='inline text-xs font-medium text-orange-100'>Files </h3>
+          <h4 className='inline text-xs font-medium text-orange-100'>Files </h4>
           <p
             className='text-xxs inline text-orange-200'
             aria-label={`${filesCount} files`}>
@@ -92,8 +93,8 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
           }}
         />
       ) : (
-        <ul
-          className='max-h-24 space-y-1 overflow-y-auto'
+        <CheckboxGroup
+          className='max-h-24 space-y-1 overflow-y-auto text-orange-300'
           aria-label='Select files to include in the magnet link'>
           {files.map((file, index) => {
             const isSelected = selectedIndexes.has(index)
@@ -102,47 +103,45 @@ export const FileSelector = memo(({ files, onChange }: FileSelectorProps) => {
             const bytes = formatBytes(file.length)
 
             return (
-              <li key={index}>
-                <label
+              <label
+                key={index}
+                className={clsx(
+                  'relative flex w-full items-center gap-2 overflow-hidden',
+                  'cursor-pointer rounded border px-2 py-1.5',
+                  'transition-all duration-300',
+                  isSelected
+                    ? 'border-orange-300/30 bg-orange-300/10 text-orange-50'
+                    : 'border-transparent text-orange-200 hover:bg-white/5',
+                )}
+                aria-label={`${filePath} of ${bytes} in size`}>
+                {isSelected && (
+                  <span className='shimmer pointer-events-none absolute inset-0' />
+                )}
+                <Checkbox.Root
+                  checked={isSelected}
+                  onCheckedChange={() => {
+                    toggleFile(index)
+                  }}
                   className={clsx(
-                    'relative flex w-full items-center gap-2 overflow-hidden',
-                    'cursor-pointer rounded border px-2 py-1.5',
+                    'flex size-3.5 items-center justify-center',
+                    'rounded border',
                     'transition-all duration-300',
-                    isSelected
-                      ? 'border-orange-300/30 bg-orange-300/10 text-orange-50'
-                      : 'border-transparent text-orange-200 hover:bg-white/5',
-                  )}
-                  aria-label={`${filePath} of ${bytes} in size`}>
-                  {isSelected && (
-                    <div className='shimmer pointer-events-none absolute inset-0' />
-                  )}
-                  <Checkbox.Root
-                    checked={isSelected}
-                    onCheckedChange={() => {
-                      toggleFile(index)
-                    }}
-                    className={clsx(
-                      'flex size-3.5 items-center justify-center',
-                      'rounded border',
-                      'transition-all duration-300',
-                      'outline-none focus-visible:ring focus-visible:ring-offset-1 focus-visible:ring-offset-orange-800',
-                      isSelected
-                        ? 'rotate-0 border-orange-300 bg-orange-300'
-                        : 'rotate-90 border-orange-200',
-                    )}>
-                    <Checkbox.Indicator>
-                      <Check aria-hidden className='size-2.5 fill-orange-800' />
-                    </Checkbox.Indicator>
-                  </Checkbox.Root>
-                  <div className='w-0 flex-1 text-left' aria-hidden>
-                    <div className='truncate text-xs'>{filePath}</div>
-                    <div className='text-xxs opacity-60'>{bytes}</div>
-                  </div>
-                </label>
-              </li>
+                    'outline-none focus-visible:ring focus-visible:ring-offset-1 focus-visible:ring-offset-orange-800',
+                    'rotate-90 border-orange-200',
+                    'data-checked:rotate-0 data-checked:border-orange-300 data-checked:bg-orange-300',
+                  )}>
+                  <Checkbox.Indicator>
+                    <Check aria-hidden className='size-2.5 fill-orange-800' />
+                  </Checkbox.Indicator>
+                </Checkbox.Root>
+                <div className='w-0 flex-1 text-left' aria-hidden>
+                  <div className='truncate text-xs'>{filePath}</div>
+                  <div className='text-xxs opacity-60'>{bytes}</div>
+                </div>
+              </label>
             )
           })}
-        </ul>
+        </CheckboxGroup>
       )}
     </fieldset>
   )

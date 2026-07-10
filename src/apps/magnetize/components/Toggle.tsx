@@ -1,5 +1,5 @@
+import { Switch } from '@base-ui/react/switch'
 import clsx from 'clsx'
-import { Label, Switch } from 'radix-ui'
 
 type ToggleProps = {
   label: string
@@ -18,7 +18,7 @@ export function Toggle({
   className,
 }: ToggleProps) {
   return (
-    <Label.Root
+    <label
       className={clsx(
         'group relative flex items-center gap-2',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
@@ -31,10 +31,9 @@ export function Toggle({
         className={clsx(
           'relative rounded-full transition-colors',
           'h-4 w-7',
-          disabled
-            ? 'cursor-not-allowed bg-gray-600/50'
-            : 'cursor-pointer bg-gray-600',
-          checked && 'bg-orange-300',
+          'bg-gray-600',
+          'data-disabled:bg-gray-600/50',
+          'data-checked:bg-orange-300',
           'outline-none focus-visible:ring focus-visible:ring-orange-300 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-900/60',
         )}>
         <Switch.Thumb
@@ -42,7 +41,8 @@ export function Toggle({
             'absolute block rounded-full bg-white',
             'transition-transform',
             'top-0.5 size-3',
-            checked ? 'translate-x-3.5' : 'translate-x-0.5',
+            'translate-x-0.5',
+            'data-checked:translate-x-3.5',
           )}
         />
       </Switch.Root>
@@ -53,6 +53,6 @@ export function Toggle({
         )}>
         {label}
       </span>
-    </Label.Root>
+    </label>
   )
 }

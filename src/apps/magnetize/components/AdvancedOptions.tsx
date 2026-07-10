@@ -1,7 +1,7 @@
-import { memo, useMemo } from 'react'
+import { memo, useId, useMemo } from 'react'
 
+import { Accordion } from '@base-ui/react/accordion'
 import clsx from 'clsx'
-import { Accordion } from 'radix-ui'
 
 import { ArrowDown, Settings } from 'src/assets'
 
@@ -23,6 +23,8 @@ export const AdvancedOptions = memo(
     onSetOption,
     onSelectFiles,
   }: AdvancedOptionsProps) => {
+    const id = useId()
+
     const {
       isNameDisabled,
       isLengthDisabled,
@@ -39,10 +41,8 @@ export const AdvancedOptions = memo(
     }, [torrentObject])
 
     return (
-      <section
-        aria-labelledby='advanced-options-heading'
-        className='animate-fade-in'>
-        <Accordion.Root type='single' collapsible>
+      <section aria-labelledby={id} className='animate-fade-in'>
+        <Accordion.Root>
           <Accordion.Item
             value='advanced-options'
             className='flex flex-col gap-1'>
@@ -58,23 +58,23 @@ export const AdvancedOptions = memo(
                     aria-hidden
                     className='size-3.5 fill-orange-200 transition duration-300 group-hover:rotate-180 group-hover:fill-orange-50'
                   />
-                  <span
-                    id='advanced-options-heading'
-                    className='text-xs font-medium'>
+                  <h3 id={id} className='text-xs font-medium'>
                     Advanced Options
-                  </span>
+                  </h3>
                 </div>
                 <ArrowDown
                   aria-hidden
                   className={clsx(
                     'size-3.5 fill-current transition duration-300',
-                    'rounded-full hover:bg-white/10 group-focus-visible:bg-white/10',
-                    'ease-[cubic-bezier(.87,0,.13,1)] group-data-[state=open]:rotate-180',
+                    'group-hocus:bg-white/10 rounded-full',
+                    'group-data-panel-open:rotate-180',
+                    'ease-[cubic-bezier(.85,0,.15,1)]',
                   )}
                 />
               </Accordion.Trigger>
             </Accordion.Header>
-            <Accordion.Content className='animate-accordion overflow-hidden'>
+            <Accordion.Panel
+              className={clsx('animate-accordion overflow-hidden')}>
               <div
                 className={clsx(
                   'animate-fade-in rounded-lg bg-white/5 px-3 py-2',
@@ -82,10 +82,11 @@ export const AdvancedOptions = memo(
                 )}>
                 <fieldset className='space-y-2'>
                   <legend className='text-xs font-medium text-orange-100'>
+                    <h4>Components</h4>
                     <span className='sr-only'>
-                      Components to include in the magnet URL
+                      {' '}
+                      to include in the magnet URL
                     </span>
-                    <span aria-hidden>Components</span>
                   </legend>
 
                   <div className='flex flex-wrap justify-between gap-1.5 *:min-w-[140px] sm:grid sm:grid-cols-2 sm:grid-rows-2'>
@@ -139,7 +140,7 @@ export const AdvancedOptions = memo(
                   />
                 )}
               </div>
-            </Accordion.Content>
+            </Accordion.Panel>
           </Accordion.Item>
         </Accordion.Root>
       </section>
