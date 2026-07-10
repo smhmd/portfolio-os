@@ -13,10 +13,11 @@ import {
 } from './utils'
 
 export type Events =
-  | { type: 'start' }
-  | { type: 'move'; payload: Direction }
-  | { type: 'reset' }
-  | { type: 'continue' }
+  | { type: 'game.start' }
+  | { type: 'game.reset' }
+  | { type: 'game.continue' }
+  | { type: 'move.start'; payload: Direction }
+  | { type: 'move.end' }
 
 const initialState = {
   board: [],
@@ -39,7 +40,8 @@ export const machine = setup({
     reset: assign(({ context }) => reset(context)),
     add: assign(({ context }) => ({ board: addTile(context.board) })),
     move: assign(({ context, event }) => {
-      if (event.type !== 'move') return {}
+      if (event.type !== 'move.start')
+        throw new Error('Impossible. Type-narrowing.')
       return moveTiles({
         board: context.board,
         direction: event.payload,
@@ -52,15 +54,15 @@ export const machine = setup({
     isNotUpdated: ({ context }) => !context.updated,
   },
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAYgCc4wAXAbQAYBdRUABwHtZcrc39mQAHogCMANgBM4gHQAOACziAnHQCsw9SroB2ADQgAnohUzFUlVvPCti4XXEy6igL5O9aLHkJEpASQAiADIAoiSwVOhktIz87JzcvPxCCADMMtJ0csLJyaJaFiqionqGCDIywlI2Wrl0oiqK+ckubhg4BMRSAMIAEkGdANI+AHIA4iT0TEggsVw8fFNJFnJS2ioq9uXCag3FiFriWlLqiuJiojKiVloyzSDubV5dvQPDYzTCk6wcswkLeyrLVaWGRqTSKGS7UpyFRmRT1cQAxRyMrCW73TwdHp9QajcbiT7Tb7xeagRYAlb5LTCEFbRwQgyIRQSWRyRTKOHyNLGNGtDHeAAKAQAggBNV4kVBsABuYAmMSJc0SiBk+zM1XEcjy4IydGEkLkmqOxmR6lyhVOoh5Hna3gAsgB5ABq4rlUxmxKVCCyyUOVOp8jkySRGkhSkOMlSNlE2gkEgBVoeHQdztxAjC6CoYCk6AAZpmyMho6R0TapMnXq6vnFFX8UmkVplktTjEDdAyEOJRMscuJUk2tgjagm+VIAMr8oUAdSGLuiboVv1JRg1lXB2WEDTyuTbJUKh0khRMJsuomcrjuvNLk-tQxImF43HwAFdZXOqz8SYIRNlRA3shrynkDJIQsOgpByE4EXBU4fTkFxz3wNgIDgfgSy8eVq0XL8OwNWRLjkOh-zWXVrkhLJpB7VJVHEWpUi0YdS38YIMI-T0lGkC5hAIojNGpSFFGSMCgwUJtdVEQTdQYx4sReUYWI9WtNGScCTDoDJzC7A0d3+ITT0keo0iyLQ4PPNCOkFUVXnkmsly9OQ6lXLQMns7YjMhcTDmo+xqWqYy0ikpMnSs+dMM-JJbDsMwDThVZbGScRIXiio6DKJESLUtIblMy9HnHKcZzkkLWNrZEYWUez1AOVIVT1dt1jApQGnKAoLnkVFsutR5ryGaysPCqwZEqZJWSpbQyl1FQQM7PCTgIkSmwuALvACe1RwAFV6sKRBo38rHioNjB9JR6RKVqWXqLICi7a4zxcIA */
-  context: initialState,
+  /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAYinVTADoAnOMAFwG0AGAXUVAAcB7WXBrh75OIAB6IAjADZJAdioAmAKwAWFqtUAOOYrlaAnFoA0IAJ6JlWrVWVy7qxdOV2tyxQF8PptFjyEiKgBJABEAGQBRMgpqWAZ0GmZ2UV5+QWFRCQQAZi1FKg1JbOlFSWtlZwNTCwRrSSoDeWlGuQNlbOzdLx8MHAJiKgBhAAkIwYBpIIA5AHESVg4kEFSBIRElrPtVAvt3OsllSQM5asRdBUkj0ulpLVk5fW6QXz6AodGJ6bmmSUXuPlWGQ2ZzUOxccjKh2ULCMp1qqmUtjaBhUqgM2i0kieL38AxGY0ms3mij+ywB6XWoE2oJYuwhbgOMJM5kQBhKVC0aIMMKs2hUWmxvVxgQACmEAIIATS+JFQPAAbrF4okFilyWtMohrNIqM5MTpSqobu04ZodQZctl2iw3Ddsp5vM8hf1AgBZADyADUZXLFVQwPgIKqlisKZqcnkCqoiiUyrbpHCnPk7opstybfZJIpVIK-C6qB7vUTg-80hrgQgip0qBC45o09GDonjhzco1pLSSiU1LnXgMAMoi8UAdSmMpLZLLQKplmzDSMHSODzk0gecJuCkUTlu6MxsmaveFVGH7qm0UoVEwwkE+AArmAJ6HyzPK9kYVRF-ZnFt7QmWQh7BYD9mi3ZQjFKTpsi8R18B4CA4FEHEXTVKdKXERBs22O5JHUDoVGheRmRqIogJTVQV0aI17TsQ981CSIUMBNCskUFEOVkXDqIIojWTfD90VTSQWBkN9hNot58U+WZGLDCtoWyD9DBYDQ7GkTRyLhQDgJRFRwKKOQc0dJC3jFKUvhk590MrI1EQMY4NBso59PXasWHcRR9RXAy8nEgZC3MkN1WnKyhJYfI1DRaFMxYe04XteobUMdR5GUvIBSM503kHEcx2kwLUPDbRbI0WQszkXIdEkOF3CA1jjkxCo7k5LEMrzN4TymCzgqyS59AabI0QhWlrGE5RNKcdiUXURxFzuXzAjCd1+wAFS65ipEUFgdXke00ysTpWJ42pbg5BFGitG5yMMaCPCAA */ context:
+    initialState,
   id: APP_ID,
   description: 'The state machine for the game 2048.',
   initial: 'IDLE',
   states: {
     IDLE: {
       on: {
-        start: {
+        'game.start': {
           description:
             'We start the machine manually because SSR prevents persisting to localstorage.',
           target: 'CHECKING',
@@ -91,7 +93,7 @@ export const machine = setup({
     },
     PLAYING: {
       on: {
-        move: {
+        'move.start': {
           description: 'While playing, the player can move tiles around.',
           target: 'MOVING',
           actions: 'move',
@@ -105,13 +107,10 @@ export const machine = setup({
         target: 'PLAYING',
         guard: 'isNotUpdated',
       },
-      after: {
-        '60': {
+      on: {
+        'move.end': {
           description:
-            'If tiles were moved, then we should merge overlapping tiles and transition to the SPAWNING state.',
-          // The delay is there to allow spawning animation and moving animation from colliding.
-          // I wanna improve this, tbh. :(
-          // It's not bad design. It's just makes the game not as snappy as it could possibly be.
+            'Once tiles animation ends, then we merge overlapping tiles and transition to the SPAWNING state.',
           target: 'SPAWNING',
           actions: 'merge',
         },
@@ -126,7 +125,7 @@ export const machine = setup({
     WON: {
       entry: 'win',
       on: {
-        continue: {
+        'game.continue': {
           target: 'PLAYING',
         },
       },
@@ -134,7 +133,7 @@ export const machine = setup({
     LOST: {},
   },
   on: {
-    reset: {
+    'game.reset': {
       description:
         'Transition directly to the playing state with 2 starting tiles.',
       target: '.PLAYING',

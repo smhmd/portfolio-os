@@ -4,9 +4,9 @@ import { useMachine, useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
 import { Info } from 'src/assets'
-import { AppWrapper } from 'src/components'
-import type { API } from 'src/lib'
-import { iconToFavicon } from 'src/utils'
+import { Container } from 'src/components'
+import { generateMeta, iconToFavicon } from 'src/lib/server'
+import type { API } from 'src/lib/types'
 
 import { GameBoard, GameHeader } from './components'
 import { type Events, machine } from './lib'
@@ -14,10 +14,7 @@ import { AppIcon, metadata } from './metadata'
 import styles from './styles.css?url'
 
 export function meta() {
-  return [
-    { title: metadata.name },
-    { name: 'description', content: metadata.description },
-  ]
+  return generateMeta(metadata)
 }
 
 export function links() {
@@ -26,7 +23,7 @@ export function links() {
 }
 
 export default function App() {
-  const [state, send, actor] = useMachine(machine)
+  const [_, send, actor] = useMachine(machine)
   const { board, score, best, isWon, isLost } = useSelector(
     actor,
     (state) => ({
@@ -36,29 +33,37 @@ export default function App() {
     }),
     // if `updated` is not true, don't return new values for `board`, `score`, and `best`
     // saves us from unnecessary re-renders
-    () => !state.context.updated,
+    (_, next) => !next.updated,
   )
 
   const handle = useMemo<API<Events>>(() => {
     return {
-      start: () => send({ type: 'start' }),
-      continue: () => send({ type: 'continue' }),
-      reset: () => send({ type: 'reset' }),
-      move: (payload) => send({ type: 'move', payload }),
+      startGame: () => send({ type: 'game.start' }),
+      continueGame: () => send({ type: 'game.continue' }),
+      resetGame: () => send({ type: 'game.reset' }),
+      startMove: (payload) => send({ type: 'move.start', payload }),
+      endMove: () => send({ type: 'move.end' }),
     }
   }, [])
 
   useEffect(() => {
     // Avoid SSR `window` is undefined behavior (cause we're using localStorage)
-    handle.start()
+    handle.startGame()
   }, [])
 
   return (
-    <AppWrapper
-      isDark
+    <Container
+      id={metadata.id}
       className='isolate flex flex-col items-center justify-between bg-[#F9F7EF] text-[#756452]'>
+      <div
+        aria-hidden
+        className={clsx(
+          'fixed inset-0 -z-10 h-lvh w-lvw',
+          'wp-[stars.svg] bg-[#F9F7EF] bg-cover bg-center bg-no-repeat',
+        )}
+      />
       <GameHeader
-        onReset={handle.reset}
+        onReset={handle.resetGame}
         className='z-1'
         score={score}
         best={best}
@@ -66,16 +71,16 @@ export default function App() {
       <GameBoard
         className='vsm:absolute inset-0 grow'
         board={board}
-        onMove={handle.move}
-        onContinue={handle.continue}
-        onReset={handle.reset}
+        onContinue={handle.continueGame}
+        onReset={handle.resetGame}
+        onStartMove={handle.startMove}
+        onEndMove={handle.endMove}
         isWon={isWon}
         isLost={isLost}
       />
       <footer
         className={clsx(
-          'h-[24svh]',
-          'vmd:block hidden items-center justify-center',
+          'vmd:block hidden h-[24svh]',
           'py-18 vxl:py-24 px-2',
           'text-center text-xs opacity-70',
         )}>
@@ -95,6 +100,6 @@ export default function App() {
           </b>
         </p>
       </footer>
-    </AppWrapper>
+    </Container>
   )
 }

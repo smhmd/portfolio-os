@@ -33,6 +33,7 @@ export const GameHeader = memo(
       <Score className='p:col-span-3' score={score} best={best} />
 
       <button
+        aria-label='New Game'
         className={clsx(
           'justify-self-end rounded-lg',
           'col-start-3 row-start-1',
@@ -40,9 +41,11 @@ export const GameHeader = memo(
         onClick={onReset}>
         <Replay aria-hidden className='fill-current sm:hidden' />
         <span
+          aria-hidden
           className={clsx(
             'hidden rounded-lg sm:block',
             'bg-board text-base text-white',
+            'shadow-lg shadow-yellow-900/10',
             'cursor-pointer whitespace-nowrap',
             'px-4 py-2',
           )}>

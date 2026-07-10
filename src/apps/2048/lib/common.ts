@@ -1,3 +1,5 @@
+import type { Direction } from 'src/lib/types'
+
 export type Tile = {
   id: string
   x: number
@@ -6,9 +8,6 @@ export type Tile = {
 }
 
 export type Board = Tile[]
-
-/** The direction in which a board can move its tiles. */
-export type { Direction } from 'src/lib'
 
 export type State = {
   /** The current state of the board, represented as a flat array of tiles. */
@@ -21,6 +20,7 @@ export type State = {
   updated: boolean
   /** If the player has reached 2048. The player may continue playing after doing that */
   won: boolean
+  next?: Direction | null
 }
 
 export const APP_ID = '2048'

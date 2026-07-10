@@ -1,8 +1,8 @@
-import { uuid } from 'src/utils'
+import type { Direction } from 'src/lib/types'
+import { uuid } from 'src/lib/utils'
 
 import {
   type Board,
-  type Direction,
   LOCALSTORAGE_ID,
   type State,
   type Tile,
@@ -19,9 +19,10 @@ type MoveProps = { board: Board; direction: Direction }
  * const { board, updated } = moveTiles({
  *   board: [{ value: 2, x: 0, y: 0 }, { value: 2, x: 0, y: 1 }]
  *   direction: 'down',
- * });
- * console.log(board); // [{value: 2, x: 0, y: 3}, {value: 2, x: 0, y: 3}] // (overlapping)
- * console.log(updated); // true
+ * })
+ *         // (overlapping)
+ * board   // [{value: 2, x: 0, y: 3}, {value: 2, x: 0, y: 3}]
+ * updated // true
  */
 export function moveTiles({
   board,
@@ -37,22 +38,27 @@ export function moveTiles({
   const groupBy = isVertical ? 'x' : 'y' // when the movement is vertical, "x" is constant so we can group by it
   const changeBy = isVertical ? 'y' : 'x' // when the movement is vertical, we change the "y" position
 
-  /** for 'down' and 'right', we go backwards; for 'up' and 'left', we go forward  */
+  /** for 'down' and 'right', we go backwards. for 'up' and 'left', we go forward  */
   const step = isForward ? -1 : 1
 
   /**
    * This will make this:
+   * ```
    * [
    *   {x: 0, y: 1...},
    *   {x: 0, y: 2...},
    *   {x: 1, y: 3...}
    * ]
+   * ```
    * into this:
+   * ```
    * [
-   *   [ {x: 0, y: 1...}, {x: 0, y: 2...} ],   // grouping into separate arrays by either "x" or "y"
-   *   [ {x: 1, y: 3...} ]                     // in this case, we're grouping by "x"
+   *   // grouping into separate arrays by either "x" or "y"
+   *   [ {x: 0, y: 1...}, {x: 0, y: 2...} ],
+   *   // in this case, we're grouping by "x"
+   *   [ {x: 1, y: 3...} ]
    * ]
-   *
+   * ```
    * If we're moving vertically, we group by "x" and update the y's, otherwise we'll group by "y" and update the x's
    */
   const groups: Tile[][] = Array.from({ length: TILE_SIZE }).map(() => [])
@@ -126,9 +132,9 @@ type MergeProps = Pick<State, 'board' | 'score' | 'best'>
  *   best: 20,
  * })
  *
- * console.log(board); // [{ value: 4, x: 0, y: 3 }] // merged in the same position
- * console.log(score); // 4
- * console.log(best); // 20
+ * board // [{ value: 4, x: 0, y: 3 }] // merged in the same position
+ * score // 4
+ * best  // 20
  */
 export function mergeTiles({ board, score, best }: MergeProps): MergeProps {
   let addedScore = 0
@@ -239,13 +245,16 @@ export function checkLost(board: Board): boolean {
 type CheckWonProps = Pick<State, 'board' | 'won'>
 
 /**
- * Checks if the game board is in a lost state, meaning there are no empty spaces
- * and no adjacent tiles with the same value that can be merged.
+ * Checks if the game board is in a won state
+ * and one of the tiles is above the win threshold.
  */
 export function checkWon({ board, won }: CheckWonProps): boolean {
-  if (won) return false
+  if (won) return false // skip if already won
   return board.some((tile) => tile.value === WIN_THRESHOLD)
 }
+
+// TODO: the localstorage code is happy-path only.
+// we need to guard against something going wrong.
 
 /**
  * Persist state in local storage
@@ -266,7 +275,7 @@ export function initializeState(): Partial<State> {
 /**
  * Resets the game state, keeping "best" intact
  */
-export function reset(state: State): Omit<State, 'best'> {
+export function reset(state: State): State {
   const newState = {
     board: addTile(addTile([])),
     score: 0,

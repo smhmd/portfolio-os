@@ -1,13 +1,18 @@
 import { memo } from 'react'
 
 import clsx from 'clsx'
-import { type HTMLMotionProps, type Variants } from 'motion/react'
+import type { Variants } from 'motion/react'
 import * as motion from 'motion/react-client'
 
-type OverlayProps = {
-  title: string
-  children: React.ReactNode
-} & HTMLMotionProps<'div'>
+import type { Props } from 'src/lib/types'
+
+type OverlayProps = Props<
+  typeof motion.div,
+  {
+    title: string
+    children: React.ReactNode
+  }
+>
 
 const variants: Variants = {
   initial: { opacity: 0 },
@@ -37,6 +42,7 @@ export const Overlay = memo(
         className={clsx(
           '@container absolute flex items-center justify-center text-6xl font-bold',
           'inset-0 z-10',
+          'corner-squircle rounded-[inherit]',
           className,
         )}
         {...props}>
@@ -56,4 +62,4 @@ export const Overlay = memo(
   },
 )
 
-Overlay.displayName = 'GameBoardOverlay'
+Overlay.displayName = 'Overlay'
