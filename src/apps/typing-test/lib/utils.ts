@@ -1,9 +1,3 @@
-type TypingAnalysis = {
-  accuracy: number
-  wpm: number
-  errors: number
-}
-
 /**
  * Optimized Damerau-Levenshtein distance algorithm.
  * - Tracks insertion, deletion, substitution, and transposition (common typing mistakes).
@@ -64,7 +58,7 @@ export function analyzeTyping(
   originalText: string,
   typedText: string,
   timeInSeconds: number,
-): TypingAnalysis {
+) {
   const errors = optimizedLevenshtein(originalText, typedText)
   const correctChars = Math.max(0, originalText.length - errors)
 
@@ -75,8 +69,10 @@ export function analyzeTyping(
 
   // Adjusted WPM calculation
   const wpm = Math.max(0, typedWords / (timeInSeconds / 60))
+  const grade = Math.min(Math.floor(wpm / 20), 4)
 
   return {
+    grade,
     accuracy: Math.max(0, (correctChars / originalText.length) * 100), // Accuracy in percentage
     wpm: wpm, // Words per minute
     errors: errors, // Number of character-level errors

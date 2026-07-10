@@ -1,11 +1,13 @@
-import { AppIconWrapper } from 'src/components'
-import type { AppMetadata } from 'src/lib'
+import { IconFrame } from 'src/components'
+import type { AppMetadata } from 'src/lib/types'
 
 export const metadata: AppMetadata = {
   id: 'typing-test',
   name: 'Typing Test',
   description: 'Test your typing speed and accuracy',
+  type: 'Utility',
   Icon: AppIcon,
+  dark: false,
 }
 
 const keys = [
@@ -16,9 +18,9 @@ const keys = [
   Array.from({ length }, (_, i) => ({ y, x: x + i * 8 })),
 )
 
-export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
+export function AppIcon(props: React.ComponentProps<typeof IconFrame>) {
   return (
-    <AppIconWrapper fill='white' {...props}>
+    <IconFrame fill='white' {...props}>
       <g className='group-hover/icon:animate-tilt origin-center'>
         <rect width='72' height='40' x='14' y='30' fill='#222' rx='4' />
 
@@ -38,6 +40,6 @@ export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
         <rect width='28' height='6' fill='#EEE' rx='2' x='36' y='60' />
         <rect width='8' height='6' fill='#EEE' rx='2' x='66' y='60' />
       </g>
-    </AppIconWrapper>
+    </IconFrame>
   )
 }

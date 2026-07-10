@@ -14,7 +14,7 @@ export const Timer = memo(
     const [totalSeconds, setTotalSeconds] = useState(initialSeconds)
 
     // Store interval id in a ref to prevent re-creating it every render
-    const intervalIdRef = useRef<number | null>(null)
+    const intervalIdRef = useRef<NodeJS.Timeout>(null)
 
     useEffect(() => {
       if (!enabled) return
