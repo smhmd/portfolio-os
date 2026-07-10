@@ -1,11 +1,22 @@
-import { useDial } from '../lib'
+import { useSelector } from '@xstate/react'
+import clsx from 'clsx'
+
+import { actor, useDial } from '../lib'
 import { Base } from './Base'
 
-export function Volume() {
-  const { ref, drag, rotation } = useDial({})
+type VolumeProps = {
+  /** Reports rotation deltas in turns; the machine owns the value. */
+  onChange?(delta: number): void
+  onMute?(): void
+}
+
+export function Volume({ onChange, onMute }: VolumeProps) {
+  const { ref, drag, rotation } = useDial({ onChange })
+  const muted = useSelector(actor, ({ context }) => context.muted)
+
   return (
-    <Base className='col-span-4 row-span-2 *:grid-cols-2'>
-      <div
+    <Base className='col-span-2 row-span-4 *:grid-rows-2'>
+      <button
         role='slider'
         data-name='volume-knob'
         className='relative aspect-square cursor-grab active:cursor-grabbing'
@@ -31,16 +42,23 @@ export function Volume() {
             </div>
           </div>
         </div>
-      </div>
+      </button>
 
-      <div
+      <button
         data-name='volume-mute'
+        aria-pressed={muted}
+        onClick={onMute}
         className='relative aspect-square size-full cursor-pointer'>
         <div className='bg-bump-mute blur-px absolute inset-2.5 rounded-[11px]' />
         <div className='z-1 absolute inset-4'>
-          <div className='bg-mute size-full rounded-md' />
+          <div
+            className={clsx(
+              'bg-mute size-full rounded-md transition-transform',
+              muted && 'scale-90 brightness-95',
+            )}
+          />
         </div>
-      </div>
+      </button>
     </Base>
   )
 }

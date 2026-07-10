@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
-import { PI } from 'src/lib'
+import { PI } from 'src/lib/math'
 
 type UseDialProps = {
-  initialValue?: number
-  min?: number
-  max?: number
-  onChange?(value: number): void
+  /** Called with the rotation delta in turns (+1 = one full clockwise revolution). */
+  onChange?(delta: number): void
 }
 
 // Calculate angle from center to pointer position
@@ -36,17 +34,14 @@ const calculateAngle = (
   return (Math.atan2(y, x) * (180 / PI) + 360) % 360
 }
 
-export function useDial({
-  initialValue = 0,
-  min = 0,
-  max = 100,
-  onChange,
-}: UseDialProps) {
-  const [rotation, setRotation] = useState<number>(
-    (initialValue / (max - min)) * 360,
-  )
-  const [value, setValue] = useState<number>(initialValue)
-  const dialRef = useRef<HTMLDivElement>(null)
+/**
+ * An endless rotary encoder: the dial spins forever in either direction and
+ * only reports how far it moved. Whoever listens (the machine) owns the
+ * value, its range, and its clamping.
+ */
+export function useDial({ onChange }: UseDialProps = {}) {
+  const [rotation, setRotation] = useState(0)
+  const dialRef = useRef<HTMLButtonElement>(null)
   const prevAngleRef = useRef<number | null>(null)
 
   const updateRotation = useCallback(
@@ -54,31 +49,18 @@ export function useDial({
       if (!dialRef.current || prevAngleRef.current === null) return
 
       const currentAngle = calculateAngle(e, dialRef.current)
-      let deltaAngle = currentAngle - prevAngleRef.current
+      let delta = currentAngle - prevAngleRef.current
 
       // Handle crossing the 0/360 boundary
-      if (deltaAngle > 180) deltaAngle -= 360
-      if (deltaAngle < -180) deltaAngle += 360
+      if (delta > 180) delta -= 360
+      if (delta < -180) delta += 360
 
-      setRotation((prev) => {
-        const newRotation = prev + deltaAngle
-
-        // Normalize value in the range [min, max]
-        const range = max - min
-        const normalizedPercentage = (((newRotation % 360) + 360) % 360) / 360
-        const newValue = Math.round(min + normalizedPercentage * range)
-
-        if (newValue !== value) {
-          setValue(newValue)
-          if (onChange) onChange(newValue)
-        }
-
-        return newRotation
-      })
+      setRotation((prev) => prev + delta)
+      onChange?.(delta / 360)
 
       prevAngleRef.current = currentAngle
     },
-    [min, max, onChange, value],
+    [onChange],
   )
 
   const startDragging = useCallback(
@@ -86,7 +68,6 @@ export function useDial({
       event.preventDefault()
       if (!dialRef.current) return
 
-      // Get initial angle
       prevAngleRef.current = calculateAngle(
         event.nativeEvent as MouseEvent | TouchEvent,
         dialRef.current,
@@ -115,14 +96,9 @@ export function useDial({
     [updateRotation],
   )
 
-  useEffect(() => {
-    setRotation((initialValue / (max - min)) * 360)
-  }, [initialValue, min, max])
-
   return {
     ref: dialRef,
     drag: startDragging,
-    value,
     rotation,
   }
 }

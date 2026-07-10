@@ -1,16 +1,19 @@
-import { AppIconWrapper } from 'src/components'
-import type { AppMetadata } from 'src/lib'
+import { IconFrame } from 'src/components'
+import type { AppMetadata } from 'src/lib/types'
 
 export const metadata: AppMetadata = {
   id: 'music-workstation',
   name: 'Music Workstation',
-  description: 'OP-1 Field drum machine',
+  description: 'Create beats in music workstation',
+  type: 'music',
   Icon: AppIcon,
+  dark: false,
+  wip: true,
 }
 
-export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
+export function AppIcon(props: React.ComponentProps<typeof IconFrame>) {
   return (
-    <AppIconWrapper fill='#979797' wip {...props}>
+    <IconFrame fill='#979797' wip={metadata.wip} {...props}>
       <defs colorInterpolationFilters='sRGB'>
         <filter id='darken'>
           <feComponentTransfer>
@@ -58,9 +61,9 @@ export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
         <path
           fill='#EF3E23'
           filter='url(#lighten)'
-          d='M34 25.5c0-1.64.43-3.27 1.26-4.78.83-1.52 2.04-2.9 3.57-4.06a17.58 17.58 0 0 1 5.36-2.7 21.17 21.17 0 0 1 12.62 0c2 .62 3.83 1.54 5.36 2.7a12.91 12.91 0 0 1 3.57 4.06A9.93 9.93 0 0 1 67 25.5l-3.02-1.67a8.52 8.52 0 0 0-.86-2.29c-.69-1.25-1.7-2.4-2.96-3.36a14.55 14.55 0 0 0-4.43-2.24 17.52 17.52 0 0 0-10.46 0 14.55 14.55 0 0 0-4.43 2.24c-1.26.97-2.27 2.1-2.96 3.36-.4.74-.69 1.5-.86 2.3L34 25.5Z'
+          d='M50.5 13C59.61 13 67 18.6 67 25.5 67 19.15 59.61 14 50.5 14S34 19.15 34 25.5C34 18.6 41.39 13 50.5 13'
         />
       </g>
-    </AppIconWrapper>
+    </IconFrame>
   )
 }

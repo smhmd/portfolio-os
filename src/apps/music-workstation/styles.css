@@ -1,14 +1,32 @@
 .bg-frame {
   --noise-size: 40px;
   background:
-    url(/images/noise.png) 0% 0% / var(--noise-size)
-      var(--noise-size) repeat,
+    url(/images/noise.png) 0% 0% / var(--noise-size) var(--noise-size) repeat,
     linear-gradient(90deg, #d1d1d1 0.2%, #858585 100%);
 
   border: 1px solid #b7b7b7;
   box-shadow:
     -1px -1px 1px 0px rgba(0, 0, 0, 0.35) inset,
     1px 1px 1px 0px rgba(255, 255, 255, 0.85) inset;
+}
+
+.shadow-frame {
+  box-shadow: rgba(0, 0, 0, 0.01) 1px 1px 1px 0px,
+    rgba(0, 0, 0, 0.02) 2px 2px 3px 0px,
+    rgba(0, 0, 0, 0.04) 4px 4px 6px 0px,
+    rgba(0, 0, 0, 0.07) 7px 7px 10px 0px,
+    rgba(0, 0, 0, 0.11) 12px 12px 17px 0px,
+    rgba(0, 0, 0, 0.18) 19px 19px 27px 0px,
+    rgba(0, 0, 0, 0.3) 33px 33px 47px 0px,
+    rgba(0, 0, 0, 0.55) 60px 60px 85px 0px,
+    rgba(0, 0, 0, 0.03) 2px 2px 1px 0px,
+    rgba(0, 0, 0, 0.03) 4px 4px 2px 0px,
+    rgba(0, 0, 0, 0.03) 7px 7px 3px 0px,
+    rgba(0, 0, 0, 0.03) 12px 12px 5px 0px,
+    rgba(0, 0, 0, 0.03) 20px 20px 8px 0px,
+    rgba(0, 0, 0, 0.04) 32px 32px 14px 0px,
+    rgba(0, 0, 0, 0.05) 55px 55px 23px 0px,
+    rgba(0, 0, 0, 0.08) 100px 100px 42px 0px
 }
 
 .bg-tint {
@@ -53,12 +71,10 @@
 }
 
 .bg-power-button-tint {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.33) -3%,
-    rgba(0, 0, 0, 0.19) 53%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(0, 0, 0, 0.33) -3%,
+      rgba(0, 0, 0, 0.19) 53%,
+      rgba(0, 0, 0, 0) 100%);
 }
 
 .bg-keyboard {
@@ -77,31 +93,20 @@
   box-shadow: 0px 6px 8px -1px rgba(0, 0, 0, 0.5);
 }
 
-/* .shadow-base:has(button[aria-pressed='true']) {
-  scale: 0.99;
-  box-shadow:
-    inset 0px 4px 4px -1px rgba(0, 0, 0, 0.5),
-    0px 6px 8px -1px rgba(0, 0, 0, 0.5);
+.shadow-base:has([role="button"]:active) {
+  scale: 0.98;
 }
 
-.shadow-base:has(button[aria-pressed='true']) > .bg-base {
-  box-shadow: inset 0px 2px 3px -1px rgba(0, 0, 0, 0.2);
-} */
-
 .bg-radial-border {
-  background: linear-gradient(
-    132deg,
-    rgba(255, 255, 255, 0.6) 14%,
-    #928c87 93%
-  );
+  background: linear-gradient(132deg,
+      rgba(255, 255, 255, 0.6) 14%,
+      #928c87 93%);
 }
 
 .bg-radial-lg-border {
-  background: linear-gradient(
-    123deg,
-    rgba(255, 255, 255, 0.6) 14%,
-    #928c87 93%
-  );
+  background: linear-gradient(123deg,
+      rgba(255, 255, 255, 0.6) 14%,
+      #928c87 93%);
 }
 
 .bg-bump {
@@ -130,18 +135,14 @@
 
 .bg-screen-border {
   background:
-    linear-gradient(
-      114deg,
+    linear-gradient(114deg,
       rgba(255, 255, 255, 0.8) -2%,
       rgba(255, 255, 255, 0) 2%,
       rgba(255, 255, 255, 0) 94%,
-      rgba(255, 255, 255, 0.02) 105%
-    ),
-    linear-gradient(
-      104deg,
+      rgba(255, 255, 255, 0.02) 105%),
+    linear-gradient(104deg,
       rgba(83, 88, 89, 0.6) 73%,
-      rgba(41, 43, 44, 0.6) 100%
-    );
+      rgba(41, 43, 44, 0.6) 100%);
 }
 
 .bg-screen {
@@ -171,11 +172,9 @@
 }
 
 .bg-volume-body-border {
-  background: linear-gradient(
-    132deg,
-    rgba(255, 255, 255, 0.6) 12%,
-    #928c87 93%
-  );
+  background: linear-gradient(132deg,
+      rgba(255, 255, 255, 0.6) 12%,
+      #928c87 93%);
 }
 
 .bg-volume-body {
@@ -190,11 +189,9 @@
 }
 
 .bg-volume-top-border {
-  background: linear-gradient(
-    132deg,
-    rgba(255, 255, 255, 0.6) 80%,
-    #928c87 93%
-  );
+  background: linear-gradient(132deg,
+      rgba(255, 255, 255, 0.6) 80%,
+      #928c87 93%);
 }
 
 .bg-volume-top {
@@ -229,11 +226,9 @@
 }
 
 .bg-parameter-body-border {
-  background: linear-gradient(
-    132deg,
-    rgba(255, 255, 255, 0.6) 12%,
-    #928c87 93%
-  );
+  background: linear-gradient(132deg,
+      rgba(255, 255, 255, 0.6) 12%,
+      #928c87 93%);
 }
 
 .bg-parameter-body {
@@ -321,11 +316,12 @@ Unfortunately, scale in CSS does not support viewport units, so we have to pick 
 This was tested with an extensive amount of device viewports. If it doesn't look good on your device, open an issue or a PR.
 */
 #frame {
-  scale: 0.32;
-  rotate: 90deg;
+  scale: 0.6;
+  /* scale: 0.32; */
+  /* rotate: 90deg; */
 }
 
-@media (min-width: 640px) and (min-height: 360px) {
+/* @media (min-width: 640px) and (min-height: 360px) {
   #frame {
     scale: 0.42;
     rotate: none;
@@ -419,4 +415,4 @@ This was tested with an extensive amount of device viewports. If it doesn't look
   #frame {
     scale: 1.25;
   }
-}
+} */

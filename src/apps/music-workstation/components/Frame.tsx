@@ -7,7 +7,7 @@ export function Frame({ children, className, ...props }: FrameProps) {
     <div
       id='frame'
       className={clsx(
-        'bg-frame rounded-3.5xl relative flex justify-center py-5 pl-5',
+        'bg-frame shadow-frame rounded-3.5xl relative flex justify-center py-5 pl-5',
         'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform',
         'w-[1446px] origin-center',
         className,

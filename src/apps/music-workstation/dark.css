@@ -1,0 +1,383 @@
+/* ───────────────────────────────────────────────────────────
+   OP-XY conversion notes
+   - Palette inverted: warm off-white → neutral charcoal.
+   - Lighting flattened: one inset highlight (white ≤8%),
+     one inset shade, one short neutral ambient drop shadow.
+   - All warm tones (rgba(45,33,29,…), #857e7c, browns) removed.
+   ─────────────────────────────────────────────────────────── */
+
+* {
+  --noise-size: 40px;
+}
+
+.bg-frame {
+  /* flat matte charcoal — no noise texture, no metal gradient */
+  background: #26272b;
+  border: 1px solid #1d1e22;
+  box-shadow:
+    -1px -1px 1px 0px rgba(0, 0, 0, 0.4) inset,
+    1px 1px 1px 0px rgba(255, 255, 255, 0.04) inset;
+}
+
+.bg-tint {
+  /* XY has no soft-light tint overlay */
+  background: none;
+}
+
+.bg-mic {
+  background: #16181b;
+  border: 1px solid #26272b;
+}
+
+/* Volume meter — drop contrast (XY barely shows one) */
+.bg-meter {
+  background: #2e3034;
+}
+
+.border-meter-over-limits {
+  border-color: #3a3d42;
+}
+
+.bg-meter-tick {
+  background: #1f2125;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.4);
+}
+
+/* Branding — low-contrast light gray instead of near-black */
+.text-product-name {
+  color: #8b8e94;
+}
+
+.border-product-name {
+  border-color: #8b8e94;
+}
+
+/* Power button — flat dark instead of metallic */
+.bg-power-button-border {
+  background: linear-gradient(274deg, #34363b -2%, rgba(52, 54, 59, 0) 99%);
+}
+
+.bg-power-button {
+  background: #2e3034;
+  box-shadow:
+    1px 0px 1px 0px rgba(255, 255, 255, 0.05) inset,
+    -3px 0px 6px -4px rgba(0, 0, 0, 0.6) inset;
+}
+
+.bg-power-button-tint {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.4) -3%,
+    rgba(0, 0, 0, 0.2) 53%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.bg-keyboard {
+  /* gap color: only slightly darker than the tiles */
+  background: #1f2125;
+}
+
+/* ── Base tile (every key) ───────────────────────────────── */
+.bg-base-border {
+  background: linear-gradient(180deg, #3c3f44 0%, #232528 100%);
+}
+
+.bg-base {
+  background: linear-gradient(138deg, #36383d 5%, #2f3136 95%), url(/images/noise.png) 0% 0% / var(--noise-size)
+      var(--noise-size) repeat;
+  mix-blend-mode: color;
+}
+
+.shadow-base {
+  box-shadow: 0px 3px 4px -1px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Button caps — flattened ─────────────────────────────── */
+.bg-radial-border {
+  background: linear-gradient(
+    132deg,
+    rgba(255, 255, 255, 0.08) 14%,
+    rgba(0, 0, 0, 0.35) 93%
+  );
+}
+
+.bg-radial-lg-border {
+  background: linear-gradient(
+    123deg,
+    rgba(255, 255, 255, 0.08) 14%,
+    rgba(0, 0, 0, 0.35) 93%
+  );
+}
+
+.bg-bump {
+  background: linear-gradient(130deg, rgba(255, 255, 255, 0.06) 12%, transparent 48%);
+}
+
+.bg-bump-lg {
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0.06) 12%, transparent 48%);
+}
+
+.bg-button {
+  background: linear-gradient(123deg, #3a3c41 14%, #313338 88%);
+}
+
+.shadow-button {
+  box-shadow:
+    1px 2px 3px 0px rgba(0, 0, 0, 0.35),
+    2px 4px 6px 0px rgba(0, 0, 0, 0.2);
+}
+
+.bg-button-top {
+  /* "black keys" now read as the same flat surface as the tile */
+  background: #2b2d31;
+}
+
+/* ── Screen — flat near-black, borderless ────────────────── */
+.bg-screen-border {
+  background: #1a1b1e;
+}
+
+.bg-screen {
+  background: #0b0c0e;
+}
+
+/* ── Mute — pill, flat ───────────────────────────────────── */
+.bg-bump-mute {
+  background: #2e3034;
+}
+
+.bg-mute {
+  background: #36383d;
+  box-shadow:
+    inset 1px 1px 1px 0px rgba(255, 255, 255, 0.06),
+    inset -1px -1px 2px 0px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Volume knob — glossy black ──────────────────────────── */
+.bg-volume-base {
+  background: #2a2c30;
+  box-shadow:
+    -0.5px -0.5px 0px 0px #1c1e21 inset,
+    -1px -1px 2px 1px rgba(0, 0, 0, 0.5) inset,
+    3px 1px 1px 0px #232528 inset;
+}
+
+.bg-volume-body-border {
+  background: linear-gradient(132deg, rgba(255, 255, 255, 0.15) 12%, #0c0d0f 93%);
+}
+
+.bg-volume-body {
+  background: radial-gradient(circle at 35% 30%, #1c1d20, #0a0b0d 75%);
+  box-shadow:
+    -1px -1px 2px 1px rgba(0, 0, 0, 0.6) inset,
+    1px 1px 2px 0px rgba(255, 255, 255, 0.08) inset,
+    0px 4px 4px 0px rgba(0, 0, 0, 0.4);
+}
+
+.bg-volume-top-border {
+  background: linear-gradient(132deg, rgba(255, 255, 255, 0.2) 20%, #000 93%);
+}
+
+.bg-volume-top {
+  background: radial-gradient(circle at 35% 30%, #1c1d20, #08090b 80%);
+  box-shadow:
+    -1px -1px 2px 1px rgba(0, 0, 0, 0.6) inset,
+    1px 1px 2px 0px rgba(255, 255, 255, 0.1) inset,
+    4px 4px 5px 0px rgba(0, 0, 0, 0.5),
+    1px 6px 8px 0px rgba(0, 0, 0, 0.4);
+}
+
+.bg-volume-indicator {
+  background: #c9ccd1;
+  box-shadow:
+    1px 1px 1px 0px rgba(0, 0, 0, 0.5) inset,
+    -1.2px -1.2px 1px -0.9px rgba(255, 255, 255, 0.4) inset;
+}
+
+/* ── Parameter knobs ─────────────────────────────────────── */
+.bg-parameter-bed {
+  background: #1c1e21;
+  box-shadow:
+    0.5px 0.5px 0.5px 0px rgba(255, 255, 255, 0.04),
+    -2px -1px 3px 0px rgba(0, 0, 0, 0.6) inset;
+}
+
+.bg-parameter-base {
+  background: #2a2c30;
+  box-shadow:
+    1px 1px 1px 0px rgba(255, 255, 255, 0.05) inset,
+    -1px -1px 1px 0px rgba(0, 0, 0, 0.5) inset;
+}
+
+.bg-parameter-body-border {
+  background: linear-gradient(132deg, rgba(255, 255, 255, 0.1) 12%, #131417 93%);
+}
+
+.bg-parameter-body {
+  background: #232528;
+  box-shadow:
+    1px 1px 2px 0px rgba(0, 0, 0, 0.5) inset,
+    0px 0px 1px 0px rgba(255, 255, 255, 0.06),
+    0px 4px 6px 0px rgba(0, 0, 0, 0.4);
+}
+
+/* The four variants are repurposed as a left→right grayscale ramp:
+   blue = darkest · brown = mid · gray = light · orange = white   */
+.bg-parameter-top-blue-border {
+  background: linear-gradient(132deg, #777b82 12%, #3a3d42 93%);
+}
+
+.bg-parameter-top-brown-border {
+  background: linear-gradient(132deg, #9a9ea4 12%, #4d5158 93%);
+}
+
+.bg-parameter-top-gray-border {
+  background: linear-gradient(132deg, #cdd0d5 12%, #62666e 93%);
+}
+
+.bg-parameter-top-orange-border {
+  background: linear-gradient(132deg, #ffffff 12%, #b9bcc1 93%);
+}
+
+/* shared soft shadow for every knob top */
+.bg-parameter-top-blue,
+.bg-parameter-top-brown,
+.bg-parameter-top-gray,
+.bg-parameter-top-orange {
+  box-shadow:
+    -1px -1px 2px 0px rgba(0, 0, 0, 0.25) inset,
+    1px 1px 1px 0px rgba(255, 255, 255, 0.4) inset,
+    0px 6px 10px 0px rgba(0, 0, 0, 0.45);
+}
+
+.bg-parameter-top-blue {
+  background: linear-gradient(123deg, #62666e 14%, #4d5158 88%);
+}
+
+.bg-parameter-top-brown {
+  background: linear-gradient(123deg, #8e9298 14%, #777b82 88%);
+}
+
+.bg-parameter-top-gray {
+  background: linear-gradient(123deg, #c3c6cb 14%, #aaadb3 88%);
+}
+
+.bg-parameter-top-orange {
+  background: linear-gradient(123deg, #ffffff 14%, #e9eaec 88%);
+}
+
+/* The signature OP-XY orange indicator dot */
+.bg-knob-indicator {
+  background: #ff4d00;
+  box-shadow: 0px 0px 2px 0px rgba(255, 77, 0, 0.6);
+}
+
+/*
+We're scaling and rotating the frame depending on the viewport
+The reason we're doing this is to not have to worry about every little padding and position and shadow for all viewports.
+You don't want to see percentage paddings and widths everywhere to make this scalable by its width alone.
+Unfortunately, scale in CSS does not support viewport units, so we have to pick a few viewports and apply a nice scale.
+This was tested with an extensive amount of device viewports. If it doesn't look good on your device, open an issue or a PR.
+*/
+#frame {
+  scale: 0.7;
+  /* scale: 0.32; */
+  /* rotate: 90deg; */
+}
+
+/* @media (min-width: 640px) and (min-height: 360px) {
+  #frame {
+    scale: 0.42;
+    rotate: none;
+  }
+}
+
+@media (min-width: 320px) and (min-height: 600px) {
+  #frame {
+    scale: 0.4;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 360px) and (min-height: 660px) {
+  #frame {
+    scale: 0.42;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 353px) and (min-height: 732px) {
+  #frame {
+    scale: 0.46;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 393px) and (min-height: 786px) {
+  #frame {
+    scale: 0.5;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 344px) and (min-height: 844px) {
+  #frame {
+    scale: 0.54;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 412px) and (min-height: 915px) {
+  #frame {
+    scale: 0.58;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 600px) and (min-height: 1024px) {
+  #frame {
+    scale: 0.66;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 712px) and (min-height: 1138px) {
+  #frame {
+    scale: 0.74;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 800px) and (min-height: 1280px) {
+  #frame {
+    scale: 0.84;
+    rotate: 90deg;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 600px) {
+  #frame {
+    scale: 0.68;
+    rotate: none;
+  }
+}
+
+@media (min-width: 1280px) and (min-height: 600px) {
+  #frame {
+    scale: 0.86;
+    rotate: none;
+  }
+}
+
+@media (min-width: 1536px) and (min-height: 600px) {
+  #frame {
+    scale: 1.05;
+  }
+}
+
+@media (min-width: 1920px) and (min-height: 600px) {
+  #frame {
+    scale: 1.25;
+  }
+} */
