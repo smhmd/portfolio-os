@@ -23,10 +23,10 @@
       "rootFolderNames": ["apps"]
     },
     {
-      "name": "kalimba",
+      "name": "keylimba",
       "base": "constant",
       "color": "blue-gray-700",
-      "folderNames": ["kalimba"],
+      "folderNames": ["keylimba"],
       "rootFolderNames": ["apps"]
     },
     {
@@ -128,7 +128,7 @@
     {
       "name": "stage",
       "base": "playwright",
-      "color": "cyan-600",
+      "color": "lime-600",
       "fileNames": ["Stage.tsx"]
     },
     {
@@ -140,7 +140,7 @@
     {
       "name": "lights",
       "base": "blender",
-      "color": "cyan-600",
+      "color": "orange-700",
       "fileNames": ["Lights.tsx"]
     },
     {
@@ -221,5 +221,6 @@
       "color": "#C62828",
       "fileNames": ["README.md"]
     }
-  ]
+  ],
+  "cSpell.enabled": false
 }
