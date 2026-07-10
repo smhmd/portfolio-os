@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 
 import { Canvas } from '@react-three/fiber'
+import { ACESFilmicToneMapping } from 'three'
 
 import { Lights } from './Lights'
 
@@ -9,20 +10,31 @@ const Scene = lazy(() => import('./Scene'))
 export function Stage() {
   return (
     <Canvas
+      className='touch-none' // touch-none is important for touch devices
+      dpr={[1, 2]}
       orthographic
       camera={{
-        position: [10, 10, 10],
-        zoom: 50,
-        near: 0.01,
-        far: 5000,
+        zoom: 100,
+        position: [5, 5, 5],
+      }}
+      gl={{
+        autoClear: false,
+        antialias: true,
+        toneMapping: ACESFilmicToneMapping,
+        toneMappingExposure: 1.15,
+      }}
+      onCreated={({ camera, raycaster }) => {
+        // We are using layers heavily in this app.
+        // Enable camera for all layers.
+        camera.layers.enableAll()
+        // We specifically enable raycasting to layer 2 (current highest) for interactions.
+        raycaster.layers.set(2)
+        raycaster.layers.enable(2)
       }}>
       <Suspense fallback={null}>
         <Lights />
         <Scene />
       </Suspense>
-
-      <axesHelper args={[10]} />
-      <gridHelper args={[50, 50]} />
     </Canvas>
   )
 }
