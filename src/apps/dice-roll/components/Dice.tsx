@@ -1,9 +1,11 @@
-import { useDice } from '../contexts'
+import { useDice, useScore } from '../lib'
 import { Die } from './Die'
 
 export function Dice() {
-  const { dice, removeDice } = useDice()
-  return dice.map(({ id, ...die }) => (
-    <Die key={id} {...die} onClick={() => removeDice(id)} />
+  const { dice, remove } = useDice()
+  const settle = useScore((s) => s.settle)
+
+  return dice.map((die) => (
+    <Die key={die.id} {...die} onRemove={remove} onSettle={settle} />
   ))
 }

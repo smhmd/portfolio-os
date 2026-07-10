@@ -1,2 +1,3 @@
+export * from './Background'
+export * from './Controls'
 export * from './Stage'
-export * from './UI'

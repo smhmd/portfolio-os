@@ -11,6 +11,8 @@ const Scene = lazy(() => import('./Scene'))
 export function Stage() {
   return (
     <Canvas
+      shadows
+      dpr={[1, 2]}
       camera={{
         fov: ZOOM,
         position: [0, ZOOM, 0],
@@ -21,11 +23,11 @@ export function Stage() {
         },
       }}
       gl={{
+        antialias: true,
+        powerPreference: 'high-performance',
         toneMapping: ACESFilmicToneMapping,
         toneMappingExposure: 1.1,
-      }}
-      shadows
-      className='h-full w-full'>
+      }}>
       <Suspense fallback={null}>
         <Lights />
         <Scene />

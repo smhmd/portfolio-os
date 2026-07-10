@@ -1,20 +1,31 @@
 import type { RapierRigidBody } from '@react-three/rapier'
 import { Quaternion, type Vector3 } from 'three'
 
-function toRGB(c: number) {
-  return Math.ceil(c * 255)
+import { rand } from 'src/lib/math'
+import { uuid } from 'src/lib/utils'
+
+import { type Variant, ZOOM } from './common'
+
+export type DieData = {
+  id: string
+  variant: Variant
+  position: [number, number, number]
+  linearVelocity: [number, number, number]
+  angularVelocity: [number, number, number]
 }
 
-export function colorLog(
-  color: string | { r: number; g: number; b: number },
-  value: unknown,
-) {
-  const cssColor =
-    typeof color === 'string'
-      ? color
-      : `rgb( ${toRGB(color.r)}, ${toRGB(color.g)}, ${toRGB(color.b)})`
-
-  console.log(`%c${value}`, `color: ${cssColor}`)
+export function createDie(variant: Variant): DieData {
+  return {
+    id: uuid(),
+    variant,
+    position: [rand(1), ZOOM * 0.7 + rand(1), rand(1)],
+    linearVelocity: [rand(6), 12 + rand(6), rand(6)],
+    angularVelocity: [
+      rand(6, -6, 'ease-in'),
+      rand(5, 0, 'ease-out'),
+      rand(6, -6, 'ease-in'),
+    ],
+  }
 }
 
 type GetFaceOptions = {
@@ -27,7 +38,7 @@ export function getFace({ body, normals, variant }: GetFaceOptions) {
   const rotation = body.rotation()
   const quat = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w)
 
-  let maxY = 0
+  let maxY = -Infinity
   let topFaceIndex = -1
 
   normals.forEach((normal, i) => {

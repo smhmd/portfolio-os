@@ -1,4 +1,4 @@
-import { QUARTER_PI } from 'src/lib'
+import { QUARTER_PI } from 'src/lib/math'
 
 import { BACKGROUNDS, type DiceObject } from '../common'
 import { createGeometry } from './geometry'

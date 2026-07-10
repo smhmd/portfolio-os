@@ -1,16 +1,12 @@
-import { AppWrapper } from 'src/components'
-import { iconToFavicon } from 'src/utils'
+import { Container } from 'src/components'
+import { generateMeta, iconToFavicon } from 'src/lib/server'
 
-import { Stage, UI } from './components'
-import { DiceProvider } from './contexts'
+import { Background, Controls, Stage } from './components'
 import { DICE_FONT_NAME } from './lib'
 import { AppIcon, metadata } from './metadata'
 
 export function meta() {
-  return [
-    { title: metadata.name },
-    { name: 'description', content: metadata.description },
-  ]
+  return generateMeta(metadata)
 }
 
 export function links() {
@@ -21,18 +17,17 @@ export function links() {
     favicon,
     {
       rel: 'stylesheet',
-      href: `https://fonts.googleapis.com/css2?family=${DICE_FONT_NAME}:wght@700&display=swap&text=D0123456789.`,
+      href: `https://fonts.googleapis.com/css2?family=${DICE_FONT_NAME}:wght@700&display=swap`, // &text=D0123456789.
     },
   ]
 }
 
 export default function App() {
   return (
-    <AppWrapper className='relative h-screen w-full'>
-      <DiceProvider>
-        <Stage />
-        <UI />
-      </DiceProvider>
-    </AppWrapper>
+    <Container id={metadata.id} className='relative bg-[crimson]'>
+      <Background />
+      <Stage />
+      <Controls />
+    </Container>
   )
 }

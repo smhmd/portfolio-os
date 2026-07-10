@@ -1,6 +1,8 @@
 import { useThree } from '@react-three/fiber'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
 
+import { HALF_PI } from 'src/lib/math'
+
 import { DEPTH, HALF_ZOOM, ZOOM } from '../lib'
 
 export function Bounds() {
@@ -11,6 +13,15 @@ export function Bounds() {
 
   return (
     <RigidBody type='fixed' colliders={false}>
+      <mesh
+        key='shadows'
+        receiveShadow
+        rotation-x={-HALF_PI}
+        position={[0, DEPTH, 0]}>
+        <planeGeometry args={[viewport.width, viewport.height]} />
+        <shadowMaterial opacity={0.5} />
+      </mesh>
+
       <CuboidCollider
         key='floor'
         args={[width, DEPTH, height]}

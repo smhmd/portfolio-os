@@ -1,21 +1,37 @@
-import { AppIconWrapper } from 'src/components'
-import type { AppMetadata } from 'src/lib'
+import { IconFrame } from 'src/components'
+import type { AppMetadata } from 'src/lib/types'
 
 export const metadata: AppMetadata = {
   id: 'dice-roll',
   name: '3D Dice Roll',
-  description: 'Roll Dice from d4 to d100',
+  description: 'Roll dice for your D&D game',
+  type: 'utility',
   Icon: AppIcon,
+  dark: true,
 }
 
-export function AppIcon(props: React.ComponentProps<typeof AppIconWrapper>) {
+export function AppIcon(props: React.ComponentProps<typeof IconFrame>) {
   return (
-    <AppIconWrapper fill='#222' wip {...props}>
-      <g stroke='#fff' fill='#222'>
-        <path d='m77.965 57.997-7.028-28.188-27.965-7.997-20.937 20.191 7.028 28.188 27.965 7.996 20.937-20.19Z' />
-        <path d='m68.9 57.055 2.037-27.244-25.32 2.61-23.582 9.583 14.589 23.1L57.029 78.19 68.9 57.055Z' />
-        <path d='m68.901 57.054-32.278 8.048m32.278-8.048L45.617 32.418l-8.994 32.684m32.278-8.048 9.064.943m-41.342 7.105-7.56 5.087m16.554-37.768-2.644-10.608' />
+    <IconFrame fill='#222' {...props}>
+      <g fill='none'>
+        <path fill='#ff4d71' d='m71.01 29.92-20.93 19.2-28.24-7L42.8 21.95z' />
+        <path
+          fill='#ab1a37'
+          d='m29.48 70.04-7.47-27.88 28.07 6.96 6.95 29.07z'
+        />
+        <path
+          fill='#dc143c'
+          d='M78.04 58.06 71 29.92l-20.93 19.2 6.95 29.07z'
+        />
+        <g stroke='white'>
+          <path d='m77.97 58.04-7.03-28.19-27.96-8-20.94 20.2 7.03 28.19 27.96 8z' />
+          <path d='m68.9 57.1-32.27 8.05M68.9 57.1 45.62 32.46l-9 32.69m32.29-8.05 9.06.94m-41.34 7.1-7.56 5.1m16.55-37.77-2.64-10.61' />
+          <path
+            strokeLinecap='round'
+            d='M68.42 56.95 56.86 77.53 36.99 64.79l-14.2-22.5 22.96-9.33L70.4 30.4z'
+          />
+        </g>
       </g>
-    </AppIconWrapper>
+    </IconFrame>
   )
 }

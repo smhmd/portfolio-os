@@ -1,7 +1,5 @@
 import { useThree } from '@react-three/fiber'
 
-import { PI, QUARTER_PI, TAU } from 'src/lib'
-
 import { ZOOM } from '../lib'
 
 export function Lights() {
@@ -12,11 +10,11 @@ export function Lights() {
   return (
     <>
       <directionalLight
-        position={[width / 2, ZOOM, 0]}
-        intensity={QUARTER_PI}
+        position={[5, ZOOM, 0]}
+        intensity={3.5}
         castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        shadow-mapSize-width={512}
+        shadow-mapSize-height={512}
         shadow-camera-left={-width}
         shadow-camera-right={width}
         shadow-camera-top={height}
@@ -24,9 +22,7 @@ export function Lights() {
         shadow-camera-near={0.1}
         shadow-camera-far={200}
       />
-      <ambientLight intensity={TAU} />
-
-      <pointLight position={[0, ZOOM, 0]} decay={QUARTER_PI} intensity={PI} />
+      <ambientLight intensity={4} />
     </>
   )
 }

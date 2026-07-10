@@ -1,14 +1,14 @@
-import { PI } from 'src/lib'
+import { PI } from 'src/lib/math'
 
 import { BACKGROUNDS, type DiceObject } from '../common'
 import { createGeometry } from './geometry'
 import { createMaterials } from './material'
 
 const labels = [
-  ['2', '4', '3'],
-  ['1', '3', '4'],
-  ['2', '1', '4'],
-  ['1', '2', '3'],
+  ['4', '3', '2'],
+  ['3', '4', '1'],
+  ['1', '4', '2'],
+  ['2', '3', '1'],
 ]
 
 const vertices = [

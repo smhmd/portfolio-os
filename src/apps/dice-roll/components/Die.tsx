@@ -1,87 +1,107 @@
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 
 import { useFrame } from '@react-three/fiber'
-import {
-  type RapierRigidBody,
-  RigidBody,
-  type RigidBodyProps,
-} from '@react-three/rapier'
-import { type Mesh } from 'three'
+import { type RapierRigidBody, RigidBody } from '@react-three/rapier'
+import { Vector3 } from 'three'
 
-import { magnitude } from 'src/utils'
+import { magnitude } from 'src/lib/math'
 
-import { colorLog, getFace, type Variant } from '../lib'
+import { getFace, type Variant } from '../lib'
 import { variants } from '../lib/models'
 
 type DieProps = {
+  id: string
   variant: Variant
-  onClick?(id: string): void
-} & RigidBodyProps
+  position: [number, number, number]
+  linearVelocity: [number, number, number]
+  angularVelocity: [number, number, number]
+  onSettle(id: string, value: number, x: number, y: number): void
+  onRemove(id: string): void
+}
 
 const STILLNESS_THRESHOLD = 0.05
+const STABLE_FRAMES = 15
 
-export function Die({ variant, ...props }: DieProps) {
-  const { geometry, normals, materials, colliders = 'hull' } = variants[variant]
+const projection = new Vector3() // shared; useFrame callbacks never overlap
 
-  const bodyRef = useRef<RapierRigidBody>(null)
-  const meshRef = useRef<Mesh>(null)
+export const Die = memo(
+  ({
+    id,
+    variant,
+    position,
+    linearVelocity,
+    angularVelocity,
+    onSettle,
+    onRemove,
+  }: DieProps) => {
+    const {
+      geometry,
+      normals,
+      materials,
+      colliders = 'hull',
+    } = variants[variant]
 
-  const stableFrames = useRef(0)
+    const bodyRef = useRef<RapierRigidBody>(null)
+    const stableFrames = useRef(0)
+    const reported = useRef<number | null>(null) // emit only when the value changes
 
-  useFrame(() => {
-    const body = bodyRef.current
-    if (!body) return
+    useFrame(({ camera, size }) => {
+      const body = bodyRef.current
+      if (!body) return
 
-    const linvel = body.linvel()
-    const angvel = body.angvel()
+      const still =
+        magnitude(body.linvel()) < STILLNESS_THRESHOLD &&
+        magnitude(body.angvel()) < STILLNESS_THRESHOLD
 
-    const speed = magnitude(linvel)
-    const rotation = magnitude(angvel)
-
-    const isStill =
-      speed < STILLNESS_THRESHOLD && rotation < STILLNESS_THRESHOLD
-
-    if (isStill) {
-      stableFrames.current++
-      const isStable = stableFrames.current === 15
-
-      if (isStable) {
-        const topFaceIndex = getFace({
-          body,
-          normals,
-          variant,
-        })
-        if (topFaceIndex !== -1) {
-          const value = [10, 100].includes(variant)
-            ? topFaceIndex
-            : topFaceIndex + 1
-
-          colorLog(materials[0].color, `D${variant}: ${value}`)
-        }
+      if (!still) {
+        stableFrames.current = 0
+        return
       }
-    } else {
-      stableFrames.current = 0
-    }
-  })
 
-  return (
-    <RigidBody
-      ref={bodyRef}
-      gravityScale={2.5}
-      restitution={0.4}
-      friction={0.5}
-      linearDamping={1.2}
-      angularDamping={1.15}
-      colliders={colliders}
-      {...props}>
-      <mesh
-        frustumCulled={false}
-        ref={meshRef}
-        geometry={geometry}
-        material={materials}
-        castShadow
-        receiveShadow
-      />
-    </RigidBody>
-  )
-}
+      // Fire once per landing; re-fires only if knocked loose and re-settled.
+      if (++stableFrames.current !== STABLE_FRAMES) return
+
+      const face = getFace({ body, normals, variant })
+      if (face === -1) return
+
+      const value = variant === 100 ? face * 10 : face + 1
+      if (value === reported.current) return
+      reported.current = value
+
+      const t = body.translation()
+      projection.set(t.x, t.y, t.z).project(camera) // TODO: why are we doing this again?
+      onSettle(
+        id,
+        value,
+        (projection.x * 0.5 + 0.5) * size.width,
+        (-projection.y * 0.5 + 0.5) * size.height,
+      )
+    })
+
+    return (
+      <RigidBody
+        ref={bodyRef}
+        position={position}
+        ccd
+        linearVelocity={linearVelocity}
+        angularVelocity={angularVelocity}
+        gravityScale={2.5}
+        restitution={0.3}
+        friction={0.6}
+        linearDamping={1}
+        angularDamping={0.4}
+        colliders={colliders}>
+        <mesh
+          onClick={() => onRemove(id)}
+          frustumCulled={false}
+          geometry={geometry}
+          material={materials}
+          castShadow
+          receiveShadow
+        />
+      </RigidBody>
+    )
+  },
+)
+
+Die.displayName = 'Die'

@@ -1,27 +1,20 @@
 import { BufferGeometry, Float32BufferAttribute, Vector3 } from 'three'
 
-import { HALF_PI, TAU } from 'src/lib'
+import { HALF_PI } from 'src/lib/math'
 
-/** Configuration object used to build the geometry */
 type Options = {
-  /** List of [x, y, z] for each point in the geometry */
+  /** List of [x, y, z] for each point in the geometry. */
   vertices: number[][]
-  /** List of vertices indexes to form faces
-   * (often triangles but don't have to be.
-   * We have a triangulation step in the code for that) */
+  /** Lists of vertex indices forming faces. Faces can be any polygon. They will be fan-triangulated. */
   faces: number[][]
-  /** UV map scalar */
+  /** UV map scalar. */
   uvScale?: number
-  /** UV map v (vertical) offset */
+  /** UV vertical offset. */
   vOffset?: number
   /** UV map rotation offset (in radians) */
   angleOffset?: number
-  /** Size of the geometry (works as a radius) */
+  /** Size of the dice. */
   size?: number
-  /** We need normals to determine the value of the dice.
-   * But some faces shouldn't be included in this.
-   * We use this to limit the faces to include */
-  normalLimit?: number
 }
 
 /**
@@ -40,113 +33,83 @@ export function createGeometry({
   uvScale = 0.5,
   vOffset = 0,
   angleOffset = HALF_PI,
-  normalLimit: normalLimit,
 }: Options) {
-  const geometry = new BufferGeometry()
-
-  /** flat array for vertex positions.
-   * ex: [x0, y0, z0, x1, y1, z1, ...] */
   const positions: number[] = []
   const uvs: number[] = []
   const indices: number[] = []
+  const normals: Vector3[] = []
 
-  /** Our materials are: color/texture + numbers for each face.
-   * Groups allow multiple materials on the same geometry */
-  const groups: BufferGeometry['groups'] = []
-  let groupCursor = 0
-
-  /** Generate per-face UVs without duplication  */
-  const verticesCache = new Map<string, number>()
-  let cacheCursor = 0
+  const geometry = new BufferGeometry()
+  const spin = angleOffset - HALF_PI
 
   faces.forEach((face, faceIndex) => {
-    const polygonSidesCount = face.length
-    const angleStep = TAU / polygonSidesCount
+    // Each face emits its OWN vertices (no sharing): planar UVs are per-plane,
+    // and flatShading wants hard edges. Project them onto the sphere of `size`.
+    const points = face.map((i) =>
+      new Vector3(...vertices[i]).normalize().multiplyScalar(size),
+    )
 
-    /** Material index is offset by +1.
-     * Because group 0 is reserved for base color */
-    const materialIndex = faceIndex + 1
+    const center = new Vector3()
+    const normal = new Vector3()
 
-    /** Stores the final vertex indices for this face */
-    const verts: number[] = []
-
-    for (let i = 0; i < polygonSidesCount; i++) {
-      const index = face[i]
-      const key = `${index}-${i}`
-
-      // Create a new vertex only if this (vertex, face-position) pair
-      // Hasn’t been seen before
-      if (!verticesCache.has(key)) {
-        // Vertex to vector3
-        const vertex = new Vector3(...vertices[index])
-
-        // Project the vertex onto a sphere of given radius/size
-        vertex.normalize().multiplyScalar(size)
-
-        // Store position data
-        positions.push(vertex.x, vertex.y, vertex.z)
-
-        // Generate UVs in a polar (circular) coordinates
-        const angle = i * angleStep + angleOffset
-        uvs.push(
-          0.5 + Math.cos(angle) * uvScale,
-          0.5 + Math.sin(angle) * uvScale + vOffset,
-        )
-
-        // Cache the index of this newly created vertex
-        verticesCache.set(key, cacheCursor++)
-      }
-
-      verts.push(verticesCache.get(key)!)
+    // Newell's Algorithm:
+    for (let i = 0; i < points.length; i++) {
+      const a = points[i]
+      const b = points[(i + 1) % points.length]
+      center.add(a)
+      normal.x += (a.y - b.y) * (a.z + b.z)
+      normal.y += (a.z - b.z) * (a.x + b.x)
+      normal.z += (a.x - b.x) * (a.y + b.y)
     }
+    center.divideScalar(points.length)
+    normal.normalize()
 
-    // Create triangles (fan triangulation)
-    // (0, 1, 2), (0, 2, 3), ...
-    for (let j = 1; j < polygonSidesCount - 1; j++) {
-      indices.push(verts[0], verts[j], verts[j + 1])
-    }
+    // Point outward (die is convex and centered on the origin).
+    if (normal.dot(center) < 0) normal.negate()
+    normals.push(normal)
 
-    // How many triangles we should make from the polygon face we have
-    // If the polygon is a triangle, then it is just 1 triangle :)
-    // If the polygon is a square, then it's 2 triangles. Get it?
-    const triangleCount = polygonSidesCount - 2
+    // In-plane axes: "up" points from center toward the first vertex.
+    const up = points[0].clone().sub(center)
+    up.addScaledVector(normal, -up.dot(normal)).normalize()
+    if (spin !== 0) up.applyAxisAngle(normal, spin)
+    const right = up.clone().cross(normal)
 
-    // Register a group so this face can have its own material
-    groups.push({
-      start: groupCursor,
-      count: triangleCount * 3,
-      materialIndex,
+    // Project points onto the face plane and normalize to the face radius.
+    let maxRadius = 0
+    const planar = points.map((p) => {
+      const d = p.clone().sub(center)
+      const u = d.dot(right)
+      const v = d.dot(up)
+      maxRadius = Math.max(maxRadius, Math.hypot(u, v))
+      return { u, v }
+    })
+    const scale = uvScale / maxRadius
+
+    // How many vertices exist so far.
+    const base = positions.length / 3
+
+    // Emit vertices + UVs
+    points.forEach((p, i) => {
+      positions.push(p.x, p.y, p.z)
+      uvs.push(0.5 + planar[i].u * scale, 0.5 + planar[i].v * scale + vOffset)
     })
 
-    groupCursor += triangleCount * 3
+    // Fan-triangulate: (0,1,2), (0,2,3), ...
+    // Material is faceIndex + 1 because material 0 is the base color.
+    const start = indices.length
+    for (let j = 1; j <= points.length - 2; j++) {
+      indices.push(base, base + j, base + j + 1)
+    }
+    geometry.addGroup(start, indices.length - start, faceIndex + 1)
   })
 
-  // Set geometry attributes
   geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))
   geometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2))
   geometry.setIndex(indices)
 
-  // Reset any existing groups
-  geometry.clearGroups()
-  // First group covers the whole geometry (reserved for the color)
-  geometry.addGroup(0, indices.length, 0)
-  // Add per-face material groups
-  groups.forEach((group) => {
-    geometry.addGroup(group.start, group.count, group.materialIndex)
-  })
-
-  /**
-   * Create face normals (not vertex normals) -- limited to accommodate d10/d100
-   *
-   * This is used to determine the top face of each die (see utils' getFace)
-   */
-  const normals = faces.slice(0, normalLimit).map(([a, b, c]) => {
-    const v0 = new Vector3(...vertices[a])
-    const v1 = new Vector3(...vertices[b])
-    const v2 = new Vector3(...vertices[c])
-
-    return v1.sub(v0).cross(v2.sub(v0)).normalize()
-  })
+  // Group 0 is the color (applies to all faces).
+  // Groups render in insertion order, so prepend it.
+  geometry.groups.unshift({ start: 0, count: indices.length, materialIndex: 0 })
 
   return { geometry, normals }
 }

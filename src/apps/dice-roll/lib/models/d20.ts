@@ -1,4 +1,4 @@
-import { PI } from 'src/lib'
+import { PI } from 'src/lib/math'
 
 import { BACKGROUNDS, type DiceObject } from '../common'
 import { createGeometry } from './geometry'
