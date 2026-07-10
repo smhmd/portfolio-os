@@ -1,5 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800">
-  <path fill="#ff9d00" d="M0 0h1600v800H0z"/>
   <g stroke="#000" stroke-opacity=".05" stroke-width="100">
     <circle r="1800" fill="#ff9d00"/>
     <circle r="1700" fill="#fb8d17"/>
