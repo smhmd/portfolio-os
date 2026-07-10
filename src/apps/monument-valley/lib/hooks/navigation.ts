@@ -11,19 +11,23 @@ import {
   TURN_RATE,
 } from '../common'
 
+type CanNavigate = (from: number, to: number) => boolean
+
 /**
- * Breadth-first search for the shortest node sequence from `start` to `goal`,
- * excluding `start` itself. Returns [] when `goal` is unreachable.
+ * Breadth-first search for the shortest node sequence from `start` to `goal`
+ * along edges that pass `canNavigate`, excluding `start` itself.
+ * Returns [] when `goal` is currently unreachable.
  */
-function findPath(start: number, goal: number): number[] {
+function findPath(start: number, goal: number, canNavigate: CanNavigate) {
   const cameFrom = new Map<number, number>([[start, -1]])
   const queue = [start]
 
   for (let head = 0; head < queue.length; head++) {
     const node = queue[head]
     if (node === goal) break
-    for (const next of GRAPH[node].next) {
-      if (!cameFrom.has(next)) {
+    for (const edge of GRAPH[node].next) {
+      const next = typeof edge === 'number' ? edge : edge.to
+      if (!cameFrom.has(next) && canNavigate(node, next)) {
         cameFrom.set(next, node)
         queue.push(next)
       }
@@ -42,8 +46,11 @@ function findPath(start: number, goal: number): number[] {
 type NavigationProps = {
   /** Event handler on called on each node we navigate to. Used to check win conditions and set state. */
   onNavigate?(from: number, to?: number): void
-  /** Guard that determines whether a navigation is possible or not (e.g., bridge is lowered) */
-  canNavigate?(from: number, to: number): boolean
+  /**
+   * Whether the edge from → to is currently traversable. Called with adjacent
+   * nodes only, during pathfinding and again on arrival at each node.
+   */
+  canNavigate?: CanNavigate
 }
 
 export function useNavigation({
@@ -116,9 +123,8 @@ export function useNavigation({
     const frac = progress.current - seg
 
     if (destination === current) return false
-    if (!canNavigate(current, destination)) return false
 
-    const path = findPath(current, destination)
+    const path = findPath(current, destination, canNavigate)
     if (!path.length) return false
 
     // Standing still, or already heading toward the path's first node:

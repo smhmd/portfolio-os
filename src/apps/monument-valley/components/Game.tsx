@@ -5,12 +5,9 @@ import { PlaneGeometry } from 'three'
 import { HALF_PI } from 'src/lib/math'
 
 import {
-  BRANCH_B,
   BRIDGE,
+  connects,
   EXIT,
-  FORK,
-  GAP_END,
-  GAP_START,
   GRAPH,
   HINT_ROTATE,
   HINT_TAP,
@@ -40,6 +37,12 @@ export function Game() {
   const wheel = useWheel({ axis: 'x' })
 
   const player = useNavigation({
+    canNavigate(current, to) {
+      // Never step onto the wheel structure mid-drag
+      if (wheel.dragging.current && BRIDGE.has(to)) return false
+      // Otherwise the graph decides, given the mechanism state
+      return connects(current, to, { wheel: wheel.position.current, solved })
+    },
     onNavigate(current, to) {
       //Ida is going onto the bridge. Lock it.
       if (to) wheel.lock(BRIDGE.has(to))
@@ -51,27 +54,6 @@ export function Game() {
       // Hide hints
       if (current == HINT_TAP) setTapHint(false)
       if (current == HINT_ROTATE) setRotateHint(false)
-    },
-    canNavigate(current, to) {
-      // Ida is going to exit without solving
-      if (to == EXIT && !solved) return false
-
-      const pos = wheel.position.current
-      const dragging = wheel.dragging.current
-
-      // Ida is going onto bridge while we're dragging the wheel
-      if (dragging && BRIDGE.has(to)) return false
-      // Ida is going onto bridge while it's not in correct position
-      if (pos != 3 && current < GAP_START && to >= GAP_START) return false
-      if (pos != 3 && current > GAP_END && to <= GAP_END) return false
-      // Ida is going to branch B while bridge is not in correct position
-      if (pos != 1 && BRANCH_B.has(to)) return false
-      // Ida is going onto the bridge from branch B while bridge is not in correct position
-      if (pos != 1 && current == KEY) return false
-      // Ida is going to the fork while bridge is not in correct position
-      if (pos == 2 && to == FORK) return false
-
-      return true
     },
   })
 

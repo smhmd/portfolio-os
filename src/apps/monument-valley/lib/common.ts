@@ -6,18 +6,21 @@ export const STEP_TIME = 0.6
 export const TURN_RATE = 10
 
 export const START_NODE = 3
-export const FORK = 13
 export const KEY = 29
 export const EXIT = 25
 export const HINT_TAP = 9
 export const HINT_ROTATE = 10
-export const GAP_START = 10
-export const GAP_END = 12
 
-export const BRANCH_B = new Set([26, 27, 28, 29])
 export const BRIDGE = new Set([10, 11, 12, 13, 14, 15, 16, 26, 27, 28])
 
-export const GRAPH = [
+type GameState = { wheel: number; solved: boolean }
+type Edge = number | { to: number; when(s: GameState): boolean }
+
+type EdgeFn = (to: number, n: number) => Edge
+const wheelAt: EdgeFn = (to, n) => ({ to, when: (s) => s.wheel === n })
+const wheelNot: EdgeFn = (to, n) => ({ to, when: (s) => s.wheel !== n })
+
+export const GRAPH: { pos: Position; next: Edge[] }[] = [
   { pos: [-1, 0, 0], next: [1] },
   { pos: [-2, 0, 0], next: [0, 2] },
   { pos: [-3, 0, 0], next: [1, 3] },
@@ -27,15 +30,15 @@ export const GRAPH = [
   { pos: [-7, 0, 0], next: [5, 7] },
   { pos: [-7, 0, -1], next: [6, 8] },
   { pos: [-7, 0, -2], next: [7, 9] },
-  { pos: [-7, 0, -3], next: [8, 10] },
+  { pos: [-7, 0, -3], next: [8, wheelAt(10, 3)] }, // bridge spans the gap only at wheel position 3
   { pos: [-7, 0, -4], next: [9, 11] },
   { pos: [-7, 0, -5], next: [10, 12] },
-  { pos: [-7, 0, -6], next: [11, 13] },
+  { pos: [-7, 0, -6], next: [11, wheelNot(13, 2)] }, // at position 2 the fork only *looks* connected
 
-  { pos: [-7, 0, -7], next: [12, 14, 26] }, // FORK. Can go to either branch from here.
+  { pos: [-7, 0, -7], next: [wheelAt(12, 3), 14, wheelAt(26, 1)] }, // FORK. Can go to either branch from here.
 
   // branch A
-  { pos: [-8, 0, -7], next: [13, 15] },
+  { pos: [-8, 0, -7], next: [wheelNot(13, 2), 15] },
   { pos: [-9, 0, -7], next: [14, 16] },
   { pos: [-10, 0, -7], next: [15, 17] },
   { pos: [-11, 0, -7], next: [16, 18] },
@@ -45,12 +48,18 @@ export const GRAPH = [
   { pos: [-14, 0, -8], next: [20, 22] },
   { pos: [-14, 0, -9], next: [21, 23] },
   { pos: [-14, 0, -10], next: [22, 24] },
-  { pos: [-14, 0, -11], next: [23, 25] },
-  { pos: [-14, 0, -12], next: [] }, // FINAL! Linked to, but doesn't link to other nodes.
+  { pos: [-14, 0, -11], next: [23, { to: 25, when: (s) => s.solved }] }, // door opens once solved
+  { pos: [-14, 0, -12], next: [] }, // EXIT. Linked to, but doesn't link to other nodes.
 
-  // branch B
-  { pos: [-7, 0, -8], next: [13, 27] },
-  { pos: [-7, 0, -9], next: [26, 28] },
-  { pos: [-7, 0, -10], next: [27, 29] },
-  { pos: [-7, 0.05, -11], next: [28] }, // Pressure plate. Slightly raised
-] as const
+  // branch B — only attached to the tower at wheel position 1
+  { pos: [-7, 0, -8], next: [wheelNot(13, 2), wheelAt(27, 1)] },
+  { pos: [-7, 0, -9], next: [wheelAt(26, 1), wheelAt(28, 1)] },
+  { pos: [-7, 0, -10], next: [wheelAt(27, 1), wheelAt(29, 1)] },
+  { pos: [-7, 0.05, -11], next: [wheelAt(28, 1)] }, // KEY. Pressure plate, slightly raised
+]
+
+export const connects = (from: number, to: number, s: GameState) => {
+  return GRAPH[from].next.some((e) => {
+    return typeof e === 'number' ? e === to : e.to === to && e.when(s)
+  })
+}
