@@ -1,4 +1,3 @@
-export * from './Button'
-export * from './Drawer'
-export * from './Grid'
-export * from './GridIcon'
+import { AppDrawer } from './Dialog'
+
+export default AppDrawer

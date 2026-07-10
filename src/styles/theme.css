@@ -1,0 +1,53 @@
+@theme {
+  --font-roboto: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  --font-unifraktur: 'UnifrakturCook', 'Old English Text MT', "Times New Roman", Times, serif;
+  --font-orbitron: 'Orbitron', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  --font-quicksand: 'Quicksand', 'Roboto', 'Helvetica', 'Arial', sans-serif, 'MusicFallback';
+  --font-josefin-slab: 'Josefin Slab', "Roboto Slab", "Rockwell", "Courier New", serif;
+
+  --color-bsod: #0176e1;
+  --color-bsod-classic: #0000a3;
+
+  --text-xxs: 0.625rem;
+  --text-2\.5xl: 1.75rem;
+  --text-2\.5xl--line-height: 2.25rem;
+
+  --blur-px: 1px;
+
+  --radius-ms: 0.1875rem;
+  --radius-ml: 0.4375rem;
+  --radius-lx: 0.625rem;
+  --radius-1\.5xl: 0.875rem;
+  --radius-2\.5xl: 1.25rem;
+  --radius-3\.5xl: 1.75rem;
+  --radius-4\.5xl: 2.5rem;
+  --radius-5xl: 3rem;
+
+  --spacing-0\.75: calc(var(--spacing) * 0.75);
+  --spacing-1\.25: calc(var(--spacing) * 1.25);
+  --spacing-18: calc(var(--spacing) * 18);
+  --spacing-26: calc(var(--spacing) * 26);
+  --spacing-5\.5: calc(var(--spacing) * 5.5);
+
+  --shadow-inner-xl: inset 5px 5px 26px #b0a08d, inset -5px -5px 26px #cab8a3;
+
+  --text-shadow-cyan-glow: 0 0 5px oklch(0.9 0.05 197);
+
+  --breakpoint-xs: 30rem;
+  --breakpoint-3xl: 120rem;
+
+  --animate-tilt: tilt-settle 0.8s ease-out forwards;
+  --animate-spin-wobble: spin-wobble 0.8s ease-in-out infinite;
+  --animate-slide-up: slide-up 0.3s ease-in-out forwards;
+  --animate-slide-down: slide-down 0.2s ease-in-out forwards;
+  --animate-fade-in: fade-in 0.2s ease-out forwards;
+  --animate-fade-out: fade-out 0.2s ease-in forwards;
+  --animate-grow-in: grow-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-grow-out: grow-out 0.2s ease forwards;
+  --animate-fade-scale-up: fade-scale-up 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-fade-scale-down: fade-scale-down 0.1s ease;
+  --animate-fill-stroke: fill-stroke 2s linear infinite;
+  --animate-press: press 1s 0.2s ease-in-out infinite;
+  --animate-change-background: change-background 3.9s -0.7s steps(1) infinite;
+}
+

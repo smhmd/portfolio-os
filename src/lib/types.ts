@@ -1,12 +1,15 @@
 import type React from 'react'
 
-import type { AppIconWrapper } from 'src/components'
+import type { IconFrame } from 'src/components'
 
 export type AppMetadata = {
   id: string
   name: string
   description: string
-  Icon(props: Props<typeof AppIconWrapper>): React.JSX.Element
+  type: 'demo' | 'game' | 'music' | 'utility'
+  Icon(props: Props<typeof IconFrame>): React.JSX.Element
+  dark: boolean
+  wip?: boolean
 }
 
 export type Direction = 'up' | 'down' | 'left' | 'right'

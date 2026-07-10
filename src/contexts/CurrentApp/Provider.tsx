@@ -7,6 +7,7 @@ import { CurrentAppContext } from './context'
 
 export const CurrentAppProvider = (props: React.PropsWithChildren) => {
   const location = useLocation()
+
   const currentApp = useMemo(() => {
     const currentAppId = location.pathname.match(/[^/]+/)?.[0] as
       | AppID

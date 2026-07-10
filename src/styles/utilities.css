@@ -1,0 +1,80 @@
+@utility vertical-rl {
+  writing-mode: vertical-rl;
+}
+
+@utility animate-paused {
+  animation-play-state: paused;
+}
+
+@utility animate-running {
+  animation-play-state: running;
+}
+
+@utility scrollbar-* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, --value(--color- *) 50%, transparent)
+    transparent;
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklch, --value(--color- *) 50%, transparent);
+  }
+}
+
+@utility wp-* {
+  background-image: url(/wallpapers/--value([\*]));
+}
+
+@utility -corner-* {
+  corner-shape: superellipse(calc(--value(number) * -1));
+}
+
+@utility anim-duration-* {
+  animation-duration: calc(--value(number) * 1ms);
+}
+
+@utility anim-delay-* {
+  animation-delay: calc(--value(number) * 1ms);
+}
+
+@utility corner-* {
+  corner-shape: --value(
+    'round',
+    'scoop',
+    'bevel',
+    'notch',
+    'square',
+    'squircle',
+    [\*]
+  );
+  corner-shape: superellipse(--value(number));
+}
+
+/* 
+ * Use '?' class to visually highlight any element with an eye-catching effect. 
+ * 
+ * This utility is perfect for debugging deeply nested HTML or React components 
+ * where it’s hard to locate the exact element. Simply apply this class to an 
+ * element to make it stand out instantly without modifying its size, layout, 
+ * or content.
+ */
+.\? {
+  animation:
+    debug-wobble 0.7s ease-in-out alternate infinite,
+    debug-glow 1s ease-in-out alternate infinite;
+}
+
+@keyframes debug-wobble {
+  0% {
+    box-shadow:
+      3px 3px cyan,
+      -3px -3px yellow,
+      inset 5px 5px hotpink,
+      inset -5px -5px lime;
+  }
+  100% {
+    box-shadow:
+      6px 3px cyan,
+      -6px -3px yellow,
+      inset 10px 10px hotpink,
+      inset -10px -10px lime;
+  }
+}

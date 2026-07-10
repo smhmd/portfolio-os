@@ -1,3 +1,11 @@
+export const PI = Math.PI
+export const TAU = Math.PI * 2
+
+export const HALF_PI = Math.PI / 2
+export const THIRD_PI = Math.PI / 3
+export const QUARTER_PI = Math.PI / 4
+export const THREE_QUARTER_PI = (3 * Math.PI) / 4
+
 export function isOdd(n: number) {
   return n % 2 !== 0
 }
@@ -7,6 +15,7 @@ export function isEven(n: number) {
 }
 
 export function clamp(min: number, value: number, max: number) {
+  if (Number.isNaN(value)) return min
   return Math.min(Math.max(min, value), max)
 }
 
@@ -14,30 +23,13 @@ export function magnitude(v: { x: number; y: number; z: number }) {
   return Math.sqrt(v.x ** 2 + v.y ** 2 + v.z ** 2)
 }
 
-export function uuid(): string {
-  const template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-  const randomBytes = crypto.getRandomValues(new Uint8Array(16))
-  let byteIndex = 0
-  let nibbleToggle = false // false => low nibble, true => high nibble
-
-  function getNextNibble() {
-    const byte = randomBytes[byteIndex]
-    const nibble = nibbleToggle ? (byte >> 4) & 0xf : byte & 0xf
-    nibbleToggle = !nibbleToggle
-    if (!nibbleToggle) byteIndex++
-    return nibble
-  }
-
-  return template.replace(/[xy]/g, (char) => {
-    let value
-    if (char === 'x') {
-      value = getNextNibble()
-    } else {
-      // 'y' character: high bits must be 8, 9, a, or b
-      value = (getNextNibble() & 0x3) | 0x8
-    }
-    return value.toString(16)
-  })
+/* Defaults to a random number between -1 and 1 */
+export function rand(
+  max = 1,
+  min = -max,
+  easing: EasingName | EasingFunction = 'linear',
+): number {
+  return interpolate(Math.random(), [0, 1], [min, max], easing)
 }
 
 type EasingFunction = (t: number) => number

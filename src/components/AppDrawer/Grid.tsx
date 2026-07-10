@@ -3,39 +3,36 @@ import { memo, useMemo, useReducer } from 'react'
 import clsx from 'clsx'
 import { AnimatePresence } from 'motion/react'
 
-import { appGrid, type AppGridArray } from 'src/apps'
+import { appGrid, type AppID } from 'src/apps'
 
-import { GridAppIcon, GridFolderIcon } from './GridIcon'
+import { GridFolder } from './GridFolder'
+import { GridItem } from './GridItem'
 
 type AppGridProps = {
-  apps?: AppGridArray
-  onClick?(e: React.MouseEvent): void
+  filter?: AppID[]
+  onAppClick?(e: React.MouseEvent): void
 }
 
-export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
-  const [expandedFolders, toggle] = useReducer(
-    (state: Record<string, boolean>, folder: string) => ({
-      ...state,
-      [folder]: !state[folder],
-    }),
-    {},
-  )
+function foldersReducer(state: Record<string, boolean>, folder: string) {
+  return {
+    ...state,
+    [folder]: !state[folder],
+  }
+}
+
+export const Grid = memo(({ filter, onAppClick }: AppGridProps) => {
+  const [expandedFolders, expand] = useReducer(foldersReducer, {})
 
   const fullGrid = useMemo(() => {
-    const result: AppGridArray = []
-    appGrid.forEach((item) => {
-      result.push(item)
+    return appGrid.flatMap((item) => {
       if (Array.isArray(item)) {
         const [name, apps] = item
-        if (expandedFolders[name]) {
-          result.push(...apps)
-        }
-      }
+        return expandedFolders[name] ? [item, ...apps] : [item]
+      } else return item
     })
-    return result
   }, [expandedFolders])
 
-  const gridItems = apps ?? fullGrid
+  const gridItems = filter ?? fullGrid
 
   return (
     <ul
@@ -51,24 +48,26 @@ export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
       <AnimatePresence mode='popLayout'>
         {gridItems.map((id) => {
           if (typeof id === 'string') {
-            return <GridAppIcon onClick={onClick} key={`app-${id}`} id={id} />
-          } else {
-            const [name, ids] = id
-            const isExpanded = expandedFolders[name]
-            return (
-              <GridFolderIcon
-                key={`folder-${name}`}
-                name={name}
-                ids={ids}
-                isExpanded={isExpanded}
-                onClick={() => {
-                  toggle(name)
-                }}
-              />
-            )
+            return <GridItem onClick={onAppClick} key={`app-${id}`} id={id} />
           }
+
+          const [name, ids] = id
+          const isExpanded = expandedFolders[name]
+          return (
+            <GridFolder
+              key={`folder-${name}`}
+              name={name}
+              ids={ids}
+              isExpanded={isExpanded}
+              onClick={() => {
+                expand(name)
+              }}
+            />
+          )
         })}
       </AnimatePresence>
+
+      {/* Flexbox hack to for consistent wrapping */}
       {Array.from({ length: 6 }, (_, i) => (
         <li aria-hidden key={`spacer-${i}`} />
       ))}
@@ -76,4 +75,4 @@ export const AppGrid = memo(({ apps, onClick }: AppGridProps) => {
   )
 })
 
-AppGrid.displayName = 'AppGrid'
+Grid.displayName = 'AppGrid'

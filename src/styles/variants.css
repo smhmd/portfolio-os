@@ -1,0 +1,65 @@
+@custom-variant init {
+  @layer init {
+    @slot;
+  }
+}
+
+@custom-variant hocus {
+  &:is(:hover, :focus-visible) {
+    @slot;
+  }
+}
+
+@custom-variant hocus-within {
+  &:is(:hover, :focus-within) {
+    @slot;
+  }
+}
+
+@custom-variant l {
+  @media (orientation: landscape) {
+    @slot;
+  }
+}
+
+@custom-variant p {
+  @media (orientation: portrait) {
+    @slot;
+  }
+}
+
+@custom-variant vsm {
+  @media (height >= 30rem) {
+    @slot;
+  }
+}
+
+@custom-variant vmd {
+  @media (height >= 45rem) {
+    @slot;
+  }
+}
+
+@custom-variant vlg {
+  @media (height >= 56rem) {
+    @slot;
+  }
+}
+
+@custom-variant vxl {
+  @media (height >= 68rem) {
+    @slot;
+  }
+}
+
+@custom-variant v2xl {
+  @media (height >= 90rem) {
+    @slot;
+  }
+}
+
+@custom-variant supports-squircle {
+  @supports (corner-shape: squircle) {
+    @slot;
+  }
+}

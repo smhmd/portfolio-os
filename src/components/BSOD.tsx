@@ -2,13 +2,13 @@ import { type ErrorResponse } from 'react-router'
 
 import clsx from 'clsx'
 
-import { GITHUB_REPO, REPO_LINK } from 'src/lib'
+import { GITHUB_REPO, REPO_LINK } from 'src/lib/env'
 
 type ErrorBoundaryProps = {
   error: ErrorResponse
 }
 
-export function BSOD({ error }: ErrorBoundaryProps) {
+function BSOD({ error }: ErrorBoundaryProps) {
   function handleCopy(e: React.MouseEvent<HTMLElement, MouseEvent>) {
     navigator.clipboard.writeText(e.currentTarget.innerText)
   }
@@ -65,7 +65,7 @@ export function BSOD({ error }: ErrorBoundaryProps) {
             role='img'
             aria-label='QR code leading to help page'>
             <img
-              src='/qr-code.svg'
+              src='/images/qr-code.svg'
               alt='QR code that links to help page'
               className='size-28 sm:size-36'
             />
@@ -98,3 +98,5 @@ export function BSOD({ error }: ErrorBoundaryProps) {
     </main>
   )
 }
+
+export default BSOD

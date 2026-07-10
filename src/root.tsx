@@ -1,40 +1,32 @@
+import { lazy, Suspense } from 'react'
 import {
   type ErrorResponse,
   isRouteErrorResponse,
   Links,
   Meta,
+  type MetaFunction,
   Outlet,
   Scripts,
   ScrollRestoration,
   useLocation,
 } from 'react-router'
 
-import {
-  AppDrawer,
-  AppIconShape,
-  BreakpointDisplay,
-  BSOD,
-} from 'src/components'
+import { Breakpoints, SVGDefs } from 'src/components'
 import { Providers } from 'src/contexts'
 import mainCSS from 'src/styles/main.css?url'
 
 import type { Route } from './+types/root'
+import { SHOW_APP_DRAWER } from './lib/env'
+
+export const meta: MetaFunction = () => [
+  { name: 'apple-mobile-web-app-title', content: 'Portfolio' },
+]
 
 export const links: Route.LinksFunction = () => [
-  { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
   {
-    rel: 'icon',
-    type: 'image/png',
-    sizes: '32x32',
-    href: '/favicon-32x32.png',
+    rel: 'manifest',
+    href: '/favicon/site.webmanifest',
   },
-  {
-    rel: 'icon',
-    type: 'image/png',
-    sizes: '16x16',
-    href: '/favicon-16x16.png',
-  },
-  { rel: 'manifest', href: '/site.webmanifest' },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
     rel: 'preconnect',
@@ -59,30 +51,30 @@ export function Layout({ children }: React.PropsWithChildren) {
       </head>
       <body className='antialiased'>
         {children}
-        <AppIconShape />
+        <SVGDefs />
         <ScrollRestoration />
-        <BreakpointDisplay />
+        <Breakpoints />
         <Scripts />
       </body>
     </html>
   )
 }
 
+const AppDrawer = lazy(() => import('src/components/AppDrawer'))
+
 export default function App() {
   const location = useLocation()
-  const isApp = location.pathname !== '/'
+  const isApp = location.pathname !== '/' && SHOW_APP_DRAWER
 
   return (
     <Providers>
-      {isApp && (
-        <nav>
-          <AppDrawer />
-        </nav>
-      )}
+      <Suspense fallback={null}>{isApp && <AppDrawer />}</Suspense>
       <Outlet /> {/* Apps go here */}
     </Providers>
   )
 }
+
+const BSOD = lazy(() => import('src/components/BSOD'))
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let e: ErrorResponse = {
@@ -101,5 +93,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     }
   }
 
-  return <BSOD error={e} />
+  return (
+    <Suspense fallback={null}>
+      <BSOD error={e} />
+    </Suspense>
+  )
 }

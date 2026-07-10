@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { useGlobals } from 'src/contexts'
-import type { Direction } from 'src/lib'
+import type { Direction } from 'src/lib/types'
 
 type Props = {
   handler(direction: Direction): void

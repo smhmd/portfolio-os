@@ -3,13 +3,13 @@ type Props = React.ComponentProps<'svg'> & {
   wip?: boolean
 }
 
-export const AppIconWrapper = ({
+export function IconFrame({
   padding = 0,
   fill = 'url(#fill)', // can be used to add interesting fills
   children,
   wip = false,
   ...props
-}: Props) => {
+}: Props) {
   const size = 100 - padding * 2
   const viewBox = `${padding} ${padding} ${size} ${size}`
 
@@ -19,7 +19,7 @@ export const AppIconWrapper = ({
       fill='#ffffff33'
       viewBox={viewBox}
       {...props}>
-      <g clipPath='url(#app-icon)'>
+      <g clipPath='url(#app-icon-clip)'>
         <rect width='100' height='100' fill={fill} />
         {children}
         {wip ? (
@@ -45,32 +45,13 @@ export const AppIconWrapper = ({
             </text>
           </g>
         ) : null}
+        <use
+          href='#app-icon-shape'
+          fill='none'
+          stroke='rgba(255,255,255,.20)'
+          strokeWidth='2'
+        />
       </g>
-    </svg>
-  )
-}
-
-export function AppIconShape() {
-  return (
-    <svg width='0' height='0' viewBox='0 0 100 100' aria-hidden>
-      <defs>
-        <clipPath id='app-icon'>
-          <path d='M0 50C0 13.636 13.636 0 50 0c36.364 0 50 13.636 50 50 0 36.364-13.636 50-50 50-36.364 0-50-13.636-50-50Z' />
-        </clipPath>
-        <linearGradient id='app-icon-banner' x1='100%' y1='0' x2='0' y2='0'>
-          <stop offset='0%' stopColor='orange' stopOpacity='1' />
-          <stop offset='100%' stopColor='orange' stopOpacity='0' />
-        </linearGradient>
-        <filter id='app-icon-banner-shadow'>
-          <feDropShadow
-            dx='1'
-            dy='1'
-            stdDeviation='1'
-            floodColor='black'
-            floodOpacity='0.3'
-          />
-        </filter>
-      </defs>
     </svg>
   )
 }

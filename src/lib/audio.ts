@@ -1,12 +1,10 @@
-import type * as T from 'tone'
+import { clientOnly } from './ssr'
 
-export let synth: T.Synth
-export let destination: ReturnType<typeof T.getDestination>
+export const audioContext = clientOnly(() => new AudioContext())
+export const globalGain = clientOnly(() => {
+  const gain = audioContext.createGain()
+  gain.gain.value = 0.3
+  gain.connect(audioContext.destination)
 
-export const initToneOnClick = async () => {
-  if (synth || destination) return
-  const T = await import('tone')
-  await T.start()
-  synth = new T.Synth().toDestination()
-  destination = T.getDestination()
-}
+  return gain
+})
