@@ -19,6 +19,7 @@
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "baseUrl": ".",
+    // "paths": { "~/*": ["./src/*"] },
     "rootDirs": [".", "./.react-router/types"],
     "esModuleInterop": true,
     "resolveJsonModule": true

@@ -17,6 +17,9 @@ export default defineConfig({
     svgr(),
   ],
   ssr: {
-    noExternal: ['@react-three/drei'],
+    noExternal: ['@react-three/drei', '@react-three/rapier'],
+  },
+  optimizeDeps: {
+    exclude: ['@react-three/rapier'],
   },
 })
