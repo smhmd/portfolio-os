@@ -36,7 +36,7 @@ const calculateAngle = (
 
 /**
  * An endless rotary encoder: the dial spins forever in either direction and
- * only reports how far it moved. Whoever listens (the machine) owns the
+ * only reports how far it moved. Whoever listens (the store) owns the
  * value, its range, and its clamping.
  */
 export function useDial({ onChange }: UseDialProps = {}) {

@@ -73,6 +73,8 @@ function createPlayhead() {
  * two-clock lookahead scheduler lives inside: a coarse interval wakes us, exact
  * note times are computed on the audio clock and scheduled ahead.
  */
+export type Sequencer = ReturnType<typeof createSequencer>
+
 export function createSequencer(
   getTiming: () => Timing,
   onStep: (next: Stepper, count: number, time: number) => number,

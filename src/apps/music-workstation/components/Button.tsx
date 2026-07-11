@@ -2,14 +2,17 @@ import { Fragment } from 'react'
 
 import clsx from 'clsx'
 
+import type { SVGIcon } from 'src/lib/types'
+
 import { Base } from './Base'
 
 type ButtonProps = React.ComponentProps<'button'> & {
   variant?: 'middle' | 'vertical' | 'right' | 'left' | 'horizontal'
   black?: boolean
   text?: string
-  icon?: () => React.ReactNode
-  indicator?: boolean
+  /** An SVG glyph drawn with `currentColor` and sized in `em`, so it
+   * inherits the label's color and scale (see icons.tsx). */
+  icon?: SVGIcon
 }
 
 const variants = {
@@ -49,14 +52,12 @@ export function Button({
   text,
   icon,
   className,
-  indicator,
   ...props
 }: ButtonProps) {
-  const Icon = icon ? icon : Fragment
+  const Icon = icon ?? Fragment
+
   return (
-    <Base
-      className={clsx(variants.base[variant], className)}
-      indicator={indicator}>
+    <Base className={clsx(variants.base[variant], className)}>
       <button
         role='button'
         className={clsx(
@@ -64,7 +65,8 @@ export function Button({
           variants.label[variant],
         )}
         {...props}>
-        <Icon /> <span>{text}</span>
+        <Icon className='fill-neutral-800' aria-hidden />
+        <span className={clsx(icon && 'sr-only')}>{text}</span>
       </button>
       <div
         data-name='button-bump'

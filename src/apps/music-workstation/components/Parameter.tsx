@@ -5,7 +5,7 @@ import { Base } from './Base'
 
 type ParameterProps = {
   variant: 'blue' | 'brown' | 'gray' | 'orange'
-  /** Reports rotation deltas in turns; the machine owns the value. */
+  /** Reports rotation deltas in turns; the store owns the value. */
   onChange?(delta: number): void
 }
 

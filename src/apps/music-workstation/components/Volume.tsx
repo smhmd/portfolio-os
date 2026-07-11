@@ -1,18 +1,17 @@
-import { useSelector } from '@xstate/react'
 import clsx from 'clsx'
 
-import { actor, useDial } from '../lib'
+import { store, useDial } from '../lib'
 import { Base } from './Base'
 
 type VolumeProps = {
-  /** Reports rotation deltas in turns; the machine owns the value. */
+  /** Reports rotation deltas in turns; the store owns the value. */
   onChange?(delta: number): void
   onMute?(): void
 }
 
 export function Volume({ onChange, onMute }: VolumeProps) {
   const { ref, drag, rotation } = useDial({ onChange })
-  const muted = useSelector(actor, ({ context }) => context.muted)
+  const muted = store.use(({ muted }) => muted)
 
   return (
     <Base className='col-span-2 row-span-4 *:grid-rows-2'>

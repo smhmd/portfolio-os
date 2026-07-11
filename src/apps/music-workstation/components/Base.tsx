@@ -4,13 +4,7 @@ import type { Props } from 'src/lib/types'
 
 type BaseProps = Props<'div', { indicator?: boolean }>
 
-export function Base({
-  className,
-  children,
-  ref,
-  indicator = false,
-  ...props
-}: BaseProps) {
+export function Base({ className, children, ref, ...props }: BaseProps) {
   return (
     <div
       className={clsx(
@@ -22,9 +16,6 @@ export function Base({
       )}
       {...props}
       ref={ref}>
-      {indicator ? (
-        <span className='absolute right-1.5 top-1.5 z-10 block size-2 rounded-full bg-black' />
-      ) : null}
       <div className='bg-base rounded-ms relative grid size-full'>
         {children}
       </div>

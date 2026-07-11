@@ -40,3 +40,31 @@ export type API<E extends { type: string; payload?: unknown }> = {
     ? (payload: P) => void
     : () => void
 }
+
+/**
+ * For accessibility-reasons,
+ * imported SVGs require either aria-label or aria-labelledby
+ * unless you pass role='presentation' or aria-hidden='true'
+ */
+type SVGPropsOverrides =
+  | {
+      'aria-label': string
+    }
+  | {
+      'aria-labelledby': string
+    }
+  | {
+      role: 'presentation'
+    }
+  | {
+      'aria-hidden': true | 'true'
+    }
+
+export type SVGIcon = React.FunctionComponent<
+  React.ComponentProps<'svg'> & {
+    title?: string
+    titleId?: string
+    desc?: string
+    descId?: string
+  } & SVGPropsOverrides
+>

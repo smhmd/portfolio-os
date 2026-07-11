@@ -1,12 +1,22 @@
 import { Base } from './Base'
 
+const COLS = 10 // holes per row
+const ROWS = 35 // holes per column
+const SPACING = 10 // distance between hole centers
+const CORNER_CUT = 3 // how many holes to trim at each corner (L-shape)
+const HOLE_RADIUS = 3
+const PADDING = 3.5 // viewBox margin around the grid
+
 export function Speaker() {
+  const width = (COLS - 1) * SPACING + PADDING * 2
+  const height = (ROWS - 1) * SPACING + PADDING * 2
+
   return (
-    <Base className='col-span-4 row-span-4 p-4'>
+    <Base className='col-span-4 row-span-12 p-4'>
       <span className='p-4'>
         <svg
-          xmlns='http://www.w3.org/20/svg'
-          viewBox='-3.5 -3.5 127 127'
+          xmlns='http://www.w3.org/2000/svg'
+          viewBox={`${-PADDING} ${-PADDING} ${width} ${height}`}
           fill='none'>
           <defs>
             <filter
@@ -40,11 +50,11 @@ export function Speaker() {
             </linearGradient>
             <g id='hole'>
               <g filter='url(#blur)'>
-                <circle cx='0' cy='0' r='3' fill='#192024' />
+                <circle cx='0' cy='0' r={HOLE_RADIUS} fill='#192024' />
                 <circle
                   cx='0'
                   cy='0'
-                  r='3.25'
+                  r={HOLE_RADIUS + 0.25}
                   stroke='url(#gradient)'
                   strokeWidth='0.5'
                 />
@@ -52,13 +62,15 @@ export function Speaker() {
             </g>
           </defs>
 
-          {Array.from({ length: 13 }).map((_, y) =>
-            Array.from({ length: 13 }).map((_, x) => {
-              // Skip corner L-shapes: First 3 and last 3 columns in first/last row,
-              // and first/last column in the first 3 and last 3 rows
-
-              const isRowEdge = (y == 0 || y == 12) && (x < 3 || x > 9)
-              const isColumnEdge = (x == 0 || x == 12) && (y < 3 || y > 9)
+          {Array.from({ length: ROWS }).map((_, y) =>
+            Array.from({ length: COLS }).map((_, x) => {
+              // Skip corner L-shapes, scaled to grid size
+              const isRowEdge =
+                (y === 0 || y === ROWS - 1) &&
+                (x < CORNER_CUT || x > COLS - 1 - CORNER_CUT)
+              const isColumnEdge =
+                (x === 0 || x === COLS - 1) &&
+                (y < CORNER_CUT || y > ROWS - 1 - CORNER_CUT)
 
               if (isRowEdge || isColumnEdge) return null
 
@@ -66,7 +78,7 @@ export function Speaker() {
                 <use
                   key={`${y},${x}`}
                   href='#hole'
-                  transform={`translate(${x * 10} ${y * 10})`}
+                  transform={`translate(${x * SPACING} ${y * SPACING})`}
                 />
               )
             }),

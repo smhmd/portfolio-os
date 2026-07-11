@@ -1,6 +1,6 @@
-import { audio } from './audio'
-import { actor } from './machine'
-import { createSequencer, modeAt, MODES } from './transport'
+import { audio } from '../../lib/audio'
+import { store } from '../../lib/store'
+import { createSequencer, modeAt, MODES } from '../../lib/transport'
 
 export const DIVISIONS = [4, 8, 16] // 1/4 … 1/16 per step
 
@@ -51,9 +51,9 @@ export function settings({ division, swing, gate, playMode }: KnobValues) {
 }
 
 export const endless = createSequencer(
-  () => settings(actor.getSnapshot().context),
+  () => settings(store.get()),
   (next, count, time) => {
-    const ctx = actor.getSnapshot().context
+    const ctx = store.get()
     if (!ctx.sequence.length) return -1
     const { pattern, mode } = settings(ctx)
     const index = next(mode, count, ctx.sequence.length)

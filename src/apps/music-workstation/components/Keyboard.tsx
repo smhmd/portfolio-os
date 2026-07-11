@@ -40,8 +40,7 @@ export function Keyboard() {
         const isBlack = variant !== 'vertical'
         return (
           <Button
-            // indicator={true}
-            text={isBlack ? undefined : `${note[0]}\n${note[1]}`}
+            // text={isBlack ? undefined : `${note[0]}\n${note[1]}`}
             key={note}
             black={isBlack}
             variant={variant}

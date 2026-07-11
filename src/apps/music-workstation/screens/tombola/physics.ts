@@ -4,9 +4,9 @@ export const SIDES = 6
 export const CAGE_RADIUS = 100 // world units, scaled to fit the screen at render time
 export const BALL_RADIUS = 6
 export const ROD_LENGTH = CAGE_RADIUS * Math.sin(PI / SIDES) // half-length of one rod
+export const MAX_BALLS = 8
 
 const APOTHEM = CAGE_RADIUS * Math.cos(PI / SIDES) // center → rod midpoint
-const MAX_BALLS = 8
 const SPIN_RATE = 0.4 // rad/s per spin unit (spin knob lives in -10..10)
 const MAX_GRAVITY = 1200 // px/s² at full knob
 const MAX_ROD_ANGLE = HALF_PI // rods knob at 1 turns every rod 90° open

@@ -1,7 +1,7 @@
-import { audio } from './audio'
-import { patternWindow } from './common'
-import { actor } from './machine'
-import { createSequencer, modeAt, MODES } from './transport'
+import { audio } from '../../lib/audio'
+import { patternWindow } from '../../lib/common'
+import { store } from '../../lib/store'
+import { createSequencer, modeAt, MODES } from '../../lib/transport'
 
 const DIVISION = 16 // a 16-step pattern runs in 16th notes
 
@@ -22,9 +22,9 @@ export function patternSettings(context: Knobs) {
 }
 
 export const pattern = createSequencer(
-  () => ({ division: DIVISION, swing: actor.getSnapshot().context.swing }),
+  () => ({ division: DIVISION, swing: store.get().swing }),
   (next, count, time) => {
-    const ctx = actor.getSnapshot().context
+    const ctx = store.get()
     const { len, off, mode } = patternSettings(ctx)
     // The window steps; the absolute column is what we play and surface. Columns
     // outside [off, off+len) are never visited, so they're skipped for free.

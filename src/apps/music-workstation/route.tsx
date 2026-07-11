@@ -1,8 +1,21 @@
+import {
+  ArrowLeft,
+  ArrowRight,
+  Backspace,
+  Circle,
+  Download,
+  Grid,
+  Hexagon,
+  Pattern,
+  Play,
+  Replay,
+  SpaceBar,
+  Square,
+} from 'src/assets'
 import { Container } from 'src/components'
 import { generateMeta, iconToFavicon } from 'src/lib/server'
 
 import {
-  Base,
   Button,
   Frame,
   Keyboard,
@@ -35,6 +48,7 @@ export default function App() {
 
       <Frame>
         <Speaker />
+
         <Volume onChange={api.changeVolume} onMute={api.muteVolume} />
         <Screen />
         <Parameter
@@ -53,31 +67,56 @@ export default function App() {
           variant='orange'
           onChange={(delta) => api.changeParameter({ id: 'orange', delta })}
         />
-        <Base className='row-span-6' />
 
-        <Button text='7' />
-        <Button text='8' />
-        <Button title='Backtrack' text='⌫' onClick={api.deleteControl} />
+        <Button
+          text='Reset'
+          icon={Replay}
+          onClick={() => api.control('reset')}
+        />
+        <Button
+          text='Left'
+          icon={ArrowLeft}
+          onClick={() => api.control('left')}
+        />
+        <Button
+          text='Right'
+          icon={ArrowRight}
+          onClick={() => api.control('right')}
+        />
+        <Button text='Play' icon={Play} onClick={() => api.control('play')} />
+        <Button text='Record' icon={Circle} onClick={api.record} />
+        <Button text='Stop' icon={Square} onClick={api.stopRecording} />
+        <Button text='Download' icon={Download} onClick={api.download} />
+        <Button
+          text='Space'
+          icon={SpaceBar}
+          onClick={() => api.control('space')}
+        />
+        <Button
+          text='Delete'
+          icon={Backspace}
+          onClick={() => api.control('delete')}
+        />
 
-        <Button title='Tombola Sequencer' text='⬡' onClick={api.showTombola} />
-        <Button title='Endless Sequencer' text='∞' onClick={api.showEndless} />
-        <Button title='Pattern Sequencer' text='▦' onClick={api.showPattern} />
-        <Button text='VI' />
-        <Button text='V' />
-        <Button text='VI' />
-        <Button text='VII' />
-        <Button text='VIII' />
-
-        <Button text='4' />
-        <Button text='5' />
-        <Button text='6' />
         <Keyboard />
-        <Button text='1' className='row-start-9' />
-        <Button text='2' className='row-start-9' />
-        <Button text='3' className='row-start-9' />
-        <Button title='Left' text='<' onClick={api.leftControl} />
-        <Button title='Right' text='>' onClick={api.rightControl} />
-        <Button title='Play / pause' text='▶' onClick={api.playControl} />
+        <Button
+          className='col-start-5 row-start-7'
+          text='Tombola Sequencer'
+          icon={Hexagon}
+          onClick={() => api.show('TOMBOLA')}
+        />
+        <Button
+          className='col-start-5 row-start-9'
+          text='Endless Sequencer'
+          icon={Pattern}
+          onClick={() => api.show('ENDLESS')}
+        />
+        <Button
+          className='col-start-5 row-start-11'
+          text='Pattern Sequencer'
+          icon={Grid}
+          onClick={() => api.show('PATTERN')}
+        />
       </Frame>
     </Container>
   )

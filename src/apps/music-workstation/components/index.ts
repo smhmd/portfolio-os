@@ -1,6 +1,7 @@
 export * from './Base'
 export * from './Button'
 export * from './Frame'
+export * from './Hud'
 export * from './Keyboard'
 export * from './Parameter'
 export * from './Screen'

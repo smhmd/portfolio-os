@@ -316,12 +316,11 @@ Unfortunately, scale in CSS does not support viewport units, so we have to pick 
 This was tested with an extensive amount of device viewports. If it doesn't look good on your device, open an issue or a PR.
 */
 #frame {
-  scale: 0.6;
-  /* scale: 0.32; */
-  /* rotate: 90deg; */
+  scale: 0.32;
+  rotate: 90deg;
 }
 
-/* @media (min-width: 640px) and (min-height: 360px) {
+@media (min-width: 640px) and (min-height: 360px) {
   #frame {
     scale: 0.42;
     rotate: none;
@@ -415,4 +414,4 @@ This was tested with an extensive amount of device viewports. If it doesn't look
   #frame {
     scale: 1.25;
   }
-} */
+}

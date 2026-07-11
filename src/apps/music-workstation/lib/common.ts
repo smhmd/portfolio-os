@@ -7,10 +7,16 @@ export const SCHEDULE_AHEAD_TIME = 0.1 // How far ahead to schedule audio (in se
 export const SCHEDULE_INTERVAL = 25 // How often to schedule the next audio events (in milliseconds)
 export const MAX_STEPS = 32 // Endless sequencer capacity
 
-/** Default parameter values. Shared by the machine and the audio graph. */
+export type ParameterId = 'blue' | 'brown' | 'gray' | 'orange'
+export type Step = string | null // null = rest
+export type ScreenId = 'TOMBOLA' | 'ENDLESS' | 'PATTERN'
+
+/** Default state. Shared by the store and the audio graph. */
 export const INITIAL = {
+  screen: 'TOMBOLA' as ScreenId,
   volume: 0.8, // 0..1
   muted: false,
+  recording: false,
   // tombola
   spin: 1, // -10..10, 0 = no rotation
   gravity: 0.5, // 0..1
@@ -21,7 +27,7 @@ export const INITIAL = {
   swing: 0.5, // 0..1, 0.5 = straight
   gate: 0, // 0..1 → gate pattern index
   playMode: 0, // unbounded, wraps through the active screen's play modes
-  sequence: [] as (string | null)[],
+  sequence: [] as Step[],
   playing: false,
   // pattern
   grid: Array.from({ length: STEPS }, () => [] as string[]), // notes per step
@@ -30,10 +36,43 @@ export const INITIAL = {
   offset: 0, // 0..15 window start (blue / MOVE)
 }
 
+/** The store's shape — the single surface every screen reads. */
+export type State = typeof INITIAL
+
+/** A handler's result: a patch to apply, or nothing (side effects only). */
+export type Patch = Partial<State> | void
+
+export type KnobKey =
+  | 'spin'
+  | 'gravity'
+  | 'bounce'
+  | 'rods'
+  | 'division'
+  | 'swing'
+  | 'gate'
+  | 'playMode'
+
+export type Knob = { key: KnobKey; perTurn: number; min: number; max: number }
+
+/**
+ * One knob's routing: either a clamped value config, or — for coupled
+ * parameters — a reducer from (state, delta) to a patch.
+ */
+export type KnobEntry = Knob | ((state: State, delta: number) => Partial<State>)
+
+/** Knob → parameter routing per screen. The same four encoders mean
+ * different things depending on the active screen. */
+export type KnobMap = Record<ParameterId, KnobEntry>
+
+/** Transport/edit buttons routed to the active screen. Buttons with no
+ * binding on the current screen are no-ops. */
+export type ControlId = 'left' | 'right' | 'play' | 'delete' | 'reset' | 'space'
+export type Controls = Partial<Record<ControlId, (state: State) => Patch>>
+
 /**
  * The pattern's active window from raw knob values. Length and offset are
  * stored as floats (so the encoders feel smooth) and resolved to consistent
- * integers here — the one place that rounds, shared by machine, Scene and HUD.
+ * integers here — the one place that rounds, shared by store, grid and HUD.
  */
 export function patternWindow({
   length,
