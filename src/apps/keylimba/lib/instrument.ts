@@ -1,7 +1,13 @@
 import { audioContext, globalGain } from 'src/lib/audio'
 import { isServer } from 'src/lib/env'
 
-type Options = { sample: string; freq: number; min: number; max: number }
+type Options = { samples: Record<number, string>; shift?: number }
+
+/**
+ * The octave range tines can request, across all tunings and counts.
+ */
+const MIN_OCTAVE = 3
+const MAX_OCTAVE = 7
 type Pitch = (typeof CHROMATIC_SCALE)[number]
 
 const C4 = 261.6255653005986
@@ -31,9 +37,10 @@ const ENHARMONIC = {
 } as Record<Pitch, string>
 
 /**
- * Generates playable note sounds from a single audio sample.
- * Loads the sample, resamples it to different pitches,
- * and stores the results for quick playback.
+ * Generates playable note sounds from a few audio samples.
+ * Each octave is assigned to the closest-pitched sample,
+ * which is resampled to produce its notes, minimizing
+ * pitch-shifting artifacts at the extremities.
  */
 export class Instrument {
   private notes = new Map<string, AudioBuffer>()
@@ -44,29 +51,55 @@ export class Instrument {
   }
 
   /**
-   * Fetches the sample and kicks off resampling.
+   * Assigns each octave to the sample closest in pitch,
+   * then loads each sample independently.
    */
-  private async load() {
-    const response = await fetch(this.options.sample)
+  private load() {
+    const { samples, shift = 0 } = this.options
+    const freqs = Object.keys(samples).map(Number)
+
+    const octaves = new Map<number, number[]>()
+
+    for (let octave = MIN_OCTAVE; octave <= MAX_OCTAVE; octave++) {
+      // Frequency of the octave's sounding C, compared in log space
+      const c = C4 * Math.pow(2, octave + shift - 4)
+      const closest = freqs.reduce((a, b) =>
+        Math.abs(Math.log2(c / a)) <= Math.abs(Math.log2(c / b)) ? a : b,
+      )
+      octaves.set(closest, [...(octaves.get(closest) ?? []), octave])
+    }
+
+    for (const [freq, range] of octaves) {
+      this.loadSample(samples[freq], freq, range)
+    }
+  }
+
+  /**
+   * Fetches a sample and kicks off resampling for its octaves.
+   */
+  private async loadSample(sample: string, freq: number, octaves: number[]) {
+    const response = await fetch(sample)
     const arrayBuffer = await response.arrayBuffer()
     const data = await audioContext.decodeAudioData(arrayBuffer)
-    this.generate(data)
+    this.generate(data, freq, octaves)
   }
 
   /**
    * Generates resampled buffers for each chromatic note
-   * across the configured octave range.
+   * across the given octaves.
    */
-  private generate(data: AudioBuffer) {
-    const { freq: base, min, max } = this.options
+  private generate(data: AudioBuffer, base: number, octaves: number[]) {
+    const { shift = 0 } = this.options
     const { numberOfChannels, sampleRate, length } = data
 
     const channels = Array.from({ length: numberOfChannels }, (_, c) =>
       data.getChannelData(c),
     )
 
-    for (let octave = min; octave <= max; octave++) {
-      const semitone = (octave - 4) * 12
+    for (const octave of octaves) {
+      // the buffer is stored under the requested name, but the
+      // sounding pitch is raised by the configured octave shift
+      const semitone = (octave + shift - 4) * 12
 
       for (let i = 0; i < CHROMATIC_SCALE.length; i++) {
         const pitch = CHROMATIC_SCALE[i]

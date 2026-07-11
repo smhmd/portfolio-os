@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { isServer } from 'src/lib/env'
-
 import { GlobalsContext } from './context'
 
 export const GlobalsProvider = ({ children }: React.PropsWithChildren) => {
   const isAppDrawerOpen = useRef(false)
   const isReducedMotion = useRef(false)
 
-  const [dimensions, setDimensions] = useState(() => {
-    if (isServer) return { width: 0, height: 0 }
-    return { width: window.innerWidth, height: window.innerHeight }
-  })
+  /**
+   * Starts at 0x0 on both server and client so hydration matches;
+   * the real dimensions are measured in the effect below.
+   */
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
     const controller = new AbortController()
@@ -32,6 +31,8 @@ export const GlobalsProvider = ({ children }: React.PropsWithChildren) => {
     query.addEventListener('change', handleQueryChange, { signal })
     window.addEventListener('resize', handleResize, { signal })
     window.addEventListener('orientationchange', handleResize, { signal })
+
+    handleResize()
 
     return () => controller.abort()
   }, [])

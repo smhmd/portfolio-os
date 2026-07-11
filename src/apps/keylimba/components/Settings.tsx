@@ -5,6 +5,7 @@ import { ArrowDown } from 'src/assets'
 
 import {
   colors,
+  instruments,
   labels,
   optionConfig,
   tunings,
@@ -13,6 +14,7 @@ import {
 } from '../lib'
 import { MenuButton } from './Buttons'
 import { Control } from './Control'
+import { IconPicker } from './IconPicker'
 import { NumberPicker } from './NumberPicker'
 import { StylePicker } from './StylePicker'
 import { TextPicker } from './TextPicker'
@@ -99,6 +101,16 @@ function Controls() {
           value={options.labelType}
           onValueChange={(value) => {
             setOption({ option: 'labelType', value: Number(value) })
+          }}
+        />
+      </li>
+      <li>
+        <IconPicker
+          name='instrument sound'
+          options={instruments}
+          value={options.instrumentSound}
+          onValueChange={(value) => {
+            setOption({ option: 'instrumentSound', value: Number(value) })
           }}
         />
       </li>

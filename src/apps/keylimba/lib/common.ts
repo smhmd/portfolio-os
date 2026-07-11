@@ -2,6 +2,8 @@ import { Texture } from 'three'
 
 import { clientOnly } from 'src/lib/ssr'
 
+import { instruments } from './samples'
+
 export const MIN_COUNT = 9
 export const MAX_COUNT = 21
 
@@ -11,13 +13,6 @@ export const PADDING = 0.015
 export const ROTATION_X = 0.6
 export const ROTATION_Y = 0.3
 export const ROTATION_Z = 0.2
-
-export const KEYLIMBA_SAMPLE = {
-  sample: '/sounds/keylimba.ogg',
-  freq: 261.3,
-  min: 3,
-  max: 7,
-}
 
 export type TineInfo = {
   num: number
@@ -144,6 +139,7 @@ export const optionConfig = {
   reverb: { init: 0, min: 0, max: 1 },
   color: { init: 5, min: 0, max: colors.length - 1 },
   tines: { init: 17, min: MIN_COUNT, max: MAX_COUNT },
+  instrumentSound: { init: 0, min: 0, max: instruments.length - 1 },
   labelType: { init: 0, min: 0, max: labels.length - 1 },
   tuning: { init: 4, min: 0, max: Object.keys(scales).length - 1 },
 } satisfies Record<string, Rule>

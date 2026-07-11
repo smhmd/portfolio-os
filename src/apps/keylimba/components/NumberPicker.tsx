@@ -40,7 +40,7 @@ export function NumberPicker({
                 'size-13 rounded-full bg-white',
                 'shadow-inner-xl shadow-neutral-400',
                 'cursor-grab active:cursor-grabbing',
-                'visible-within:shadow-none focus:outline-none',
+                'hocus-within:shadow-none focus:outline-none',
               )}
             />
           </Slider.Track>

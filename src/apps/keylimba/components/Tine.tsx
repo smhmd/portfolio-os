@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useEffectEvent, useMemo, useRef } from 'react'
 
 import clsx from 'clsx'
 import { animate } from 'motion/react'
@@ -105,6 +105,8 @@ export function Tine({
     pluckAndPlay()
   }
 
+  const onKeyPress = useEffectEvent(pluckAndPlay)
+
   useEffect(() => {
     const code = keyboardKeys[index]
     const controller = new AbortController()
@@ -121,13 +123,13 @@ export function Tine({
           e.shiftKey,
           e.altKey,
         ].some(Boolean)
-        return !modified && e.code == code && pluckAndPlay()
+        if (!modified && e.code == code) onKeyPress()
       },
       { signal: controller.signal },
     )
 
     return () => controller.abort()
-  }, [])
+  }, [index])
 
   return (
     <button

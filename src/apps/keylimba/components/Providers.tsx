@@ -14,7 +14,8 @@ import {
   Instrument,
   InstrumentContext,
   type InstrumentContextType,
-  KEYLIMBA_SAMPLE,
+  instruments,
+  optionConfig,
   type Options,
   OptionsContext,
   parseOptions,
@@ -29,7 +30,25 @@ import {
   useRecorder,
 } from '../lib'
 
-const instrument = new Instrument(KEYLIMBA_SAMPLE)
+/**
+ * Instruments are created (and their samples loaded) lazily,
+ * on first selection, then cached.
+ * Indexed by the `instrumentSound` option.
+ */
+const instrumentCache = new Map<number, Instrument>()
+
+function getInstrument(index: number) {
+  let instrument = instrumentCache.get(index)
+  if (!instrument) {
+    instrument = new Instrument(instruments[index])
+    instrumentCache.set(index, instrument)
+  }
+  return instrument
+}
+
+// preload the default instrument
+getInstrument(optionConfig.instrumentSound.init)
+
 const recorder = new Recorder()
 
 type OptionsProviderProps = React.PropsWithChildren
@@ -104,6 +123,12 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
   const mascotRef = useRef<THREE.Mesh>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // start loading samples as soon as the instrument is selected,
+  // rather than on the first played note
+  useEffect(() => {
+    getInstrument(options.instrumentSound)
+  }, [options.instrumentSound])
+
   const resetAnim = useDebounced(() => setAnimation('1'), 1000)
   const resetRotation = useDebounced(() => {
     if (!mascotRef.current) return
@@ -116,7 +141,7 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
         recorder.record()
         recordingRef.current = false
       }
-      instrument.play(`${note}${octave}`)
+      getInstrument(options.instrumentSound).play(`${note}${octave}`)
       if (index < 0) return
 
       if (!mascotRef.current || !containerRef.current) return
@@ -155,7 +180,7 @@ export function InstrumentProvider({ children }: React.PropsWithChildren) {
       resetAnim()
       resetRotation()
     },
-    [options.tines],
+    [options.tines, options.instrumentSound],
   )
 
   return (

@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import { Close } from 'src/assets'
 import type { Props } from 'src/lib/types'
 
-type ControlProps = Props<'span', { name: string; value?: string | number }>
+type ControlProps = Props<'span', { name: string; value?: React.ReactNode }>
 
 export function Control({
   name,
